@@ -25,6 +25,11 @@ export type ParticleButtonHandle = {
   enter(delay?: number): void;
   /** Hides the button and winds the particles down. */
   exit(): void;
+  /** Fires the effect's biggest burst and stops its ambient loop. The button itself is left to the caller. */
+  blast(): void;
+  /** Restarts the ambient loop. */
+  idle(): void;
+  readonly element: HTMLButtonElement | null;
 };
 
 type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
@@ -132,6 +137,23 @@ export const ParticleButton = forwardRef<ParticleButtonHandle, Props>(function P
       if (button) {
         gsap.to(button, { autoAlpha: 0, duration: 0.2, overwrite: "auto" });
       }
+    },
+    blast() {
+      ready.current = false;
+      entrance.current?.kill();
+      entrance.current = null;
+      if (!prefersReducedMotion()) {
+        safe.current?.(() => instance.current?.blast())?.();
+      }
+    },
+    idle() {
+      if (!prefersReducedMotion()) {
+        safe.current?.(() => instance.current?.idle())?.();
+      }
+      ready.current = true;
+    },
+    get element() {
+      return buttonRef.current;
     },
   }));
 

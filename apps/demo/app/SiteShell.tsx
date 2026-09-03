@@ -110,13 +110,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       >
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-6">
           <p className="font-mono text-caption uppercase text-muted">
-            created by{" "}
-            <a
-              href="https://johnpolacek.com"
-              className="underline underline-offset-4 hover:text-foreground"
-            >
-              johnpolacek
-            </a>
+            created by Bézicular
           </p>
           <ThemeToggle compact />
         </div>

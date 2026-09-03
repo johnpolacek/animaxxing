@@ -32,6 +32,10 @@ export type ButtonEffectInstance = {
   enter(delay: number): gsap.core.Timeline;
   /** Stops the ambient loop and lets the particles die. */
   exit(): void;
+  /** Everything at once: the biggest burst the effect has, then silence. */
+  blast(): void;
+  /** Restarts the ambient loop after an exit or blast. */
+  idle(): void;
   hover(on: boolean): void;
   destroy(): void;
 };
@@ -121,6 +125,14 @@ export const marquee: ButtonEffect = {
       });
     }
 
+    function idle() {
+      runners.length = 0;
+      for (let k = 0; k < RUNNERS; k++) {
+        runners.push({ t: k / RUNNERS });
+      }
+      field.addEmitter(ambient);
+    }
+
     function flash(count: number, speed: [number, number]) {
       const { box, radius } = field;
       for (let i = 0; i < count; i++) {
@@ -192,10 +204,7 @@ export const marquee: ButtonEffect = {
         tl.call(
           () => {
             flash(40, [80, 200]);
-            for (let k = 0; k < RUNNERS; k++) {
-              runners.push({ t: k / RUNNERS });
-            }
-            field.addEmitter(ambient);
+            idle();
           },
           [],
           0.95,
@@ -207,6 +216,15 @@ export const marquee: ButtonEffect = {
         runners.length = 0;
         field.release(0.25);
       },
+      blast() {
+        field.removeEmitter(ambient);
+        runners.length = 0;
+        flash(90, [350, 900]);
+        for (let i = 0; i < 12; i++) {
+          twinkle(perimeterPoint(field.box, field.radius, Math.random()));
+        }
+      },
+      idle,
       hover(on) {
         state.hovering = on;
         gsap.to(state, {
@@ -393,6 +411,16 @@ export const reactor: ButtonEffect = {
       exit() {
         field.removeEmitter(ambient);
         field.release(0.25);
+      },
+      blast() {
+        field.removeEmitter(ambient);
+        shockwave(120, 0.6, 1);
+        gsap.delayedCall(0.08, () => shockwave(160, 0.7, 0.6));
+        gsap.delayedCall(0.16, () => shockwave(200, 0.8, 0.3));
+        erupt(140, [400, 1000]);
+      },
+      idle() {
+        field.addEmitter(ambient);
       },
       hover(on) {
         state.hovering = on;

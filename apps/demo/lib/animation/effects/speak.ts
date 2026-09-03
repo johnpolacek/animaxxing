@@ -155,11 +155,11 @@ function settle(
 export function speakIn(
   el: HTMLElement,
   { emphasis = [], delay = 0 }: SpeakOptions = {},
-): { timeline: gsap.core.Timeline; revert: () => void } {
+): { timeline: gsap.core.Timeline; words: HTMLElement[]; revert: () => void } {
   const timeline = gsap.timeline();
   if (prefersReducedMotion()) {
     timeline.set(el, { autoAlpha: 1 });
-    return { timeline, revert: () => {} };
+    return { timeline, words: [], revert: () => {} };
   }
 
   const wanted = new Map<string, { finish?: Finish; angle?: number }>(
@@ -222,6 +222,7 @@ export function speakIn(
 
   return {
     timeline,
+    words,
     revert: () => {
       for (const inner of letterSplits) {
         inner.revert();
