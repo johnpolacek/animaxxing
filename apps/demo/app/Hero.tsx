@@ -1,7 +1,12 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, prefersReducedMotion, useGSAP } from "@/components/motion";
+import {
+  gsap,
+  navigateWithPageTransition,
+  prefersReducedMotion,
+  useGSAP,
+} from "@/components/motion";
 import { Statement } from "@/components/ui";
 import { speakIn, type Emphasis } from "@/lib/animation/effects/speak";
 import { startWave } from "@/lib/animation/effects/wave";
@@ -15,9 +20,9 @@ import { ParticleButton, type ParticleButtonHandle } from "./ParticleButton";
  * route entrance, the subhead is spoken in word by word, and only then do the
  * headline's letters start doing the wave.
  *
- * Pressing either call to action blasts the whole hero apart. Neither has a
- * destination yet, so after a beat the blast rewinds and the hero settles
- * back into its idle state.
+ * Pressing either call to action blasts the whole hero apart. Showcase then
+ * leaves for the showcase; Get Animaxxed has no destination yet, so after a
+ * beat its blast rewinds and the hero settles back into its idle state.
  */
 const EMPHASIS: Emphasis[] = [
   { word: "low", finish: "tilt", angle: -3 },
@@ -36,6 +41,7 @@ const WAVE_PERIOD = 1.5;
 const BLAST_HOLD = 0.5;
 
 type Action = "showcase" | "animaxx";
+const SHOWCASE_HREF = "/showcase/animaxxipedia";
 
 /* Calls to action are set like the headline: big, extra bold, and chunky. */
 const BUTTON_BASE =
@@ -60,8 +66,12 @@ export function Hero() {
       }
       if (prefersReducedMotion()) {
         gsap.set([subhead, actions], { autoAlpha: 1 });
-        // A quiet stand-in for the blast: the hero blinks out and back.
-        press.current = contextSafe(() => {
+        press.current = contextSafe((action: Action) => {
+          if (action === "showcase") {
+            navigateWithPageTransition(SHOWCASE_HREF);
+            return;
+          }
+          // A quiet stand-in for the blast: the hero blinks out and back.
           gsap
             .timeline({ overwrite: "auto" })
             .to(root, { autoAlpha: 0, duration: 0.15 })
@@ -73,6 +83,9 @@ export function Hero() {
       let speech: ReturnType<typeof speakIn> | null = null;
       let stopWave: ((keepSplit?: boolean) => void) | null = null;
       let blast: BlastOff | null = null;
+      // Set once a blast has handed off to navigation: the route exit that
+      // follows must not put the pieces back.
+      let departing = false;
 
       const settle = contextSafe(() => {
         blast?.revert();
@@ -102,6 +115,16 @@ export function Hero() {
           pressed: pressed.element,
           others: [other.element],
         });
+        if (action === "showcase") {
+          blast.timeline.eventCallback("onComplete", () => {
+            departing = true;
+            // The route exit re-splits the heading, which would put the
+            // letters back; keep the heading itself dark so it cannot show.
+            gsap.set(heading, { autoAlpha: 0 });
+            navigateWithPageTransition(SHOWCASE_HREF);
+          });
+          return;
+        }
         blast.timeline.eventCallback("onComplete", () => {
           gsap.delayedCall(BLAST_HOLD, () => blast?.timeline.reverse());
         });
@@ -125,6 +148,10 @@ export function Hero() {
           );
         }),
         onExiting: () => {
+          if (departing) {
+            // The blast already cleared the page; leave it that way.
+            return;
+          }
           // The subhead and buttons are not part of the route exit, so see them out here.
           speech?.timeline.kill();
           blast?.revert();
