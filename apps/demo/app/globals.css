@@ -1,0 +1,203 @@
+@import "tailwindcss";
+
+/*
+ * Semantic design tokens.
+ *
+ * Monochrome only: black, white, and neutral grays. Components consume them
+ * exclusively through the Tailwind utilities generated below (bg-canvas,
+ * text-muted, border-border, bg-surface, bg-inverse, ring-focus,
+ * bg-selection, ...), never through raw hex values.
+ *
+ * Scheme selection has three states, in precedence order:
+ *
+ *   1. `data-theme="dark"` / `data-theme="light"` on <html> — an explicit
+ *      user choice, written by the theme toggle and persisted in
+ *      localStorage.
+ *   2. `prefers-color-scheme` — the operating-system setting, used whenever
+ *      no explicit choice exists.
+ *   3. Light — the default when neither is available.
+ */
+:root {
+  color-scheme: light;
+
+  --canvas: #ffffff;
+  --foreground: #171717;
+  --muted: #525252;
+  --border: #d4d4d4;
+  --surface: #fafafa;
+  --surface-hover: #f0f0f0;
+  --inverse: #171717;
+  --inverse-hover: #404040;
+  --inverse-foreground: #ffffff;
+  --focus: #171717;
+  --selection: #171717;
+  --selection-foreground: #ffffff;
+}
+
+/* The operating-system setting, unless the user pinned the light scheme. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --canvas: #0a0a0a;
+    --foreground: #ededed;
+    --muted: #a3a3a3;
+    --border: #262626;
+    --surface: #171717;
+    --surface-hover: #262626;
+    --inverse: #ededed;
+    --inverse-hover: #d4d4d4;
+    --inverse-foreground: #0a0a0a;
+    --focus: #ededed;
+    --selection: #ededed;
+    --selection-foreground: #0a0a0a;
+  }
+}
+
+/* An explicit user choice wins at any operating-system setting. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas: #0a0a0a;
+  --foreground: #ededed;
+  --muted: #a3a3a3;
+  --border: #262626;
+  --surface: #171717;
+  --surface-hover: #262626;
+  --inverse: #ededed;
+  --inverse-hover: #d4d4d4;
+  --inverse-foreground: #0a0a0a;
+  --focus: #ededed;
+  --selection: #ededed;
+  --selection-foreground: #0a0a0a;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-inverse: var(--inverse);
+  --color-inverse-hover: var(--inverse-hover);
+  --color-inverse-foreground: var(--inverse-foreground);
+  --color-focus: var(--focus);
+  --color-selection: var(--selection);
+  --color-selection-foreground: var(--selection-foreground);
+
+  --font-sans: var(--font-rethink-sans);
+  --font-mono: var(--font-jetbrains-mono);
+
+  /* Spacing: semantic names for the recurring layout rhythm. */
+  --spacing-gutter: 1.5rem;
+  --spacing-gutter-lg: 2.5rem;
+  --spacing-section: 4rem;
+
+  /* Radius scale. Deliberately tight to keep the system editorial. */
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+
+  /* Border widths. Hairline is the default separator weight. */
+  --border-width-hairline: 1px;
+  --border-width-strong: 2px;
+
+  /*
+   * Type scale. The two poster sizes are fluid and measured in `cqi`, so they
+   * respond to whatever column or frame they sit in and fall back to the
+   * viewport when no container is declared.
+   */
+  --text-poster: clamp(3.25rem, 18cqi, 15rem);
+  --text-poster--line-height: 0.84;
+  --text-poster--letter-spacing: -0.045em;
+
+  --text-statement: clamp(2.75rem, 7cqi, 4.5rem);
+  --text-statement--line-height: 0.95;
+  --text-statement--letter-spacing: -0.03em;
+
+  --text-annotation: 0.6875rem;
+  --text-annotation--line-height: 1rem;
+  --text-annotation--letter-spacing: 0.08em;
+
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+  --text-caption--letter-spacing: 0.02em;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.5rem;
+
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.75rem;
+
+  --text-title: 1.5rem;
+  --text-title--line-height: 2rem;
+  --text-title--letter-spacing: -0.01em;
+
+  --text-display: 2.25rem;
+  --text-display--line-height: 2.5rem;
+  --text-display--letter-spacing: -0.02em;
+}
+
+/* Keyboard focus treatment, established globally. */
+:focus-visible {
+  outline: var(--border-width-strong) solid var(--focus);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--selection);
+  color: var(--selection-foreground);
+}
+
+button {
+  cursor: pointer;
+}
+
+code,
+pre {
+  font-variant-ligatures: none;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Blend theme colors only while the user switches schemes. */
+:root.theme-transitioning,
+:root.theme-transitioning *,
+:root.theme-transitioning *::before,
+:root.theme-transitioning *::after {
+  transition-duration: 0.25s !important;
+  transition-property:
+    background-color, border-color, color, fill, outline-color, stroke, text-decoration-color !important;
+  transition-timing-function: linear !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root.theme-transitioning,
+  :root.theme-transitioning *,
+  :root.theme-transitioning *::before,
+  :root.theme-transitioning *::after {
+    transition-duration: 0s !important;
+  }
+}
+
+/* Prevent server-rendered transition items from painting before GSAP starts. */
+[data-page-transition],
+[data-speak-intro],
+[data-hero-actions],
+[data-logo-intro],
+[data-footer-intro],
+[data-shell-intro] {
+  visibility: hidden;
+}
+
+/* Keep the page sealed while Next swaps route trees and GSAP contexts. */
+[data-transition-state="waiting"] {
+  visibility: hidden !important;
+}

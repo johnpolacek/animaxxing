@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "demo",
+      "cwd": "apps/demo",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["dev", "--port", "3111"],
+      "port": 3111
+    }
+  ]
+}
