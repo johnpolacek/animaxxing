@@ -1,6 +1,7 @@
 ---
 name: gsap-nextjs
-description: Build or review GSAP animation in Next.js App Router projects: page transitions, enter and exit motion, animated show and hide of conditional content, and scroll-driven effects. Use whenever a Next.js App Router project needs any of these, even if GSAP is not named, and whenever layout jank, interrupted animations, or cleanup matter. Also use to choose between GSAP and React View Transitions for a navigation effect. Not for Pages Router, non-Next.js sites, or isolated GSAP API questions.
+description: "Build or review GSAP animation in Next.js App Router projects: page transitions, enter and exit motion, animated show and hide of conditional content, and scroll-driven effects. Use whenever a Next.js App Router project needs any of these, even if GSAP is not named, and whenever layout jank, interrupted animations, or cleanup matter. Also use to choose between GSAP and React View Transitions for a navigation effect. Not for Pages Router, non-Next.js sites, or isolated GSAP API questions."
+license: MIT
 metadata:
   short-description: GSAP page and component lifecycles in Next.js
 ---

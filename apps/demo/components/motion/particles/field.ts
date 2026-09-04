@@ -15,14 +15,14 @@ import { gsap } from "../gsap";
  * idle button costs nothing.
  */
 
-export type Shape = "dot" | "spark" | "ring" | "square" | "star" | "outline";
+export type Shape = "dot" | "spark" | "ring" | "square" | "star" | "outline" | "streak";
 
 export type Particle = {
   x: number;
   y: number;
   vx: number;
   vy: number;
-  /** Radius for dots and rings, half-width for squares, stroke width for sparks, spread for outlines. */
+  /** Radius for dots and rings, half-width for squares, stroke width for sparks, half-length for streaks, spread for outlines. */
   size: number;
   alpha: number;
   shape: Shape;
@@ -267,6 +267,14 @@ export class ParticleField {
           ctx.stroke();
           break;
         }
+        case "streak":
+          // A level hairline, centred on the particle.
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(p.x - size, p.y);
+          ctx.lineTo(p.x + size, p.y);
+          ctx.stroke();
+          break;
         case "square":
           ctx.save();
           ctx.translate(p.x, p.y);

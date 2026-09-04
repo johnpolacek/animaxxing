@@ -191,10 +191,23 @@ body {
 [data-page-transition],
 [data-speak-intro],
 [data-hero-actions],
+[data-animaxx-form],
+[data-particle-card],
 [data-logo-intro],
 [data-footer-intro],
-[data-shell-intro] {
+[data-shell-intro],
+[data-reveal],
+[data-etymology],
+[data-arrive] {
   visibility: hidden;
+}
+
+/* Rain, as a fill: diagonal hairlines cut out of a solid block. */
+.hatch {
+  background-color: var(--foreground);
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M-1 9L9-1M-1 1L1-1M7 9L9 7' stroke='black' stroke-width='1'/%3E%3C/svg%3E");
+  mask-size: 8px 8px;
+  mask-repeat: repeat;
 }
 
 /* Keep the page sealed while Next swaps route trees and GSAP contexts. */

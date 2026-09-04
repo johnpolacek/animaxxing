@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
 import {
   gsap,
   navigateWithPageTransition,
@@ -20,9 +21,9 @@ import { ParticleButton, type ParticleButtonHandle } from "./ParticleButton";
  * route entrance, the subhead is spoken in word by word, and only then do the
  * headline's letters start doing the wave.
  *
- * Pressing either call to action blasts the whole hero apart. Showcase then
- * leaves for the showcase; Get Animaxxed has no destination yet, so after a
- * beat its blast rewinds and the hero settles back into its idle state.
+ * Pressing either call to action blasts the whole hero apart, and the blast
+ * hands off to the route transition: Showcase leaves for the showcase, Get
+ * Animaxxed for the intake form.
  */
 const EMPHASIS: Emphasis[] = [
   { word: "low", finish: "tilt", angle: -3 },
@@ -37,11 +38,14 @@ const EMPHASIS: Emphasis[] = [
 /** Silence between the headline landing and the first spoken word. */
 const SPEAK_DELAY = 0.3;
 const WAVE_PERIOD = 1.5;
-/** Seconds the page stays blown apart before pulling itself back together. */
-const BLAST_HOLD = 0.5;
+/**
+ * Seconds into the blast at which the route swaps. By then the letters have
+ * all but left, so the route exit is skipped rather than played on an empty page.
+ */
+const HANDOFF = 0.6;
 
 type Action = "showcase" | "animaxx";
-const SHOWCASE_HREF = "/showcase/animaxxipedia";
+const HREF: Record<Action, string> = { showcase: "/showcase", animaxx: "/animaxx" };
 
 /* Calls to action are set like the headline: big, extra bold, and chunky. */
 const BUTTON_BASE =
@@ -54,6 +58,15 @@ export function Hero() {
   const showcase = useRef<ParticleButtonHandle>(null);
   const animaxx = useRef<ParticleButtonHandle>(null);
   const press = useRef<(action: Action) => void>(() => {});
+  const router = useRouter();
+
+  // The blast hands off to the route without a Link, so nothing has
+  // prefetched the destinations; do it here so the swap is not kept waiting.
+  useEffect(() => {
+    for (const href of Object.values(HREF)) {
+      router.prefetch(href);
+    }
+  }, [router]);
 
   useGSAP(
     (_context, contextSafe) => {
@@ -66,17 +79,7 @@ export function Hero() {
       }
       if (prefersReducedMotion()) {
         gsap.set([subhead, actions], { autoAlpha: 1 });
-        press.current = contextSafe((action: Action) => {
-          if (action === "showcase") {
-            navigateWithPageTransition(SHOWCASE_HREF);
-            return;
-          }
-          // A quiet stand-in for the blast: the hero blinks out and back.
-          gsap
-            .timeline({ overwrite: "auto" })
-            .to(root, { autoAlpha: 0, duration: 0.15 })
-            .to(root, { autoAlpha: 1, duration: 0.15 }, `+=${BLAST_HOLD}`);
-        });
+        press.current = (action: Action) => navigateWithPageTransition(HREF[action]);
         return;
       }
 
@@ -86,14 +89,6 @@ export function Hero() {
       // Set once a blast has handed off to navigation: the route exit that
       // follows must not put the pieces back.
       let departing = false;
-
-      const settle = contextSafe(() => {
-        blast?.revert();
-        blast = null;
-        showcase.current?.idle();
-        animaxx.current?.idle();
-        stopWave = startWave(heading, { period: WAVE_PERIOD });
-      });
 
       press.current = contextSafe((action: Action) => {
         const pressed = action === "showcase" ? showcase.current : animaxx.current;
@@ -115,20 +110,14 @@ export function Hero() {
           pressed: pressed.element,
           others: [other.element],
         });
-        if (action === "showcase") {
-          blast.timeline.eventCallback("onComplete", () => {
+        blast.timeline.call(
+          () => {
             departing = true;
-            // The route exit re-splits the heading, which would put the
-            // letters back; keep the heading itself dark so it cannot show.
-            gsap.set(heading, { autoAlpha: 0 });
-            navigateWithPageTransition(SHOWCASE_HREF);
-          });
-          return;
-        }
-        blast.timeline.eventCallback("onComplete", () => {
-          gsap.delayedCall(BLAST_HOLD, () => blast?.timeline.reverse());
-        });
-        blast.timeline.eventCallback("onReverseComplete", settle);
+            navigateWithPageTransition(HREF[action], { immediate: true });
+          },
+          [],
+          HANDOFF,
+        );
       });
 
       const unwatch = watchPageTransition(heading, {

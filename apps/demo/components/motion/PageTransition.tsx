@@ -8,6 +8,7 @@ import { DURATION, EASE, SHIFT } from "./tokens";
 
 const ITEM_SELECTOR = "[data-page-transition]";
 const LETTERS_EFFECT = "letters";
+const SIDE_LETTERS_EFFECT = "letters-sides";
 const HORIZONTAL_SLIDE_EFFECT = "slide-horizontal";
 const NAVIGATION_EVENT = "animaxxing:navigate";
 /** Seconds the page holds before the headline letters begin to implode. */
@@ -19,8 +20,19 @@ const LETTER_SPREAD_Y = () => window.innerHeight * 0.6;
 type LetterSplit = ReturnType<typeof SplitText.create>;
 const activeLetterSplits = new WeakMap<HTMLElement, LetterSplit>();
 
-export function navigateWithPageTransition(href: string): void {
-  window.dispatchEvent(new CustomEvent(NAVIGATION_EVENT, { detail: href }));
+type NavigationRequest = {
+  href: string;
+  /** The page has already cleared itself: skip the exit and swap at once. */
+  immediate?: boolean;
+};
+
+export function navigateWithPageTransition(
+  href: string,
+  options: Omit<NavigationRequest, "href"> = {},
+): void {
+  window.dispatchEvent(
+    new CustomEvent<NavigationRequest>(NAVIGATION_EVENT, { detail: { href, ...options } }),
+  );
 }
 
 function pageItems(container: HTMLElement): HTMLElement[] {
@@ -30,6 +42,15 @@ function pageItems(container: HTMLElement): HTMLElement[] {
 
 function letterItems(items: HTMLElement[]): HTMLElement[] {
   return items.filter((item) => item.dataset.pageTransition === LETTERS_EFFECT);
+}
+
+function sideLetterItems(items: HTMLElement[]): HTMLElement[] {
+  return items.filter((item) => item.dataset.pageTransition === SIDE_LETTERS_EFFECT);
+}
+
+/** Alternate letters come from opposite sides, so a line zips together. */
+function sideOffset(index: number): number {
+  return (index % 2 === 0 ? -1 : 1) * LETTER_SPREAD_X();
 }
 
 function horizontalSlideItems(items: HTMLElement[]): HTMLElement[] {
@@ -60,21 +81,23 @@ function revertLetterSplits(items: HTMLElement[]): void {
 function enterPage(container: HTMLElement, onComplete?: () => void): gsap.core.Timeline {
   const items = pageItems(container);
   const letters = letterItems(items);
+  const sideLetters = sideLetterItems(items);
+  const allLetters = [...letters, ...sideLetters];
   const horizontalSlide = horizontalSlideItems(items);
   const standardItems = items.filter(
-    (item) => !letters.includes(item) && !horizontalSlide.includes(item),
+    (item) => !allLetters.includes(item) && !horizontalSlide.includes(item),
   );
   const timeline = gsap.timeline({ defaults: { overwrite: "auto" } });
   const finish = () => {
-    revertLetterSplits(letters);
-    if (letters.length > 0) {
-      gsap.set(letters, { autoAlpha: 1, clearProps: "transform,willChange" });
+    revertLetterSplits(allLetters);
+    if (allLetters.length > 0) {
+      gsap.set(allLetters, { autoAlpha: 1, clearProps: "transform,willChange" });
     }
     container.dataset.transitionState = "idle";
     onComplete?.();
   };
   timeline.eventCallback("onComplete", finish);
-  timeline.eventCallback("onInterrupt", () => revertLetterSplits(letters));
+  timeline.eventCallback("onInterrupt", () => revertLetterSplits(allLetters));
 
   if (prefersReducedMotion()) {
     container.dataset.transitionState = "entering";
@@ -111,6 +134,12 @@ function enterPage(container: HTMLElement, onComplete?: () => void): gsap.core.T
     });
     return split;
   });
+  const sideSplits = sideLetters.map((item) => {
+    const split = splitLetters(item);
+    gsap.set(item, { autoAlpha: 1, y: 0 });
+    gsap.set(split.chars, { autoAlpha: 0, x: (index: number) => sideOffset(index), y: 0 });
+    return split;
+  });
   container.dataset.transitionState = "entering";
 
   timeline.addLabel("enter", 0).set(items, { willChange: "transform, opacity" }, "enter");
@@ -128,6 +157,19 @@ function enterPage(container: HTMLElement, onComplete?: () => void): gsap.core.T
         stagger: { each: 0.02, from: "random" },
       },
       `enter+=${LETTERS_DELAY}`,
+    );
+  });
+  sideSplits.forEach((split) => {
+    timeline.to(
+      split.chars,
+      {
+        autoAlpha: 1,
+        x: 0,
+        duration: 0.6,
+        ease: "power4.out",
+        stagger: { each: 0.012, from: "center" },
+      },
+      `enter+=${LETTERS_DELAY + 0.14}`,
     );
   });
   if (standardItems.length > 0) {
@@ -165,18 +207,20 @@ function enterPage(container: HTMLElement, onComplete?: () => void): gsap.core.T
 function exitPage(container: HTMLElement, onComplete: () => void): gsap.core.Timeline {
   const items = pageItems(container).reverse();
   const letters = letterItems(items);
+  const sideLetters = sideLetterItems(items);
+  const allLetters = [...letters, ...sideLetters];
   const horizontalSlide = horizontalSlideItems(items);
   const standardItems = items.filter(
-    (item) => !letters.includes(item) && !horizontalSlide.includes(item),
+    (item) => !allLetters.includes(item) && !horizontalSlide.includes(item),
   );
-  revertLetterSplits(letters);
+  revertLetterSplits(allLetters);
   let splits: LetterSplit[] = [];
   const timeline = gsap.timeline({
     defaults: { overwrite: "auto" },
     onComplete: () => {
-      revertLetterSplits(letters);
-      if (letters.length > 0) {
-        gsap.set(letters, { autoAlpha: 0 });
+      revertLetterSplits(allLetters);
+      if (allLetters.length > 0) {
+        gsap.set(allLetters, { autoAlpha: 0 });
       }
       // This state survives the React/Next route swap and overrides any
       // visible inline styles restored by GSAP context cleanup.
@@ -184,7 +228,7 @@ function exitPage(container: HTMLElement, onComplete: () => void): gsap.core.Tim
       onComplete();
     },
   });
-  timeline.eventCallback("onInterrupt", () => revertLetterSplits(letters));
+  timeline.eventCallback("onInterrupt", () => revertLetterSplits(allLetters));
 
   container.dataset.transitionState = "exiting";
 
@@ -197,6 +241,7 @@ function exitPage(container: HTMLElement, onComplete: () => void): gsap.core.Tim
   }
 
   splits = letters.map((item) => splitLetters(item));
+  const sideSplits = sideLetters.map((item) => splitLetters(item));
   if (horizontalSlide.length > 0) {
     gsap.set(horizontalSlide, { y: 0 });
   }
@@ -234,6 +279,19 @@ function exitPage(container: HTMLElement, onComplete: () => void): gsap.core.Tim
         stagger: { each: 0.012, from: "edges" },
       },
       standardItems.length > 0 ? "exit+=0.1" : "exit",
+    );
+  });
+  sideSplits.forEach((split) => {
+    timeline.to(
+      split.chars,
+      {
+        autoAlpha: 0,
+        x: (index: number) => sideOffset(index),
+        duration: 0.24,
+        ease: "power2.in",
+        stagger: { each: 0.008, from: "center" },
+      },
+      "exit",
     );
   });
   return timeline;
@@ -296,7 +354,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
       };
       const entrance = enterPage(container, contextSafe ? contextSafe(finishEnter) : finishEnter);
 
-      const startNavigation = (destination: URL) => {
+      const startNavigation = (destination: URL, immediate = false) => {
         if (
           destination.origin !== window.location.origin ||
           (destination.pathname === window.location.pathname &&
@@ -311,9 +369,15 @@ export function PageTransition({ children }: { children: ReactNode }) {
 
         exitedBeforeNavigation.current = true;
         entrance.kill();
-        exitPage(container, () => {
+        const go = () => {
           router.push(`${destination.pathname}${destination.search}${destination.hash}`);
-        });
+        };
+        if (immediate) {
+          container.dataset.transitionState = "waiting";
+          go();
+          return true;
+        }
+        exitPage(container, go);
         return true;
       };
 
@@ -346,8 +410,8 @@ export function PageTransition({ children }: { children: ReactNode }) {
       };
 
       const handleRequestedNavigation = (event: Event) => {
-        const { detail } = event as CustomEvent<string>;
-        startNavigation(new URL(detail, window.location.href));
+        const { detail } = event as CustomEvent<NavigationRequest>;
+        startNavigation(new URL(detail.href, window.location.href), detail.immediate);
       };
 
       const safeLink = contextSafe ? contextSafe(handleLink) : handleLink;

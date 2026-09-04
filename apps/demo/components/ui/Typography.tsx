@@ -139,9 +139,11 @@ export function Annotation({
   tone = "muted",
   className,
   children,
-}: TypeProps & { tone?: SupportTone }) {
+  ...rest
+}: TypeProps & { tone?: SupportTone } & HTMLAttributes<HTMLElement>) {
   return (
     <Component
+      {...rest}
       className={["max-w-[46ch] font-mono text-annotation uppercase", SUPPORT_TONE[tone], className]
         .filter(Boolean)
         .join(" ")}

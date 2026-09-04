@@ -1,6 +1,6 @@
 # Animaxxing
 
-Animaxxing is both a agent skill and a showcase for ambitious, production-ready navigation animation in Next.js with GSAP.
+Animaxxing is a showcase for ambitious, production-ready navigation animation in Next.js with GSAP. It consumes the [Animaxxing skills](https://github.com/johnpolacek/animaxxing-skills) and the [official GSAP skills](https://github.com/greensock/gsap-skills) as installed dependencies and validates their guidance against a real app.
 
 ## Repository structure
 
@@ -8,16 +8,30 @@ Animaxxing is both a agent skill and a showcase for ambitious, production-ready 
 animaxxing/
 ├── apps/
 │   └── demo/              Next.js showcase and integration test bed
-└── skills/
-    ├── gsap-nextjs/       Next.js lifecycle and navigation skill
-    └── gsap-*/            Official GreenSock GSAP skills
+├── .agents/skills/        Installed skills (managed by the skills CLI, do not edit)
+├── .claude/skills/        Symlinks into .agents/skills for Claude Code
+└── skills-lock.json       Pinned skill sources and hashes
 ```
 
-### Skill
+### Skills
 
-[`skills/gsap-nextjs`](skills/gsap-nextjs) contains the distributable skill. It defines a mount-to-unmount animation lifecycle for Next.js App Router pages and components, along with focused references for navigation, motion architecture, and verification.
+Skills are installed with the [skills CLI](https://github.com/vercel-labs/skills) and pinned in `skills-lock.json`. Do not edit anything under `.agents/skills`. Change a skill in its source repository, then update here.
 
-The other `skills/gsap-*` directories are the official skills installed from [GreenSock's `gsap-skills` repository](https://github.com/greensock/gsap-skills). They provide the GSAP API, plugin, React, and performance knowledge used by `gsap-nextjs`.
+- [`gsap-nextjs`](https://github.com/johnpolacek/animaxxing-skills) defines a mount-to-unmount animation lifecycle for Next.js App Router pages and components, with references for navigation, motion architecture, and verification.
+- The `gsap-*` skills are the [official GSAP skills](https://github.com/greensock/gsap-skills). They provide the GSAP API, plugin, React, and performance knowledge that `gsap-nextjs` builds on.
+
+To update to the latest published versions:
+
+```bash
+npx skills update -p -y
+```
+
+To reinstall from scratch:
+
+```bash
+npx skills add greensock/gsap-skills -a claude-code codex -s '*' -y
+npx skills add johnpolacek/animaxxing-skills -a claude-code codex -s '*' -y
+```
 
 ### Demo
 

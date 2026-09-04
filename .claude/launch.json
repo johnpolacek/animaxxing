@@ -5,8 +5,24 @@
       "name": "demo",
       "cwd": "apps/demo",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["dev", "--port", "3111"],
+      "runtimeArgs": [
+        "dev",
+        "--port",
+        "3111"
+      ],
       "port": 3111
+    },
+    {
+      "name": "mockup",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "3777",
+        "--directory",
+        "/private/tmp/claude-501/-Users-johnpolacek-Projects-animaxxing/fd134b4b-c79b-4191-8cbc-4ba24d8e8f4c/scratchpad/front-page"
+      ],
+      "port": 3777
     }
   ]
 }
