@@ -34,6 +34,8 @@ animaxxing/
 
 The repository includes the Animaxxing and official GSAP agent skills used to maintain the demo. They are installed under `.agents/skills` and pinned in `skills-lock.json`.
 
+The site's own look is published as the `aesthetic-animaxxing` skill in [animaxxing-skills](https://github.com/johnpolacek/animaxxing-skills), and the `/animaxx` page walks visitors through installing the skills for their own sites.
+
 Update them with:
 
 ```bash

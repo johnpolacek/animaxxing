@@ -78,10 +78,10 @@ export const DEMOS: Demo[] = [
     slug: "your-site",
     name: "Your Site",
     before: "Yours",
-    blurb: "Enter a website. We'll animate the shit out of it.",
+    blurb: "Install the skills. Your agents animate the shit out of it.",
     ready: true,
     href: "/animaxx",
-    cta: "Animaxx it",
+    cta: "Get Animaxxed",
   },
 ];
 

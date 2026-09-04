@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "aesthetic-animaxxing": {
+      "source": "../animaxxing-skills",
+      "sourceType": "local",
+      "computedHash": "8d8624e0dfaf89b4bcbc55557d05b40c59be7ae54f4126c0522157138b6e753c"
+    },
     "gsap-core": {
       "source": "greensock/gsap-skills",
       "sourceType": "github",

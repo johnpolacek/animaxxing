@@ -8,14 +8,13 @@ import type {
 } from "@/components/motion/particles/useParticleEffect";
 
 /*
- * Particle treatment for the giant URL field.
+ * Particle treatment for an install command.
  *
- * The field is a single rule of light. On entrance a runner streaks along
- * its underline and the field is revealed in its wake. While it idles, glints
- * drift up off the rule now and then; with the pointer or focus on it the
- * rule runs hot. Every keystroke throws sparks from the caret, and deleting
- * drops cinders. Submitting lights the whole rule at once and throws the
- * text's worth of sparks skyward.
+ * The block is a single rule of light. On entrance a runner streaks along
+ * its underline and the command is revealed in its wake. While it idles,
+ * glints drift up off the rule now and then; with the pointer or focus on it
+ * the rule runs hot. Copying lights the whole rule at once and throws the
+ * command's worth of sparks skyward.
  */
 
 const rnd = gsap.utils.random;
@@ -24,45 +23,13 @@ const rnd = gsap.utils.random;
 const EMBER_RATE = { idle: 4, hot: 26 };
 /** Seconds between idle glints. */
 const GLINT_EVERY: [number, number] = [0.5, 1.4];
-/** Sparks thrown per typed character. */
-const KEY_SPARKS = 18;
-/** Cinders dropped per deleted character. */
-const DELETE_CINDERS = 10;
-
-type Measure = (upTo: number) => number;
-
-/** Builds a text measurer that mirrors the input's font. */
-function measurer(input: HTMLInputElement): Measure {
-  const ctx = document.createElement("canvas").getContext("2d");
-  return (upTo) => {
-    if (!ctx) {
-      return 0;
-    }
-    const style = getComputedStyle(input);
-    ctx.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-    const text = input.value.slice(0, upTo);
-    const spacing = parseFloat(style.letterSpacing) || 0;
-    return ctx.measureText(text).width + spacing * text.length;
-  };
-}
 
 export const ignite: ParticleEffectDefinition<ParticleEffectInstance> = {
   bleed: 200,
   create(field: ParticleField, target: HTMLElement) {
-    const input = target as HTMLInputElement;
-    const measure = measurer(input);
     const state = { rate: EMBER_RATE.idle, hot: false };
     let emberAcc = 0;
     let glintIn = 0.6;
-    let lastValue = input.value;
-
-    /** Canvas x of the caret, clamped to the field. */
-    function caretX(): number {
-      const { box } = field;
-      const padding = parseFloat(getComputedStyle(input).paddingLeft) || 0;
-      const x = box.x + padding + measure(input.selectionEnd ?? input.value.length) - input.scrollLeft;
-      return gsap.utils.clamp(box.x, box.x + box.w, x);
-    }
 
     function baseline(): number {
       const { box } = field;
@@ -136,25 +103,6 @@ export const ignite: ParticleEffectDefinition<ParticleEffectInstance> = {
       glint(x, y);
     }
 
-    /** Cinders falling off the rule below a point. */
-    function crumble(x: number, y: number, count: number) {
-      for (let i = 0; i < count; i++) {
-        field.spawn({
-          x: x + rnd(-14, 14),
-          y,
-          vx: rnd(-30, 30),
-          vy: rnd(10, 70),
-          size: rnd(1.2, 2.6),
-          shape: "square",
-          rotation: rnd(0, Math.PI),
-          spin: rnd(-10, 10),
-          life: rnd(0.5, 1),
-          gravity: 500,
-          drag: 0.4,
-        });
-      }
-    }
-
     /** A hairline flare that spreads outward along the rule from a point. */
     function ripple(x: number, y: number, reach: number, duration: number) {
       for (const dir of [-1, 1]) {
@@ -174,22 +122,6 @@ export const ignite: ParticleEffectDefinition<ParticleEffectInstance> = {
       }
     }
 
-    const onInput = () => {
-      const value = input.value;
-      const x = caretX();
-      const y = baseline();
-      if (value.length > lastValue.length) {
-        strike(x, y, KEY_SPARKS, [120, 360]);
-        ripple(x, y, 120, 0.35);
-      } else if (value.length < lastValue.length) {
-        crumble(x, y, DELETE_CINDERS);
-      } else {
-        glint(x, y);
-      }
-      lastValue = value;
-    };
-    input.addEventListener("input", onInput);
-
     function idle() {
       field.addEmitter(ambient);
     }
@@ -201,13 +133,13 @@ export const ignite: ParticleEffectDefinition<ParticleEffectInstance> = {
         const { box } = field;
         const y = baseline();
         const tl = gsap.timeline({ delay });
-        gsap.set(input, { autoAlpha: 0, clipPath: "inset(-20% 100% -20% 0)" });
+        gsap.set(target, { autoAlpha: 0, clipPath: "inset(-20% 100% -20% 0)" });
 
-        // A runner streaks the length of the rule and the field appears
+        // A runner streaks the length of the rule and the command appears
         // behind it, with sparks kicked up as it goes.
         const run = { x: box.x };
         let head: Particle | null = null;
-        tl.set(input, { autoAlpha: 1 }, 0);
+        tl.set(target, { autoAlpha: 1 }, 0);
         tl.to(
           run,
           {
@@ -231,7 +163,6 @@ export const ignite: ParticleEffectDefinition<ParticleEffectInstance> = {
               }
               head.vx = (run.x - head.x) * 60;
               head.x = run.x;
-              // Cast sparks in the runner's wake.
               for (let i = 0; i < 3; i++) {
                 field.spawn({
                   x: run.x + rnd(-6, 0),
@@ -245,7 +176,7 @@ export const ignite: ParticleEffectDefinition<ParticleEffectInstance> = {
                   shape: "spark",
                 });
               }
-              gsap.set(input, {
+              gsap.set(target, {
                 clipPath: `inset(-20% ${(1 - this.progress()) * 100}% -20% 0)`,
               });
             },
@@ -260,7 +191,7 @@ export const ignite: ParticleEffectDefinition<ParticleEffectInstance> = {
           },
           0,
         );
-        tl.set(input, { clearProps: "clipPath" }, 0.72);
+        tl.set(target, { clearProps: "clipPath" }, 0.72);
         tl.call(
           () => {
             ripple(box.x + box.w, y, 240, 0.5);
@@ -282,17 +213,16 @@ export const ignite: ParticleEffectDefinition<ParticleEffectInstance> = {
         field.removeEmitter(ambient);
         const { box } = field;
         const y = baseline();
-        // The rule lights end to end and the typed text is thrown skyward.
-        const end = caretX();
+        // The rule lights end to end and the command is thrown skyward.
         for (let i = 0; i < 6; i++) {
           ripple(box.x + rnd(0, box.w), y, 300, 0.6);
         }
-        const columns = Math.max(6, Math.round((end - box.x) / 18));
+        const columns = Math.max(6, Math.round(box.w / 18));
         for (let i = 0; i <= columns; i++) {
-          const x = box.x + ((end - box.x) * i) / columns;
+          const x = box.x + (box.w * i) / columns;
           strike(x, y - rnd(0, box.h * 0.6), 9, [260, 720]);
         }
-        strike(end, y, 40, [300, 900]);
+        strike(box.x + box.w, y, 40, [300, 900]);
         for (let i = 0; i < 14; i++) {
           glint(box.x + rnd(0, box.w), y + rnd(-box.h, 0));
         }
@@ -306,11 +236,10 @@ export const ignite: ParticleEffectDefinition<ParticleEffectInstance> = {
           overwrite: true,
         });
         if (on) {
-          ripple(caretX(), baseline(), 200, 0.45);
+          ripple(field.box.x + field.box.w / 2, baseline(), 200, 0.45);
         }
       },
       destroy() {
-        input.removeEventListener("input", onInput);
         field.removeEmitter(ambient);
         gsap.killTweensOf(state);
       },
