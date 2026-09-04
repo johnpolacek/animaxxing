@@ -113,9 +113,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
         className="mt-auto border-t border-border px-gutter py-10 sm:px-gutter-lg"
       >
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-6">
-          <p className="font-mono text-caption uppercase text-muted">
-            created by Bézicular
-          </p>
+          <a
+            href="https://johnpolacek.com"
+            className="font-mono text-caption uppercase text-muted transition-colors hover:text-foreground"
+          >
+            created by johnpolacek
+          </a>
           <ThemeToggle compact />
         </div>
       </footer>
