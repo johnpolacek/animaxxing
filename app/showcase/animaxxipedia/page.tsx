@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ShowcaseBack } from "../ShowcaseBack";
+import { ShowcaseNav } from "../ShowcaseNav";
 import { Article } from "./Article";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export default function Animaxxipedia() {
       {/* Ink drifts past the grid on purpose; clip keeps it from widening the page. */}
       <section className="overflow-x-clip px-gutter pt-10 pb-16 sm:px-gutter-lg">
         <div className="mx-auto w-full max-w-7xl">
-          <ShowcaseBack />
+          <ShowcaseNav slug="animaxxipedia" />
           <Article />
         </div>
       </section>

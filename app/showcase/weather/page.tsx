@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ShowcaseBack } from "../ShowcaseBack";
+import { ShowcaseNav } from "../ShowcaseNav";
 import { Weather } from "./Weather";
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export default function WeatherPage() {
       {/* Rain and fog are allowed past the grid; the clip keeps them from widening the page. */}
       <section className="overflow-x-clip px-gutter pt-10 pb-16 sm:px-gutter-lg">
         <div className="mx-auto w-full max-w-7xl">
-          <ShowcaseBack />
+          <ShowcaseNav slug="weather" />
           <Weather />
         </div>
       </section>

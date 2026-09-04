@@ -37,14 +37,14 @@ export const DEMOS: Demo[] = [
     name: "The List",
     before: "Craigslist",
     blurb: "The category board, a ledger of listings, and one listing, kept dense.",
-    ready: false,
+    ready: true,
   },
   {
     slug: "hackernews",
     name: "The Feed",
     before: "Hacker News",
     blurb: "The ranked list and a nested thread, type and numbers only.",
-    ready: false,
+    ready: true,
   },
   {
     slug: "etsy",
@@ -65,14 +65,14 @@ export const DEMOS: Demo[] = [
     name: "Repo",
     before: "GitHub",
     blurb: "sindresorhus/awesome: overview, readme, issues, and commits.",
-    ready: false,
+    ready: true,
   },
   {
     slug: "reddit",
     name: "The Front Page",
     before: "Reddit",
     blurb: "The feed, a post and its thread, a subreddit, and the submit form.",
-    ready: false,
+    ready: true,
   },
   {
     slug: "your-site",
@@ -87,4 +87,11 @@ export const DEMOS: Demo[] = [
 
 export function findDemo(slug: string): Demo | undefined {
   return DEMOS.find((demo) => demo.slug === slug);
+}
+
+/** The demo after this one in showcase order, wrapping at the end. Cards that lead elsewhere are skipped. */
+export function nextDemo(slug: string): Demo | undefined {
+  const pages = DEMOS.filter((demo) => !demo.href);
+  const index = pages.findIndex((demo) => demo.slug === slug);
+  return index === -1 ? undefined : pages[(index + 1) % pages.length];
 }

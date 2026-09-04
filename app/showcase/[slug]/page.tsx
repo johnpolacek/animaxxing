@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Annotation, BodyCopy, Label, Statement } from "@/components/ui";
 import { DEMOS, findDemo } from "../demos";
-import { ShowcaseBack } from "../ShowcaseBack";
+import { ShowcaseNav } from "../ShowcaseNav";
 
 /*
  * Placeholder for a demo that is planned but not built. Demos with their own
@@ -30,7 +30,7 @@ export default async function DemoPlaceholder({ params }: PageProps<"/showcase/[
     <main className="flex flex-1 flex-col">
       <section className="px-gutter pt-10 pb-16 sm:px-gutter-lg">
         <div className="mx-auto w-full max-w-7xl">
-          <ShowcaseBack />
+          <ShowcaseNav slug={slug} />
           <div data-page-transition>
             <Label as="p">{demo.before}, animaxxed</Label>
           </div>
