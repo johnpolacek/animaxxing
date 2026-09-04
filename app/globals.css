@@ -204,6 +204,36 @@ body {
   visibility: hidden;
 }
 
+/*
+ * A dotted underline drawn with a repeating radial gradient, so the dots can
+ * march along the line under the pointer.
+ */
+.dotted-link {
+  padding-bottom: 3px;
+  background-image: radial-gradient(circle, currentColor 0.9px, transparent 1.3px);
+  background-size: 5px 3px;
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+}
+
+.dotted-link:hover,
+.dotted-link:focus-visible {
+  animation: dots-march 0.4s linear infinite;
+}
+
+@keyframes dots-march {
+  to {
+    background-position: 5px 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dotted-link:hover,
+  .dotted-link:focus-visible {
+    animation: none;
+  }
+}
+
 /* Rain, as a fill: diagonal hairlines cut out of a solid block. */
 .hatch {
   background-color: var(--foreground);

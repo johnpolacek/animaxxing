@@ -12,6 +12,7 @@ import {
   useGSAP,
 } from "@/components/motion";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { FooterLink } from "./FooterLink";
 
 /** Persistent chrome: it enters once, then remains untouched by route motion. */
 export function SiteShell({ children }: { children: ReactNode }) {
@@ -113,12 +114,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
         className="mt-auto border-t border-border px-gutter py-10 sm:px-gutter-lg"
       >
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-6">
-          <a
-            href="https://johnpolacek.com"
-            className="font-mono text-caption uppercase text-muted transition-colors hover:text-foreground"
-          >
-            created by johnpolacek
-          </a>
+          <p className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-caption uppercase text-muted">
+            <FooterLink href="https://johnpolacek.com">created by John Polacek</FooterLink>
+            <span aria-hidden="true">·</span>
+            <FooterLink href="https://gsap.com">powered by GSAP</FooterLink>
+          </p>
           <ThemeToggle compact />
         </div>
       </footer>
