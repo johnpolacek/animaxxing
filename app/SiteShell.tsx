@@ -115,9 +115,17 @@ export function SiteShell({ children }: { children: ReactNode }) {
       >
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-6">
           <p className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-caption uppercase text-muted">
-            <FooterLink href="https://johnpolacek.com">created by John Polacek</FooterLink>
+            <span>
+              created by <FooterLink href="https://johnpolacek.com">John Polacek</FooterLink>
+            </span>
             <span aria-hidden="true">·</span>
-            <FooterLink href="https://gsap.com">powered by GSAP</FooterLink>
+            <span>
+              powered by <FooterLink href="https://gsap.com">GSAP</FooterLink>
+            </span>
+            <span aria-hidden="true">·</span>
+            <span>
+              files on <FooterLink href="https://github.com/johnpolacek/animaxxing">GitHub</FooterLink>
+            </span>
           </p>
           <ThemeToggle compact />
         </div>

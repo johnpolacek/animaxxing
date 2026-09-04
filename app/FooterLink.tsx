@@ -4,11 +4,10 @@ import { useRef, type ReactNode } from "react";
 import { charsWeightWave, prefersReducedMotion, useGSAP } from "@/components/motion";
 
 /*
- * A footer credit: a dotted underline whose dots march under the pointer,
+ * A word in a footer credit: a dotted underline whose dots march under the pointer,
  * while a wave of weight runs through the letters.
  */
-const LINK =
-  "dotted-link font-mono text-caption uppercase text-muted transition-colors hover:text-foreground focus-visible:text-foreground";
+const LINK = "dotted-link transition-colors hover:text-foreground focus-visible:text-foreground";
 
 export function FooterLink({ href, children }: { href: string; children: ReactNode }) {
   const ref = useRef<HTMLAnchorElement>(null);
