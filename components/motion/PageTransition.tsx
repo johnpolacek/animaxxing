@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useRef, useState, type ReactNode } from "react";
+import { Fragment, useRef, useState, type ReactNode } from "react";
 import { gsap, SplitText, useGSAP } from "./gsap";
 import { prefersReducedMotion } from "./preference";
 import { DURATION, EASE, SHIFT } from "./tokens";
@@ -11,8 +11,13 @@ const LETTERS_EFFECT = "letters";
 const SIDE_LETTERS_EFFECT = "letters-sides";
 const HORIZONTAL_SLIDE_EFFECT = "slide-horizontal";
 const NAVIGATION_EVENT = "animaxxing:navigate";
+const REPLAY_EVENT = "animaxxing:replay";
 /** Seconds the page holds before the headline letters begin to implode. */
 const LETTERS_DELAY = 0.75;
+/** Milliseconds of quiet after the last width change before the page replays its entrance. */
+const RESIZE_SETTLE = 300;
+/** Pixels the width must move, from where the page last entered, to count as a resize. A scrollbar coming or going is less. */
+const RESIZE_THRESHOLD = 24;
 /** How far, in pixels, a headline letter starts from its place. */
 const LETTER_SPREAD_X = () => window.innerWidth * 0.6;
 const LETTER_SPREAD_Y = () => window.innerHeight * 0.6;
@@ -33,6 +38,14 @@ export function navigateWithPageTransition(
   window.dispatchEvent(
     new CustomEvent<NavigationRequest>(NAVIGATION_EVENT, { detail: { href, ...options } }),
   );
+}
+
+/**
+ * Play the current page again: it exits the way it would before a navigation,
+ * then remounts and enters from scratch, the same way it does after a resize.
+ */
+export function replayPageTransition(): void {
+  window.dispatchEvent(new Event(REPLAY_EVENT));
 }
 
 function pageItems(container: HTMLElement): HTMLElement[] {
@@ -313,6 +326,11 @@ function exitPage(container: HTMLElement, onComplete: () => void): gsap.core.Tim
  * Focus moves to the page container only when a navigation left focus on
  * <body>. If the participant is still in a field or on a control, their focus
  * is left alone.
+ *
+ * Resizing resets the page. Once the width has moved and settled, the page
+ * subtree is remounted and enters again from scratch, the same way it does
+ * after a navigation, so every effect starts fresh at the new size. Height
+ * alone never counts: mobile browsers change it on every scroll.
  */
 export function PageTransition({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -324,6 +342,8 @@ export function PageTransition({ children }: { children: ReactNode }) {
     key: pathname,
     node: children,
   });
+  /** Bumped when a resize settles; keys the page subtree so it remounts. */
+  const [epoch, setEpoch] = useState(0);
 
   const isTransitioning = held.key !== pathname;
 
@@ -353,6 +373,24 @@ export function PageTransition({ children }: { children: ReactNode }) {
         }
       };
       const entrance = enterPage(container, contextSafe ? contextSafe(finishEnter) : finishEnter);
+
+      // A settled resize replays the page. The width the page entered at is
+      // the reference, so a slow drag still counts once it has gone far enough.
+      const enteredWidth = container.offsetWidth;
+      let resizeTimer: number | undefined;
+      const resize = new ResizeObserver((entries) => {
+        const width = entries[0]?.contentRect.width ?? container.offsetWidth;
+        if (Math.abs(width - enteredWidth) < RESIZE_THRESHOLD || prefersReducedMotion()) {
+          return;
+        }
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(() => {
+          entrance.kill();
+          container.dataset.transitionState = "waiting";
+          setEpoch((value) => value + 1);
+        }, RESIZE_SETTLE);
+      });
+      resize.observe(container);
 
       const startNavigation = (destination: URL, immediate = false) => {
         if (
@@ -409,6 +447,16 @@ export function PageTransition({ children }: { children: ReactNode }) {
         event.stopPropagation();
       };
 
+      let replaying = false;
+      const handleReplay = () => {
+        if (replaying || exitedBeforeNavigation.current) {
+          return;
+        }
+        replaying = true;
+        entrance.kill();
+        exitPage(container, () => setEpoch((value) => value + 1));
+      };
+
       const handleRequestedNavigation = (event: Event) => {
         const { detail } = event as CustomEvent<NavigationRequest>;
         startNavigation(new URL(detail.href, window.location.href), detail.immediate);
@@ -418,17 +466,22 @@ export function PageTransition({ children }: { children: ReactNode }) {
       const safeRequest = contextSafe
         ? contextSafe(handleRequestedNavigation)
         : handleRequestedNavigation;
+      const safeReplay = contextSafe ? contextSafe(handleReplay) : handleReplay;
       // Capture before React/Next's delegated link handler so the route cannot
       // begin rendering until the outgoing timeline has fully completed.
       document.addEventListener("click", safeLink, true);
       window.addEventListener(NAVIGATION_EVENT, safeRequest);
+      window.addEventListener(REPLAY_EVENT, safeReplay);
       return () => {
+        resize.disconnect();
+        window.clearTimeout(resizeTimer);
         document.removeEventListener("click", safeLink, true);
         window.removeEventListener(NAVIGATION_EVENT, safeRequest);
+        window.removeEventListener(REPLAY_EVENT, safeReplay);
       };
     },
     {
-      dependencies: [pathname, held.key],
+      dependencies: [pathname, held.key, epoch],
       revertOnUpdate: true,
       scope: containerRef,
     },
@@ -436,7 +489,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
 
   return (
     <div ref={containerRef} tabIndex={-1} className="flex flex-1 flex-col focus:outline-none">
-      {isTransitioning ? held.node : children}
+      <Fragment key={epoch}>{isTransitioning ? held.node : children}</Fragment>
     </div>
   );
 }

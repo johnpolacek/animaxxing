@@ -26,7 +26,7 @@ export {
   type SplitRunner,
 } from "./split";
 export { MotionToggle } from "./MotionToggle";
-export { navigateWithPageTransition, PageTransition } from "./PageTransition";
+export { navigateWithPageTransition, PageTransition, replayPageTransition } from "./PageTransition";
 export { Presence, type PresenceProps } from "./Presence";
 export {
   applyMotion,

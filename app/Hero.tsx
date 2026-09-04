@@ -38,6 +38,8 @@ const EMPHASIS: Emphasis[] = [
 /** Silence between the headline landing and the first spoken word. */
 const SPEAK_DELAY = 0.3;
 const WAVE_PERIOD = 1.5;
+/** Milliseconds after a resize before the wave starts again, when the page did not replay. */
+const WAVE_RESTART = 450;
 /**
  * Seconds into the blast at which the route swaps. By then the letters have
  * all but left, so the route exit is skipped rather than played on an empty page.
@@ -120,6 +122,27 @@ export function Hero() {
         );
       });
 
+      // The wave pins each letter to a pixel width; drop it the moment the
+      // hero is resized so the headline can reflow. The settled resize
+      // replays the page.
+      const enteredWidth = root.offsetWidth;
+      let restartWave: number | undefined;
+      const resize = new ResizeObserver((entries) => {
+        if (Math.abs((entries[0]?.contentRect.width ?? enteredWidth) - enteredWidth) < 1) {
+          return;
+        }
+        stopWave?.();
+        stopWave = null;
+        // A smaller resize does not replay the page; wave again after a beat.
+        window.clearTimeout(restartWave);
+        restartWave = window.setTimeout(() => {
+          if (speech && !departing && !stopWave) {
+            stopWave = startWave(heading, { period: WAVE_PERIOD });
+          }
+        }, WAVE_RESTART);
+      });
+      resize.observe(root);
+
       const unwatch = watchPageTransition(heading, {
         onIdle: contextSafe(() => {
           speech = speakIn(subhead, { emphasis: EMPHASIS, delay: SPEAK_DELAY });
@@ -154,6 +177,8 @@ export function Hero() {
       });
 
       return () => {
+        resize.disconnect();
+        window.clearTimeout(restartWave);
         unwatch();
         speech?.timeline.kill();
         blast?.revert();

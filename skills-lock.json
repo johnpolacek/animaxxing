@@ -4,7 +4,7 @@
     "aesthetic-animaxxing": {
       "source": "../animaxxing-skills",
       "sourceType": "local",
-      "computedHash": "8d8624e0dfaf89b4bcbc55557d05b40c59be7ae54f4126c0522157138b6e753c"
+      "computedHash": "5a08d108d5f0f0b163394eb0fc6f1bdd411372d964f9b32ba5aaad8399276da3"
     },
     "gsap-core": {
       "source": "greensock/gsap-skills",
