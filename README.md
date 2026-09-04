@@ -1,45 +1,41 @@
 # Animaxxing
 
-Animaxxing is a showcase for ambitious, production-ready navigation animation in Next.js with GSAP. It consumes the [Animaxxing skills](https://github.com/johnpolacek/animaxxing-skills) and the [official GSAP skills](https://github.com/greensock/gsap-skills) as installed dependencies and validates their guidance against a real app.
+An interactive Next.js demo of expressive, production-ready web animation with GSAP. Explore motion patterns, animated page transitions, particle effects, and animaxxed takes on familiar interfaces.
 
-## Repository structure
+## Getting started
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to view the demo.
+
+## Project structure
 
 ```text
 animaxxing/
-├── apps/
-│   └── demo/              Next.js showcase and integration test bed
-├── .agents/skills/        Installed skills (managed by the skills CLI, do not edit)
-├── .claude/skills/        Symlinks into .agents/skills for Claude Code
-└── skills-lock.json       Pinned skill sources and hashes
+├── app/                  App Router pages, layouts, and route-specific UI
+├── components/           Shared motion, theme, and UI components
+├── lib/                  Animation effects and page state utilities
+├── next.config.ts        Next.js configuration
+├── package.json          Dependencies and scripts
+└── tsconfig.json         TypeScript configuration
 ```
 
-### Skills
+## Scripts
 
-Skills are installed with the [skills CLI](https://github.com/vercel-labs/skills) and pinned in `skills-lock.json`. Do not edit anything under `.agents/skills`. Change a skill in its source repository, then update here.
+- `pnpm dev` starts the local development server.
+- `pnpm build` creates a production build.
+- `pnpm start` serves the production build.
+- `pnpm typecheck` generates Next.js route types and runs TypeScript.
 
-- [`gsap-nextjs`](https://github.com/johnpolacek/animaxxing-skills) defines a mount-to-unmount animation lifecycle for Next.js App Router pages and components, with references for navigation, motion architecture, and verification.
-- The `gsap-*` skills are the [official GSAP skills](https://github.com/greensock/gsap-skills). They provide the GSAP API, plugin, React, and performance knowledge that `gsap-nextjs` builds on.
+## Animation guidance
 
-To update to the latest published versions:
+The repository includes the Animaxxing and official GSAP agent skills used to maintain the demo. They are installed under `.agents/skills` and pinned in `skills-lock.json`.
+
+Update them with:
 
 ```bash
 npx skills update -p -y
 ```
-
-To reinstall from scratch:
-
-```bash
-npx skills add greensock/gsap-skills -a claude-code codex -s '*' -y
-npx skills add johnpolacek/animaxxing-skills -a claude-code codex -s '*' -y
-```
-
-### Demo
-
-[`apps/demo`](apps/demo) is the home of the animated Next.js site. The app should exercise the skill as a real consumer: every major transition pattern demonstrated here should also help validate the skill's guidance.
-
-## Project principles
-
-- Keep the skill portable and independent of the demo's visual design.
-- Use the demo to prove the skill against realistic navigation, interruption, accessibility, responsive-layout, and cleanup requirements.
-- Put reusable guidance in the skill and product-specific implementation in the demo.
-- Treat production builds and browser verification as part of the demo's integration testing.
