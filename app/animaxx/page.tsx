@@ -1,86 +1,65 @@
 import type { Metadata } from "next";
-import { Annotation, BodyCopy, Label, Statement } from "@/components/ui";
-import { AESTHETICS, PROMPTS } from "./aesthetics";
-import { AestheticRow } from "./AestheticRow";
-import { CommandBlock } from "./CommandBlock";
+import { Label } from "@/components/ui";
+import { Contact } from "./Contact";
+import { INSTALL, PROMPTS, SKILLS_REPO } from "./content";
+import { Headline } from "./Headline";
+import { Reveal } from "./Reveal";
+import { Terminal } from "./Terminal";
 
 export const metadata: Metadata = {
   title: "Get Animaxxed — Animaxxing",
   description: "Have us animaxx your site, or install the agent skills and do it yourself.",
 };
 
-/** Where "Contact us" goes. */
-const CONTACT_HREF = "mailto:";
-const SKILLS_REPO = "https://github.com/johnpolacek/animaxxing-skills";
-const INSTALL =
-  "npx skills add https://github.com/greensock/gsap-skills && npx skills add https://github.com/johnpolacek/animaxxing-skills";
-
-const HEADING = "mt-16 block border-t border-border pt-6 text-foreground";
-const BUTTON_BASE =
-  "inline-flex cursor-pointer items-center rounded-lg px-6 py-3 font-sans text-4xl font-extrabold uppercase tracking-[-0.02em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus sm:px-8 sm:py-4 sm:text-5xl";
-const BUTTON_SOLID = `${BUTTON_BASE} bg-inverse text-inverse-foreground hover:bg-inverse-hover`;
-const BUTTON_OUTLINE = `${BUTTON_BASE} border-2 border-foreground text-foreground hover:bg-surface-hover`;
+const SECTION = "font-sans text-display font-extrabold uppercase tracking-[-0.02em] sm:text-5xl";
+const SHOUT = "font-sans text-statement font-extrabold uppercase";
+const RULE = "h-px flex-1 bg-border";
 
 /*
- * Two ways in. Have us do it, or install the skills and tell your own agent.
- * The command and prompt blocks draw themselves out of particles; everything
- * else takes part in the route transition as a standard item.
+ * Two ways in: have us do it, or do it yourself. The headline scatters in
+ * and hums; the button assembles out of sparks and opens the form; below
+ * the rule, the headings cascade and scatter in as they are scrolled to and
+ * every panel resolves out of a grid of dots.
  */
 export default function GetAnimaxxed() {
   return (
     <main className="flex flex-1 flex-col">
-      <section className="px-gutter pt-10 pb-16 sm:px-gutter-lg">
-        <div className="mx-auto w-full max-w-7xl">
-          <Statement as="h1" data-page-transition="letters">
-            Get Animaxxed
-          </Statement>
-          <Annotation as="p" data-page-transition="letters-sides" className="mt-6 max-w-none!">
-            Have us do it, or do it yourself.
-          </Annotation>
+      <section className="px-gutter pt-10 pb-24 sm:px-gutter-lg">
+        <div className="mx-auto w-full max-w-7xl [container-type:inline-size]">
+          <Headline>Get Animaxxed</Headline>
+          <Contact />
 
-          <Label as="h2" data-page-transition className={HEADING}>
-            01 · Contact us
-          </Label>
-          <BodyCopy as="p" data-page-transition className="mt-6 text-muted">
-            Tell us about your site. We animate the shit out of it.
-          </BodyCopy>
-          <div data-page-transition className="mt-8">
-            <a href={CONTACT_HREF} className={BUTTON_SOLID}>
-              Contact us
-            </a>
-          </div>
+          <Reveal effect="wipe" delay={1.5} className="mt-24 flex items-center gap-6">
+            <span aria-hidden="true" className={RULE} />
+            <Label className="text-foreground">or</Label>
+            <span aria-hidden="true" className={RULE} />
+          </Reveal>
 
-          <Label as="h2" data-page-transition className={HEADING}>
-            02 · Do it yourself
-          </Label>
-          <BodyCopy as="p" data-page-transition className="mt-6 text-muted">
-            Install the skills. Your agent does the rest.
-          </BodyCopy>
-          <div className="mt-8 [container-type:inline-size]">
-            <CommandBlock index={0} label="Terminal" command={INSTALL} />
-          </div>
-          <ul className="mt-10" aria-label="Aesthetics">
-            {AESTHETICS.map((aesthetic, index) => (
-              <AestheticRow key={aesthetic.slug} aesthetic={aesthetic} index={index} />
-            ))}
-          </ul>
+          <Reveal as="h2" effect="cascade" delay={1.65} className={`${SECTION} mt-24`}>
+            Do it yourself
+          </Reveal>
+          <Reveal as="h3" effect="scatter" delay={1.8} className={`${SHOUT} mt-10`}>
+            Get the skills
+          </Reveal>
+          <Terminal label="Terminal" text={INSTALL} delay={2} className="mt-8" />
 
-          <Label as="h2" data-page-transition className={HEADING}>
-            03 · Say the word
-          </Label>
-          <BodyCopy as="p" data-page-transition className="mt-6 text-muted">
-            Open your agent in the project and paste one of these.
-          </BodyCopy>
-          <div className="mt-8 flex flex-col gap-6 [container-type:inline-size]">
-            {PROMPTS.map((prompt, index) => (
-              <CommandBlock key={prompt.label} index={index + 1} label={prompt.label} command={prompt.text} />
+          <Reveal as="h3" effect="scatter" className={`${SHOUT} mt-28 max-w-[22ch]`}>
+            Then have your agents animate the shit out of your website
+          </Reveal>
+          <div className="mt-10 grid gap-6 lg:grid-cols-2">
+            {PROMPTS.map((prompt) => (
+              <Terminal key={prompt.label} label={prompt.label} text={prompt.text} />
             ))}
           </div>
-          <div data-page-transition className="mt-12">
-            <a href={SKILLS_REPO} className={BUTTON_OUTLINE}>
-              Read the skills →
+
+          <Reveal effect="rise" className="mt-16">
+            <a
+              href={SKILLS_REPO}
+              className="inline-flex items-center gap-3 font-mono text-caption uppercase text-muted transition-colors hover:text-foreground"
+            >
+              Read the skills on GitHub <span aria-hidden="true">→</span>
             </a>
-          </div>
+          </Reveal>
         </div>
       </section>
     </main>
