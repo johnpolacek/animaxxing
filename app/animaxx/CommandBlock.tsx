@@ -8,8 +8,8 @@ import { ignite } from "@/lib/animation/effects/particleCommand";
 import { watchPageTransition } from "@/lib/animation/pageState";
 
 /*
- * One install command: a label, the command itself set as a rule of light,
- * and a copy button. The block draws itself out of particles once the route
+ * One thing to copy, a command or a prompt: a label, the text itself set as
+ * a rule of light, and a copy button. The block draws itself out of particles once the route
  * entrance has settled, staggered by its position on the page, and winds
  * down when the route leaves. Copying throws everything the rule has at the
  * screen, then settles back down.
@@ -36,7 +36,7 @@ const BLOCK =
   "grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-6 gap-y-3 border-b-[3px] border-foreground py-4 sm:grid-cols-[6rem_minmax(0,1fr)_auto]";
 const LABEL = "col-start-1 row-start-1 sm:row-auto";
 const COMMAND =
-  "col-span-2 min-w-0 font-mono text-title font-bold tracking-[-0.01em] text-foreground [overflow-wrap:anywhere] select-all sm:col-span-1 sm:text-display";
+  "col-span-2 min-w-0 font-mono text-body font-bold tracking-[-0.01em] text-foreground [overflow-wrap:anywhere] select-all sm:col-span-1 sm:text-lead xl:text-title";
 const COPY_CELL = "col-start-2 row-start-1 justify-self-end sm:col-start-3 sm:row-auto";
 const COPY =
   "inline-flex shrink-0 cursor-pointer items-center rounded-lg border-2 border-foreground px-4 py-2 font-sans text-caption font-extrabold uppercase tracking-[0.04em] text-foreground transition-colors hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus";
