@@ -10,6 +10,7 @@ import {
 } from "@/components/motion";
 import { Statement } from "@/components/ui";
 import { speakIn, type Emphasis } from "@/lib/animation/effects/speak";
+import { titleParticles } from "@/lib/animation/effects/titleParticles";
 import { startWave } from "@/lib/animation/effects/wave";
 import { watchPageTransition } from "@/lib/animation/pageState";
 import { blastOff, type BlastOff } from "@/lib/animation/effects/blastOff";
@@ -17,9 +18,9 @@ import { marquee, reactor } from "@/lib/animation/effects/particleButtons";
 import { ParticleButton, type ParticleButtonHandle } from "./ParticleButton";
 
 /*
- * The front door, in three beats: the headline's letters scatter in with the
- * route entrance, the subhead is spoken in word by word, and only then do the
- * headline's letters start doing the wave.
+ * The front door: the headline's letters scatter in with the
+ * route entrance, burst into particles and reform, then the subhead is spoken
+ * word by word. Only then do the headline's letters start doing the wave.
  *
  * Pressing either call to action blasts the whole hero apart, and the blast
  * hands off to the route transition: Showcase leaves for the showcase, Get
@@ -85,6 +86,7 @@ export function Hero() {
         return;
       }
 
+      let titleBurst: ReturnType<typeof titleParticles> = null;
       let speech: ReturnType<typeof speakIn> | null = null;
       let stopWave: ((keepSplit?: boolean) => void) | null = null;
       let blast: BlastOff | null = null;
@@ -100,6 +102,7 @@ export function Hero() {
         }
         // Land any words still being spoken, and hand the letters back from
         // the wave, so the blast starts from the settled composition.
+        titleBurst?.timeline.progress(1);
         speech?.timeline.progress(1);
         stopWave?.();
         stopWave = null;
@@ -131,6 +134,7 @@ export function Hero() {
         if (Math.abs((entries[0]?.contentRect.width ?? enteredWidth) - enteredWidth) < 1) {
           return;
         }
+        titleBurst?.timeline.progress(1);
         stopWave?.();
         stopWave = null;
         // A smaller resize does not replay the page; wave again after a beat.
@@ -145,25 +149,30 @@ export function Hero() {
 
       const unwatch = watchPageTransition(heading, {
         onIdle: contextSafe(() => {
-          speech = speakIn(subhead, { emphasis: EMPHASIS, delay: SPEAK_DELAY });
-          // The buttons assemble from particles alongside the first spoken words.
-          gsap.set(actions, { autoAlpha: 1 });
-          showcase.current?.enter(SPEAK_DELAY);
-          animaxx.current?.enter(SPEAK_DELAY + 0.2);
-          // The split stays in place after the words land so the broken and
-          // tilted finishes persist; it is only reverted on the way out.
-          speech.timeline.eventCallback(
-            "onComplete",
-            contextSafe(() => {
-              stopWave = startWave(heading, { period: WAVE_PERIOD });
-            }),
-          );
+          titleBurst?.revert();
+          titleBurst = titleParticles(heading, contextSafe(() => {
+            speech = speakIn(subhead, { emphasis: EMPHASIS, delay: SPEAK_DELAY });
+            // The buttons assemble from particles alongside the first spoken words.
+            gsap.set(actions, { autoAlpha: 1 });
+            showcase.current?.enter(SPEAK_DELAY);
+            animaxx.current?.enter(SPEAK_DELAY + 0.2);
+            // The split stays in place after the words land so the broken and
+            // tilted finishes persist; it is only reverted on the way out.
+            speech.timeline.eventCallback(
+              "onComplete",
+              contextSafe(() => {
+                stopWave = startWave(heading, { period: WAVE_PERIOD });
+              }),
+            );
+          }));
         }),
         onExiting: () => {
           if (departing) {
             // The blast already cleared the page; leave it that way.
             return;
           }
+          titleBurst?.revert();
+          titleBurst = null;
           // The subhead and buttons are not part of the route exit, so see them out here.
           speech?.timeline.kill();
           blast?.revert();
@@ -180,6 +189,7 @@ export function Hero() {
         resize.disconnect();
         window.clearTimeout(restartWave);
         unwatch();
+        titleBurst?.revert();
         speech?.timeline.kill();
         blast?.revert();
         speech?.revert();
@@ -190,7 +200,7 @@ export function Hero() {
   );
 
   return (
-    <div ref={scope}>
+    <div ref={scope} className="relative">
       <Statement
         as="h1"
         data-page-transition="letters"
