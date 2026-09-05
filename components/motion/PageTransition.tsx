@@ -5,6 +5,7 @@ import { Fragment, useRef, useState, type ReactNode } from "react";
 import { gsap, SplitText, useGSAP } from "./gsap";
 import { prefersReducedMotion } from "./preference";
 import { DURATION, EASE, SHIFT } from "./tokens";
+import { individualLetters } from "@/lib/animation/effects/individualLetters";
 
 const ITEM_SELECTOR = "[data-page-transition]";
 const LETTERS_EFFECT = "letters";
@@ -137,6 +138,10 @@ function enterPage(container: HTMLElement, onComplete?: () => void): gsap.core.T
   const splits = letters.map((item) => {
     const split = splitLetters(item);
     gsap.set(item, { autoAlpha: 1, y: 0 });
+    if (item.dataset.pageTransitionArrival === "individual") {
+      gsap.set(split.chars, { autoAlpha: 0 });
+      return split;
+    }
     // Letters implode from well outside the heading rather than jostling in
     // place; the spread scales with the viewport so it reads the same on a
     // phone and a wide monitor.
@@ -159,9 +164,10 @@ function enterPage(container: HTMLElement, onComplete?: () => void): gsap.core.T
 
   timeline.addLabel("enter", 0).set(items, { willChange: "transform, opacity" }, "enter");
   splits.forEach((split, index) => {
-    // An impact arrival carries velocity into a follow-up effect instead of
-    // spending the last few hundred milliseconds almost motionless.
-    const impact = letters[index]?.dataset.pageTransitionArrival === "impact";
+    if (letters[index]?.dataset.pageTransitionArrival === "individual") {
+      individualLetters(timeline, split.chars as HTMLElement[], 0.15);
+      return;
+    }
     timeline.to(
       split.chars,
       {
@@ -170,9 +176,9 @@ function enterPage(container: HTMLElement, onComplete?: () => void): gsap.core.T
         y: 0,
         rotation: 0,
         scale: 1,
-        duration: impact ? 0.5 : 0.75,
-        ease: impact ? "power2.in" : "power4.out",
-        stagger: impact ? 0 : { each: 0.02, from: "random" },
+        duration: 0.75,
+        ease: "power4.out",
+        stagger: { each: 0.02, from: "random" },
       },
       `enter+=${LETTERS_DELAY}`,
     );
