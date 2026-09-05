@@ -85,7 +85,6 @@ export function ShowcaseNext({ slug }: { slug?: string | undefined }) {
       />
       <Link ref={linkRef} href={`/showcase/${demo.slug}`} className={BUTTON} onClick={launch}>
         <span>Next</span>
-        <span className="text-foreground">{demo.name}</span>
         <span aria-hidden="true">→</span>
       </Link>
     </div>
