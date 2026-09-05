@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Annotation, Statement } from "@/components/ui";
 import { DEMOS } from "./demos";
 import { ParticleCard } from "./ParticleCard";
@@ -26,6 +27,14 @@ export default function Showcase() {
               </li>
             ))}
           </ul>
+          <div data-page-transition className="mt-8 sm:mt-12">
+            <Link
+              href="/animaxx"
+              className="inline-flex items-center rounded-lg bg-inverse px-5 py-2.5 font-sans text-3xl font-extrabold uppercase tracking-[-0.02em] text-inverse-foreground transition-colors hover:bg-inverse-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus sm:px-8 sm:py-4 sm:text-5xl"
+            >
+              Get Animaxxed
+            </Link>
+          </div>
         </div>
       </section>
     </main>

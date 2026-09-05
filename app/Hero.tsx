@@ -194,7 +194,7 @@ export function Hero() {
       <Statement
         as="h1"
         data-page-transition="letters"
-        className="max-w-[10ch] ![text-wrap:wrap] text-[clamp(4.5rem,16cqi,16rem)] leading-[0.9] tracking-[-0.04em] [font-kerning:none] [text-rendering:optimizeSpeed]"
+        className="max-w-[10ch] ![text-wrap:wrap] text-[calc(26vw_-_0.78rem)] leading-[0.9] tracking-[-0.04em] [font-kerning:none] [text-rendering:optimizeSpeed] sm:text-[clamp(4.5rem,16cqi,16rem)]"
       >
         Motion to the Max
       </Statement>
