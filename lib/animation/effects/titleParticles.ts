@@ -110,7 +110,7 @@ export function titleParticles(heading: HTMLElement, onComplete: () => void) {
   }, [], 0);
   // Constant speed through both legs gives the apex a sharp reversal, with
   // no easing tail that could read as a hold at maximum spread.
-  timeline.to(state, { spread: 1, duration: 0.16, ease: "none", onUpdate: draw }, 0);
-  timeline.to(state, { spread: 0, duration: 0.16, ease: "none", onUpdate: draw });
+  timeline.to(state, { spread: 1, duration: 0.24, ease: "none", onUpdate: draw }, 0);
+  timeline.to(state, { spread: 0, duration: 0.24, ease: "none", onUpdate: draw });
   return { timeline, revert: () => { timeline.kill(); cleanup(); } };
 }
