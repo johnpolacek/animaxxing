@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   charsRiseIn,
+  charsSpringIn,
   charsWeightWave,
   gsap,
   prefersReducedMotion,
@@ -339,6 +340,7 @@ export function Weather() {
       }
       if (!reduced) {
         gsap.set(rules, { scaleX: 0, transformOrigin: "0% 50%" });
+        gsap.set(q("[data-reading] > *"), { autoAlpha: 0 });
       }
 
       /** A chapter's title rises behind its mask while its hairline draws across. */
@@ -350,7 +352,7 @@ export function Weather() {
           tl.to(rule, { scaleX: 1, duration: 0.7, ease: "power3.inOut", clearProps: "transform" }, 0);
         }
         if (title) {
-          tl.add(charsRiseIn(title), 0.1);
+          tl.add(charsSpringIn(title), 0.1);
         }
         return tl;
       };
@@ -520,8 +522,69 @@ export function Weather() {
       /* ------------------------------------- scroll, armed at idle */
       const armScroll = () => {
         scrollRevealBatch("[data-reveal]", root);
+        if (!reduced) {
+          // Each reading gets its own entrance, including on tall mobile layouts.
+          q<HTMLElement>("[data-reading]").forEach(row => {
+            ScrollTrigger.create({
+              trigger: row,
+              start: "top 88%",
+              once: true,
+              onEnter: contextSafe(() => {
+                const label = row.querySelector<HTMLElement>("dt");
+                const value = row.querySelector<HTMLElement>("dd > span");
+                const note = row.querySelector<HTMLElement>("dd > p");
+                const tl = gsap.timeline({ defaults: { overwrite: "auto" } });
+                tl.set(row.children, { autoAlpha: 1 });
+                if (label) tl.add(charsRiseIn(label), 0);
+                if (value) tl.fromTo(value, { y: 30, autoAlpha: 0, scale: 0.85, transformOrigin: "0% 100%" }, {
+                  y: 0, autoAlpha: 1, scale: 1, duration: 0.75, ease: "back.out(1.4)", clearProps: "transform,opacity,visibility",
+                }, 0.12);
+                if (note) tl.fromTo(note, { x: -18, autoAlpha: 0 }, {
+                  x: 0, autoAlpha: 1, duration: 0.45, clearProps: "transform,opacity,visibility",
+                }, 0.32);
+                row.querySelectorAll<HTMLElement>("[data-live]").forEach(el => resolve(el, 0.2, tl));
+              }),
+            });
+          });
+
+          // Animate wrappers so city changes can still redraw the glyphs and numbers.
+          const hourIcons = q<HTMLElement>("[data-hour-icon]");
+          if (hourIcons.length) gsap.fromTo(hourIcons, {
+            y: 28, rotation: -25, scale: 0.45, autoAlpha: 0,
+          }, {
+            y: 0, rotation: 0, scale: 1, autoAlpha: 1, stagger: 0.055, ease: "none",
+            scrollTrigger: { trigger: root.querySelector("#hourly"), start: "top 78%", end: "bottom 65%", scrub: 0.45 },
+          });
+          q<HTMLElement>("[data-day]").forEach((row, index) => {
+            gsap.fromTo(row.children, {
+              x: index % 2 ? 28 : -28, y: 16, autoAlpha: 0,
+            }, {
+              x: 0, y: 0, autoAlpha: 1, stagger: 0.12, ease: "none",
+              scrollTrigger: { trigger: row, start: "top 94%", end: "top 66%", scrub: 0.35 },
+            });
+          });
+          const radarFrame = root.querySelector<HTMLElement>("[data-radar-frame]");
+          if (radarFrame) gsap.fromTo(radarFrame, {
+            clipPath: "inset(12% 8% 12% 8%)", scale: 0.94,
+          }, {
+            clipPath: "inset(0% 0% 0% 0%)", scale: 1, ease: "none",
+            scrollTrigger: { trigger: radarFrame, start: "top 92%", end: "top 30%", scrub: 0.6 },
+          });
+          const radarControls = root.querySelector<HTMLElement>("[aria-label='Radar time']");
+          if (radarControls) gsap.fromTo(radarControls.children, { y: 24, autoAlpha: 0 }, {
+            y: 0, autoAlpha: 1, stagger: 0.09, duration: 0.5, clearProps: "transform,opacity,visibility",
+            scrollTrigger: { trigger: radarControls, start: "top 88%", once: true },
+          });
+        }
         sections.forEach((section, index) => {
           if (index > 0) {
+            if (!reduced) {
+              const titleFrame = section.querySelector<HTMLElement>("[data-title-frame]");
+              if (titleFrame) gsap.fromTo(titleFrame, { x: 28 }, {
+                x: 0, ease: "none",
+                scrollTrigger: { trigger: section, start: "top 90%", end: "top 30%", scrub: 0.5 },
+              });
+            }
             ScrollTrigger.create({
               trigger: section,
               start: "top 85%",
@@ -543,7 +606,7 @@ export function Weather() {
         if (chart) {
           ScrollTrigger.create({ trigger: chart, start: "top 85%", once: true, onEnter: hoursIn });
         }
-        ScrollTrigger.batch("[data-day]", {
+        ScrollTrigger.batch(q<HTMLElement>("[data-day]"), {
           start: "top 88%",
           once: true,
           onEnter: (batch) => (batch as HTMLElement[]).forEach(dayIn),
@@ -632,17 +695,9 @@ export function Weather() {
             0.6,
           );
         }
-        // The ledger prints.
+        // The ledger's children reveal individually when they reach the viewport.
         if (rows.length > 0) {
-          tl.set(rows[0]?.parentElement ?? rows, { autoAlpha: 1 }, 0.7).fromTo(
-            rows,
-            { autoAlpha: 0, x: -10 },
-            { autoAlpha: 1, x: 0, duration: 0.3, ease: "power2.out", stagger: 0.07 },
-            0.7,
-          );
-          rows.forEach((row, i) => {
-            row.querySelectorAll<HTMLElement>("[data-live]").forEach((el) => resolve(el, 0.75 + i * 0.07, tl));
-          });
+          tl.set(rows[0]?.parentElement ?? rows, { autoAlpha: 1 }, 0.7);
         }
         if (arrow) {
           tl.fromTo(
@@ -1098,12 +1153,14 @@ export function Weather() {
                 </div>
                 <div data-hour-glyphs className="mt-3 grid grid-cols-24 text-foreground">
                   {city.hourly.map((hour) => (
-                    <Glyph
-                      key={`${city.id}-${hour.hour}`}
-                      condition={hour.condition}
-                      label={CONDITION_LABEL[hour.condition]}
-                      className="h-6 w-6"
-                    />
+                    <span key={hour.hour} data-hour-icon className="inline-flex origin-center">
+                      <Glyph
+                        key={`${city.id}-${hour.hour}`}
+                        condition={hour.condition}
+                        label={CONDITION_LABEL[hour.condition]}
+                        className="h-6 w-6"
+                      />
+                    </span>
                   ))}
                 </div>
                 <div className="mt-2 grid grid-cols-24 font-mono text-caption font-bold">
@@ -1202,7 +1259,7 @@ export function Weather() {
                   <span data-chip-label>{playing ? "Pause" : "Play"}</span>
                 </button>
               </div>
-              <div className="relative mt-6 aspect-[4/3] overflow-hidden rounded-lg border border-border sm:aspect-[16/9]">
+              <div data-radar-frame className="relative mt-6 aspect-[4/3] overflow-hidden rounded-lg border border-border sm:aspect-[16/9]">
                 <canvas
                   data-radar
                   role="img"
@@ -1257,9 +1314,11 @@ function ChapterHead({
       <p className="font-mono text-caption uppercase tracking-[0.08em] text-muted">
         {chapter.number} <span aria-hidden="true">/</span> {String(CHAPTERS.length).padStart(2, "0")}
       </p>
-      <h2 data-title data-arrive className={`${DISPLAY} mt-3 text-[clamp(2.75rem,8.5cqi,7.5rem)]`}>
-        {chapter.title}
-      </h2>
+      <div data-title-frame>
+        <h2 data-title data-arrive className={`${DISPLAY} mt-3 text-[clamp(2.75rem,8.5cqi,7.5rem)]`}>
+          {chapter.title}
+        </h2>
+      </div>
       <span data-rule aria-hidden="true" className="mt-4 block h-px w-full bg-foreground" />
     </div>
   );
