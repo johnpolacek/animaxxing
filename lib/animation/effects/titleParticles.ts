@@ -7,7 +7,7 @@ export function titleParticles(heading: HTMLElement, onComplete: () => void) {
   const bounds = heading.getBoundingClientRect();
   const host = heading.parentElement!;
   const hostBounds = host.getBoundingClientRect();
-  const bleed = Math.min(220, window.innerWidth * 0.3);
+  const bleed = Math.min(360, window.innerWidth * 0.5);
   const mask = document.createElement("canvas");
   mask.width = Math.ceil(bounds.width);
   mask.height = Math.ceil(bounds.height);
@@ -60,7 +60,7 @@ export function titleParticles(heading: HTMLElement, onComplete: () => void) {
       if (!visible) continue;
       const angle = Math.atan2(y - bounds.height / 2, x - bounds.width / 2)
         + gsap.utils.random(-0.8, 0.8);
-      const distance = gsap.utils.random(bleed * 0.25, bleed * 0.85);
+      const distance = gsap.utils.random(bleed * 0.4, bleed * 0.92);
       pieces.push({ x, y, dx: Math.cos(angle) * distance,
         dy: Math.sin(angle) * distance, spin: gsap.utils.random(-Math.PI, Math.PI) });
     }
@@ -108,9 +108,11 @@ export function titleParticles(heading: HTMLElement, onComplete: () => void) {
     canvas.style.opacity = "1";
     heading.style.opacity = "0";
   }, [], 0);
-  // Constant speed through both legs gives the apex a sharp reversal, with
-  // no easing tail that could read as a hold at maximum spread.
-  timeline.to(state, { spread: 1, duration: 0.24, ease: "none", onUpdate: draw }, 0);
-  timeline.to(state, { spread: 0, duration: 0.24, ease: "none", onUpdate: draw });
+  // Keep moving through the fade: disappear at full spread, then immediately
+  // emerge on the return without adding a hold at either end.
+  timeline.to(state, { spread: 1, duration: 0.65, ease: "none", onUpdate: draw }, 0);
+  timeline.to(canvas, { opacity: 0, duration: 0.33, ease: "none" }, 0.32);
+  timeline.to(state, { spread: 0, duration: 0.55, ease: "none", onUpdate: draw }, 0.65);
+  timeline.to(canvas, { opacity: 1, duration: 0.35, ease: "none" }, 0.65);
   return { timeline, revert: () => { timeline.kill(); cleanup(); } };
 }
