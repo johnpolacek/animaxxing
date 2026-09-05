@@ -108,9 +108,9 @@ export function titleParticles(heading: HTMLElement, onComplete: () => void) {
     canvas.style.opacity = "1";
     heading.style.opacity = "0";
   }, [], 0);
-  // Burst on landing and immediately snap back: no hold or slow wind-up
-  // at full spread, which otherwise reads as a second pause.
-  timeline.to(state, { spread: 1, duration: 0.28, ease: "power1.out", onUpdate: draw }, 0);
-  timeline.to(state, { spread: 0, duration: 0.42, ease: "power2.out", onUpdate: draw });
+  // Constant speed through both legs gives the apex a sharp reversal, with
+  // no easing tail that could read as a hold at maximum spread.
+  timeline.to(state, { spread: 1, duration: 0.16, ease: "none", onUpdate: draw }, 0);
+  timeline.to(state, { spread: 0, duration: 0.16, ease: "none", onUpdate: draw });
   return { timeline, revert: () => { timeline.kill(); cleanup(); } };
 }

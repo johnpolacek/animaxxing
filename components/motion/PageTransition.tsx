@@ -158,7 +158,10 @@ function enterPage(container: HTMLElement, onComplete?: () => void): gsap.core.T
   container.dataset.transitionState = "entering";
 
   timeline.addLabel("enter", 0).set(items, { willChange: "transform, opacity" }, "enter");
-  splits.forEach((split) => {
+  splits.forEach((split, index) => {
+    // An impact arrival carries velocity into a follow-up effect instead of
+    // spending the last few hundred milliseconds almost motionless.
+    const impact = letters[index]?.dataset.pageTransitionArrival === "impact";
     timeline.to(
       split.chars,
       {
@@ -167,9 +170,9 @@ function enterPage(container: HTMLElement, onComplete?: () => void): gsap.core.T
         y: 0,
         rotation: 0,
         scale: 1,
-        duration: 0.75,
-        ease: "power4.out",
-        stagger: { each: 0.02, from: "random" },
+        duration: impact ? 0.5 : 0.75,
+        ease: impact ? "power2.in" : "power4.out",
+        stagger: impact ? 0 : { each: 0.02, from: "random" },
       },
       `enter+=${LETTERS_DELAY}`,
     );
