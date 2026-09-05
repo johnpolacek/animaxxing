@@ -51,7 +51,7 @@ const HREF: Record<Action, string> = { showcase: "/showcase", animaxx: "/animaxx
 
 /* Calls to action are set like the headline: big, extra bold, and chunky. */
 const BUTTON_BASE =
-  "inline-flex cursor-pointer items-center rounded-lg px-6 py-3 font-sans text-4xl font-extrabold uppercase tracking-[-0.02em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus sm:px-8 sm:py-4 sm:text-5xl";
+  "inline-flex cursor-pointer items-center rounded-lg px-5 py-2.5 font-sans text-3xl font-extrabold uppercase tracking-[-0.02em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus sm:px-8 sm:py-4 sm:text-5xl";
 const BUTTON_PRIMARY = `${BUTTON_BASE} bg-inverse text-inverse-foreground hover:bg-inverse-hover`;
 const BUTTON_SECONDARY = `${BUTTON_BASE} border-2 border-foreground text-foreground hover:bg-surface-hover`;
 
@@ -198,14 +198,14 @@ export function Hero() {
       >
         Motion to the Max
       </Statement>
-      <p data-speak-intro className="mt-10 max-w-[64ch] text-display leading-[1.35] text-muted">
+      <p data-speak-intro className="mt-6 max-w-[64ch] text-[1.75rem] leading-[1.2] tracking-[-0.02em] text-muted sm:mt-10 sm:text-display sm:leading-[1.35]">
         Your static low rizz website is cooked. It has negative aura.
         <br />
-        Use agents to <strong className="inline-block origin-left scale-x-120 font-extrabold tracking-[0.02em]">
+        Use agents to <strong className="inline-block origin-left font-extrabold tracking-[0.02em] sm:scale-x-120">
           animate the shit out of it.
         </strong>
       </p>
-      <div data-hero-actions className="mt-12 flex flex-wrap gap-4">
+      <div data-hero-actions className="mt-6 flex flex-wrap gap-3 sm:mt-12 sm:gap-4">
         <ParticleButton
           ref={showcase}
           effect={marquee}

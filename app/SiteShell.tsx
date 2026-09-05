@@ -89,7 +89,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
     // so sticky headers keep working, and the overflow never reaches the
     // viewport, so mobile browsers do not widen the page to fit the bleed.
     <div ref={scope} className="flex min-h-screen flex-col overflow-x-clip">
-      <header className="px-gutter pt-gutter-lg sm:px-gutter-lg">
+      <header className="px-gutter pt-5 sm:px-gutter-lg sm:pt-gutter-lg">
         <div className="mx-auto flex min-h-9 w-full max-w-7xl items-center justify-between gap-4">
           <div data-logo-intro>
             <Link
