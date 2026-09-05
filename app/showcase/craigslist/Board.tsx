@@ -1,3 +1,7 @@
+"use client";
+
+import { BoardAction } from "./BoardAction";
+import { useBoardMotion } from "./useBoardMotion";
 import {
   CHAPTERS,
   CITY,
@@ -23,8 +27,7 @@ import {
  * list with a chip for the rest of it. A strip of the Bay's sub-regions
  * closes the page.
  *
- * This is the settled state of the page: no motion beyond the route
- * transition it shares with every other page.
+ * The motion controller reveals the board in layers after the route enters.
  */
 
 const MONO_LABEL = "font-mono text-caption font-bold uppercase tracking-[0.08em]";
@@ -47,8 +50,9 @@ const RAIL_LINK = `${MONO_LABEL} inline-flex items-center gap-3 transition-color
 const CURRENT = CHAPTERS[0];
 
 export function Board() {
+  const scope = useBoardMotion();
   return (
-    <div>
+    <div ref={scope}>
       {/* The chrome */}
       <header
         data-page-transition
@@ -61,10 +65,10 @@ export function Board() {
           <div className="ml-auto flex items-center gap-x-6">
             <p className={`${MONO_LABEL} hidden font-medium text-muted sm:block`}>{TODAY}</p>
             <nav aria-label="Account" className="flex gap-2">
-              <a href="#top" className={CHIP_OUTLINE}>
+              <a data-board-chip href="#top" className={CHIP_OUTLINE}>
                 Faves
               </a>
-              <a href="#top" className={CHIP_OUTLINE}>
+              <a data-board-chip href="#top" className={CHIP_OUTLINE}>
                 Account
               </a>
             </nav>
@@ -106,15 +110,15 @@ export function Board() {
         <section id={CURRENT.id} className="mt-8 scroll-mt-24 lg:mt-0 @container">
           <div className="grid grid-cols-12 gap-x-6 gap-y-8 border-b border-border pb-10">
             <div className="col-span-12 flex flex-col gap-10 xl:col-span-8">
-              <div data-page-transition>
-                <p className={`${MONO_LABEL} font-medium text-muted`}>
+              <div>
+                <p data-page-transition className={`${MONO_LABEL} font-medium text-muted`}>
                   {CURRENT.number} <span aria-hidden="true">/</span> {CURRENT.title}
                 </p>
                 <h1
                   className={`${DISPLAY} mt-5 -ml-[0.04em] text-[clamp(3.25rem,10.5cqi,7.5rem)] text-balance`}
                 >
                   {HEADLINE.map((line, index) => (
-                    <span key={line} className="block">
+                    <span key={line} data-page-transition="letters-sides" className="block">
                       {line}
                       {index < HEADLINE.length - 1 ? " " : null}
                     </span>
@@ -126,12 +130,12 @@ export function Board() {
                 className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"
               >
                 <div className="flex flex-wrap gap-3">
-                  <a href="#post" className={BUTTON_SOLID}>
+                  <BoardAction href="#post" primary className={BUTTON_SOLID}>
                     Post an ad
-                  </a>
-                  <a href="#listings" className={BUTTON_OUTLINE}>
+                  </BoardAction>
+                  <BoardAction href="#listings" className={BUTTON_OUTLINE}>
                     Search
-                  </a>
+                  </BoardAction>
                 </div>
                 <p className="max-w-[34ch] font-sans text-[13px] leading-[19px] font-medium text-muted text-pretty">
                   {LEAD}
@@ -144,7 +148,7 @@ export function Board() {
               data-page-transition
               className="col-span-12 flex flex-col -mr-gutter sm:-mr-gutter-lg xl:col-span-4 xl:border-l xl:border-border"
             >
-              <div className="relative aspect-[4/3] max-h-[28rem] min-h-[16rem] overflow-hidden sm:aspect-[16/9] xl:aspect-auto xl:max-h-none xl:flex-1">
+              <div data-board-photo className="relative aspect-[4/3] max-h-[28rem] min-h-[16rem] overflow-hidden sm:aspect-[16/9] xl:aspect-auto xl:max-h-none xl:flex-1">
                 {/* Wikimedia Commons serves this; next/image would need the host allow-listed for no gain here. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -154,6 +158,7 @@ export function Board() {
                   referrerPolicy="no-referrer"
                   className="absolute inset-0 h-full w-full object-cover object-[35%_50%] grayscale contrast-150"
                 />
+                <div data-board-scan aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-1/5 border-y border-inverse-foreground/60 bg-inverse-foreground/10 motion-reduce:hidden" />
               </div>
               <figcaption className={`${MONO_NOTE} mt-3 pr-gutter text-muted sm:pr-gutter-lg`}>
                 {PHOTO.caption} <span aria-hidden="true">·</span>{" "}
@@ -178,11 +183,24 @@ export function Board() {
             </figure>
           </div>
 
+          <div data-page-transition className="mt-8 overflow-hidden border-y-2 border-foreground py-3" aria-label="Buy. Sell. Find. Repeat.">
+            <div data-board-ticker aria-hidden="true" className="flex w-max font-sans text-3xl font-extrabold uppercase tracking-[-0.03em] sm:text-5xl">
+              {[0, 1].map(copy => (
+                <span key={copy} className="flex shrink-0 gap-6 pr-6">
+                  {["Buy", "Sell", "Find", "Repeat", "Only in the Bay"].map(word => (
+                    <span key={word}>{word}<span className="ml-6 text-muted">↗</span></span>
+                  ))}
+                </span>
+              ))}
+            </div>
+          </div>
+
           {/* The sections */}
           <ol
+            id="listings"
             data-page-transition
             aria-label="Sections"
-            className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9"
+            className="mt-8 grid scroll-mt-24 grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9"
           >
             {SECTIONS.map((section, index) => (
               <SectionColumn key={section.id} section={section} number={index + 1} />
@@ -241,7 +259,7 @@ function SectionColumn({ section, number }: { section: Section; number: number }
   const shown = section.subcategories.slice(0, section.shown);
   const total = section.subcategories.length;
   return (
-    <li className="flex flex-col items-start gap-2.5 [&>ul]:mb-1">
+    <li data-board-column className="flex flex-col items-start gap-2.5 [&>ul]:mb-1">
       <span className={`${MONO_LABEL} font-medium text-muted`}>
         {String(number).padStart(2, "0")}
       </span>
