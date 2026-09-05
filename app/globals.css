@@ -178,6 +178,11 @@ body {
   transition-timing-function: linear !important;
 }
 
+/* The switch's particle canvas draws in the incoming ink from its first frame. */
+:root.theme-transitioning [data-theme-burst] {
+  transition-duration: 0s !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root.theme-transitioning,
   :root.theme-transitioning *,

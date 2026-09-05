@@ -10,6 +10,7 @@ import {
 } from "@/components/motion";
 import { Statement } from "@/components/ui";
 import { speakIn, type Emphasis } from "@/lib/animation/effects/speak";
+import { spinTop } from "@/lib/animation/effects/spinTop";
 import { startWave } from "@/lib/animation/effects/wave";
 import { watchPageTransition } from "@/lib/animation/pageState";
 import { blastOff, type BlastOff } from "@/lib/animation/effects/blastOff";
@@ -18,8 +19,9 @@ import { ParticleButton, type ParticleButtonHandle } from "./ParticleButton";
 
 /*
  * The front door: each headline letter makes its own entrance with the
- * route transition, then the subhead is spoken word by word. Only then do
- * the headline's letters start doing the wave.
+ * route transition, then the subhead is spoken word by word while the last
+ * letter keeps twirling like a top. Only then do the headline's letters
+ * start doing the wave.
  *
  * Pressing either call to action blasts the whole hero apart, and the blast
  * hands off to the route transition: Showcase leaves for the showcase, Get
@@ -86,6 +88,7 @@ export function Hero() {
       }
 
       let speech: ReturnType<typeof speakIn> | null = null;
+      let stopTop: ((keepSplit?: boolean) => void) | null = null;
       let stopWave: ((keepSplit?: boolean) => void) | null = null;
       let blast: BlastOff | null = null;
       // Set once a blast has handed off to navigation: the route exit that
@@ -99,8 +102,11 @@ export function Hero() {
           return;
         }
         // Land any words still being spoken, and hand the letters back from
-        // the wave, so the blast starts from the settled composition.
+        // the top and the wave, so the blast starts from the settled
+        // composition and owns the heading's split outright.
         speech?.timeline.progress(1);
+        stopTop?.();
+        stopTop = null;
         stopWave?.();
         stopWave = null;
         pressed.blast();
@@ -131,6 +137,8 @@ export function Hero() {
         if (Math.abs((entries[0]?.contentRect.width ?? enteredWidth) - enteredWidth) < 1) {
           return;
         }
+        stopTop?.();
+        stopTop = null;
         stopWave?.();
         stopWave = null;
         // A smaller resize does not replay the page; wave again after a beat.
@@ -145,6 +153,9 @@ export function Hero() {
 
       const unwatch = watchPageTransition(heading, {
         onIdle: contextSafe(() => {
+          // The last letter carries the entrance on well past it, spinning
+          // down on its own while everything below arrives on schedule.
+          stopTop = spinTop(heading);
           speech = speakIn(subhead, { emphasis: EMPHASIS, delay: SPEAK_DELAY });
           // The buttons assemble from particles alongside the first spoken words.
           gsap.set(actions, { autoAlpha: 1 });
@@ -155,6 +166,10 @@ export function Hero() {
           speech.timeline.eventCallback(
             "onComplete",
             contextSafe(() => {
+              // The top has long since settled, but its split must go back
+              // before the wave lays down its own.
+              stopTop?.();
+              stopTop = null;
               stopWave = startWave(heading, { period: WAVE_PERIOD });
             }),
           );
@@ -171,6 +186,8 @@ export function Hero() {
           gsap.to(subhead, { autoAlpha: 0, duration: 0.2 });
           showcase.current?.exit();
           animaxx.current?.exit();
+          stopTop?.(true);
+          stopTop = null;
           stopWave?.(true);
           stopWave = null;
         },
@@ -183,6 +200,7 @@ export function Hero() {
         speech?.timeline.kill();
         blast?.revert();
         speech?.revert();
+        stopTop?.();
         stopWave?.();
       };
     },

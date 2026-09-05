@@ -69,7 +69,7 @@ export function Repo() {
             <span className="text-foreground">{REPO.name}</span>
             <span className="ml-2">{REPO.visibility}</span>
           </p>
-          <nav aria-label="Site" className="ml-auto flex items-center gap-x-7">
+          <nav aria-label="Site" className="ml-auto flex items-center gap-x-5 sm:gap-x-7">
             {NAV.map((link) => (
               <a
                 key={link.label}
@@ -77,7 +77,7 @@ export function Repo() {
                 className={`${MONO_LABEL} whitespace-nowrap text-foreground transition-colors hover:text-muted`}
               >
                 {link.label}
-                {"count" in link ? <span className="ml-2 font-normal text-muted">{link.count}</span> : null}
+                {"count" in link ? <span className="ml-2 hidden font-normal text-muted sm:inline">{link.count}</span> : null}
               </a>
             ))}
           </nav>
@@ -86,8 +86,8 @@ export function Repo() {
 
       <div className="mt-8 grid grid-cols-12 gap-x-6">
         {/* The rail */}
-        <nav aria-label="Chapters" data-page-transition className="col-span-12 lg:col-span-2">
-          <ol className="flex gap-2 overflow-x-auto lg:flex-col lg:gap-0">
+        <nav aria-label="Chapters" data-page-transition className="col-span-12 mb-6 lg:col-span-2 lg:mb-0">
+          <ol className="-mx-gutter flex gap-2 overflow-x-auto px-gutter pb-2 sm:-mx-gutter-lg sm:px-gutter-lg lg:mx-0 lg:flex-col lg:gap-0 lg:px-0 lg:pb-0">
             {CHAPTERS.map((chapter) => {
               const active = chapter.id === CURRENT.id;
               return (

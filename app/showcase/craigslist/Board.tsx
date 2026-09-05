@@ -60,8 +60,8 @@ export function Board() {
       >
         <div className="flex min-h-14 items-center gap-x-4 py-2">
           <p className={`${MONO_LABEL} shrink-0 text-foreground`}>The List</p>
-          <span aria-hidden="true" className="h-4 w-px bg-border" />
-          <p className={`${MONO_LABEL} font-medium text-muted`}>{CITY}</p>
+          <span aria-hidden="true" className="hidden h-4 w-px bg-border sm:block" />
+          <p className={`${MONO_LABEL} hidden font-medium whitespace-nowrap text-muted sm:block`}>{CITY}</p>
           <div className="ml-auto flex items-center gap-x-6">
             <p className={`${MONO_LABEL} hidden font-medium text-muted sm:block`}>{TODAY}</p>
             <nav aria-label="Account" className="flex gap-2">

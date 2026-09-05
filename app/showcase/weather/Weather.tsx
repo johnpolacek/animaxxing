@@ -1271,7 +1271,7 @@ export function Weather() {
                   <span aria-hidden="true">·</span> {RADAR_FRAMES[frame]}
                   {frame === RADAR_FRAMES.length - 1 ? "" : " min"}
                 </p>
-                <ul className="absolute right-3 bottom-3 flex items-center gap-3 font-mono text-annotation uppercase tracking-[0.08em] text-muted" aria-label="Legend">
+                <ul className="absolute right-3 bottom-3 flex flex-col items-end gap-1 font-mono text-annotation uppercase tracking-[0.08em] text-muted sm:flex-row sm:items-center sm:gap-3" aria-label="Legend">
                   <li className="flex items-center gap-1.5">
                     <span aria-hidden="true" className="block h-2.5 w-2.5 bg-foreground opacity-30" /> Light
                   </li>

@@ -30,16 +30,16 @@ export default function GetAnimaxxed() {
           </Reveal>
           <Terminal label="Terminal" text={INSTALL} delay={1.5} className="mt-8" />
 
-          <Reveal as="h2" effect="scatter" className={`${SHOUT} mt-28 max-w-[22ch]`}>
+          <Reveal as="h2" effect="scatter" delay={2.6} className={`${SHOUT} mt-28 max-w-[22ch]`}>
             Then have your agents animate the shit out of your website
           </Reveal>
           <div className="mt-10 grid auto-rows-fr gap-6 lg:grid-cols-2">
-            {PROMPTS.map((prompt) => (
-              <Terminal key={prompt.label} label={prompt.label} text={prompt.text} />
+            {PROMPTS.map((prompt, i) => (
+              <Terminal key={prompt.label} label={prompt.label} text={prompt.text} delay={2.9 + i * 0.15} />
             ))}
           </div>
 
-          <Reveal effect="rise" className="mt-20">
+          <Reveal effect="rise" delay={3.4} className="mt-20">
             <a href={SKILLS_REPO} className={GITHUB}>
               <GitHubMark />
               Read the skills on GitHub

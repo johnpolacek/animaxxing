@@ -7,7 +7,16 @@ type Entrance = {
   via?: gsap.TweenVars;
   ease: string;
   duration: number;
+  /** Seconds to fade up over, when the usual quick reveal is too abrupt. */
+  fade?: number;
 };
+
+/**
+ * The x is already twirling as it arrives: it winds up over the rest of the
+ * entrance and hands the spin to {@link spinTop} at a whole number of turns,
+ * so the split can be rebuilt underneath it without a seam.
+ */
+const WIND_UP_TURNS = 2;
 
 /** Fourteen distinct entrances, one for every character of “Motion to the Max”. */
 export function individualLetters(timeline: gsap.core.Timeline, chars: HTMLElement[], start: number) {
@@ -39,8 +48,8 @@ export function individualLetters(timeline: gsap.core.Timeline, chars: HTMLEleme
     { from: { scale: 3.5, rotation: 90 }, ease: "power3.out", duration: 0.8 },
     // a: stretches out of a vertical thread.
     { from: { scaleX: 0.02, scaleY: 2, skewY: 35 }, ease: "elastic.out(1, 0.45)", duration: 1 },
-    // x: whips across, banks, and locks into place.
-    { from: { x: -travel, y: travel * 0.5, rotation: -270 }, via: { x: 30, y: -25, rotation: 25 }, ease: "back.out(1.5)", duration: 0.6 },
+    // x: fades up out of the left and leaves the spin to do the talking.
+    { from: { x: -travel * 0.35 }, ease: "power2.out", duration: 0.6, fade: 0.6 },
   ];
   const settled = { x: 0, y: 0, rotation: 0, rotationX: 0, rotationY: 0,
     scale: 1, scaleX: 1, scaleY: 1, skewX: 0, skewY: 0 };
@@ -50,11 +59,44 @@ export function individualLetters(timeline: gsap.core.Timeline, chars: HTMLEleme
     gsap.set(char, { ...settled, transformOrigin: "50% 50%", transformPerspective: 700,
       autoAlpha: 0, willChange: "transform, opacity" });
     gsap.set(char, entrance.from);
-    timeline.to(char, { autoAlpha: 1, duration: 0.12, ease: "none" }, at);
+    timeline.to(char, { autoAlpha: 1, duration: entrance.fade ?? 0.12, ease: "none" }, at);
     if (entrance.via) {
       timeline.to(char, { ...entrance.via, duration: 0.3, ease: "power2.out" }, at);
     }
-    timeline.to(char, { ...settled, duration: entrance.duration, ease: entrance.ease },
+    // The last letter's spin owns rotationY from here on; leave it out of the
+    // landing so the two tweens are not writing the same property.
+    const { rotationY: _spun, ...landing } = settled;
+    timeline.to(char,
+      { ...(index === chars.length - 1 ? landing : settled), duration: entrance.duration, ease: entrance.ease },
       at + (entrance.via ? 0.3 : 0));
   });
+  windUp(timeline, chars, entrances, start);
+}
+
+/** Where the last letter to land finishes: the whole entrance is over by then. */
+function lettersEnd(chars: HTMLElement[], entrances: Entrance[], start: number): number {
+  return chars.reduce((end, _char, index) => {
+    const entrance = entrances[index % entrances.length]!;
+    const at = start + index * 0.045 + (entrance.via ? 0.3 : 0) + entrance.duration;
+    return Math.max(end, at);
+  }, 0);
+}
+
+/**
+ * Spins the x up from its first frame to the moment the entrance ends, so it
+ * is already turning fast when {@link spinTop} takes over. Sized to land on
+ * the entrance's own finish, it never makes the page wait.
+ */
+function windUp(timeline: gsap.core.Timeline, chars: HTMLElement[], entrances: Entrance[], start: number) {
+  const top = chars[chars.length - 1];
+  if (!top) {
+    return;
+  }
+  const at = start + (chars.length - 1) * 0.045;
+  const duration = lettersEnd(chars, entrances, start) - at;
+  if (duration <= 0) {
+    return;
+  }
+  gsap.set(top, { transformOrigin: "50% 96%", transformPerspective: 900 });
+  timeline.to(top, { rotationY: WIND_UP_TURNS * 360, duration, ease: "power3.in" }, at);
 }

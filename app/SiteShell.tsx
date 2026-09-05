@@ -12,6 +12,7 @@ import {
   useGSAP,
 } from "@/components/motion";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { SKILLS_REPO } from "./animaxx/content";
 import { FooterLink } from "./FooterLink";
 
 /** Persistent chrome: it enters once, then remains untouched by route motion. */
@@ -124,7 +125,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </span>
             <span aria-hidden="true">·</span>
             <span>
-              files on <FooterLink href="https://github.com/johnpolacek/animaxxing">GitHub</FooterLink>
+              <FooterLink href={SKILLS_REPO}>grab the skills</FooterLink>
+            </span>
+            <span aria-hidden="true">·</span>
+            <span>
+              <FooterLink href="https://github.com/johnpolacek/animaxxing">view src on GitHub</FooterLink>
             </span>
           </p>
           <ThemeToggle compact />

@@ -26,4 +26,12 @@ export const PROMPTS: Prompt[] = [
     label: "Prompt 04 · Keep my design",
     text: "Keep my design and colors. Add the Animaxxing motion only: split-text entrances on headings, reveals on scroll, and one ambient effect on the home page.",
   },
+  {
+    label: "Prompt 05 · Particles",
+    text: "Use the aesthetic-animaxxing skill to add a particle animation. Assemble the logo and the primary button out of particles on load, and scatter them again on hover and on exit.",
+  },
+  {
+    label: "Prompt 06 · Animaxx everything",
+    text: "We need to be way more creative with the animation for this website. We need to aniMAXX! Animate the shit out of it!",
+  },
 ];

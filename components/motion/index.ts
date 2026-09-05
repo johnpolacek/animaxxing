@@ -1,4 +1,4 @@
-export { gsap, ScrollTrigger, SplitText, useGSAP } from "./gsap";
+export { Flip, gsap, ScrollTrigger, SplitText, useGSAP } from "./gsap";
 export {
   markPop,
   posterSplitIn,

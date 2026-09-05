@@ -2,6 +2,7 @@
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { Flip } from "gsap/Flip";
 import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
@@ -14,10 +15,10 @@ import { SplitText } from "gsap/SplitText";
  * registration happens exactly once and no component can accidentally reach
  * for the raw package on the server.
  *
- * ScrollTrigger and SplitText are registered here too. They are used only by
+ * ScrollTrigger, SplitText, ScrambleText, and Flip are registered here too. They are used only by
  * the expressive layer (the mood board and, later, the landing page) — the
  * interview UI stays on the quiet primitives.
  */
-gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText, ScrambleTextPlugin);
+gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText, ScrambleTextPlugin, Flip);
 
-export { gsap, ScrambleTextPlugin, ScrollTrigger, SplitText, useGSAP };
+export { Flip, gsap, ScrambleTextPlugin, ScrollTrigger, SplitText, useGSAP };

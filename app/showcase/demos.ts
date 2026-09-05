@@ -51,14 +51,14 @@ export const DEMOS: Demo[] = [
     name: "Made",
     before: "Etsy",
     blurb: "Browse, item, shop, and cart, with the photograph as the hero.",
-    ready: false,
+    ready: true,
   },
   {
     slug: "youtube",
     name: "Tube",
     before: "YouTube",
     blurb: "The feed, the player, a channel, and search, in strict 16:9 frames.",
-    ready: false,
+    ready: true,
   },
   {
     slug: "github",
