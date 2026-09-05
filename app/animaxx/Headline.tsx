@@ -17,7 +17,7 @@ import { watchPageTransition } from "@/lib/animation/pageState";
 const AURA_DELAY = 1.2;
 const WAVE_PERIOD = 2;
 /** Milliseconds after a resize before the wave starts again, when the page did not replay. Longer than the page's own settle. */
-const WAVE_RESTART = 450;
+const WAVE_RESTART = 1150;
 
 const HEADLINE =
   "font-sans text-[clamp(3rem,11cqi,10rem)] font-extrabold uppercase leading-[0.84] tracking-[-0.045em] text-balance [margin-inline-start:-0.055em]";

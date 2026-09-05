@@ -35,6 +35,8 @@ In a real browser, at settled:
 - Reduced motion (`prefers-reduced-motion: reduce`, or `data-motion="reduced"` on `<html>`): every route item is visible immediately, no splits, no particles, no wave, and every completion callback still fires.
 - Off screen: scroll a treated element out of view and confirm its field stops ticking.
 
+- Resize: cross the 24px width threshold and confirm a single quick fade, no intro during the drag, and one fresh intro after 1000ms of quiet. Keep moving inside the threshold or back to the original width to confirm the debounce still resets. Height-only changes and reduced motion do not replay. Navigation during the wait cancels the resize restart.
+
 ## Layout
 
 - Nothing is centered or justified. Alignment edges line up down the page.

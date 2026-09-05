@@ -15,7 +15,9 @@ const REPLAY_EVENT = "animaxxing:replay";
 /** Seconds the page holds before the headline letters begin to implode. */
 const LETTERS_DELAY = 0.75;
 /** Milliseconds of quiet after the last width change before the page replays its entrance. */
-const RESIZE_SETTLE = 300;
+const RESIZE_SETTLE = 1000;
+/** Seconds to fade the page out when a resize starts. */
+const RESIZE_FADE = 0.14;
 /** Pixels the width must move, from where the page last entered, to count as a resize. A scrollbar coming or going is less. */
 const RESIZE_THRESHOLD = 24;
 /** How far, in pixels, a headline letter starts from its place. */
@@ -374,22 +376,41 @@ export function PageTransition({ children }: { children: ReactNode }) {
       };
       const entrance = enterPage(container, contextSafe ? contextSafe(finishEnter) : finishEnter);
 
-      // A settled resize replays the page. The width the page entered at is
-      // the reference, so a slow drag still counts once it has gone far enough.
-      const enteredWidth = container.offsetWidth;
+      // Fade once when a real resize starts, then stay hidden until the
+      // width has been quiet for a full second, even if it returns to baseline.
+      const enteredWidth = container.getBoundingClientRect().width;
+      let lastWidth = enteredWidth;
+      let resizing = false;
       let resizeTimer: number | undefined;
-      const resize = new ResizeObserver((entries) => {
+      const handleResize = (entries: ResizeObserverEntry[]) => {
         const width = entries[0]?.contentRect.width ?? container.offsetWidth;
-        if (Math.abs(width - enteredWidth) < RESIZE_THRESHOLD || prefersReducedMotion()) {
-          return;
-        }
+        if (width === lastWidth) return;
+        lastWidth = width;
+        if (prefersReducedMotion() || exitedBeforeNavigation.current || replaying) return;
+        if (!resizing && Math.abs(width - enteredWidth) < RESIZE_THRESHOLD) return;
+
         window.clearTimeout(resizeTimer);
+        if (!resizing) {
+          resizing = true;
+          entrance.pause();
+          container.dataset.transitionState = "exiting";
+          gsap.to(container, {
+            opacity: 0,
+            duration: RESIZE_FADE,
+            ease: EASE.exit,
+            overwrite: "auto",
+            onComplete: () => {
+              container.dataset.transitionState = "waiting";
+            },
+          });
+        }
         resizeTimer = window.setTimeout(() => {
           entrance.kill();
           container.dataset.transitionState = "waiting";
           setEpoch((value) => value + 1);
         }, RESIZE_SETTLE);
-      });
+      };
+      const resize = new ResizeObserver(contextSafe ? contextSafe(handleResize) : handleResize);
       resize.observe(container);
 
       const startNavigation = (destination: URL, immediate = false) => {
@@ -406,11 +427,12 @@ export function PageTransition({ children }: { children: ReactNode }) {
         }
 
         exitedBeforeNavigation.current = true;
+        window.clearTimeout(resizeTimer);
         entrance.kill();
         const go = () => {
           router.push(`${destination.pathname}${destination.search}${destination.hash}`);
         };
-        if (immediate) {
+        if (immediate || resizing) {
           container.dataset.transitionState = "waiting";
           go();
           return true;
@@ -449,7 +471,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
 
       let replaying = false;
       const handleReplay = () => {
-        if (replaying || exitedBeforeNavigation.current) {
+        if (replaying || resizing || exitedBeforeNavigation.current) {
           return;
         }
         replaying = true;

@@ -40,7 +40,7 @@ const EMPHASIS: Emphasis[] = [
 const SPEAK_DELAY = 0.3;
 const WAVE_PERIOD = 1.5;
 /** Milliseconds after a resize before the wave starts again, when the page did not replay. */
-const WAVE_RESTART = 450;
+const WAVE_RESTART = 1150;
 /**
  * Seconds into the blast at which the route swaps. By then the letters have
  * all but left, so the route exit is skipped rather than played on an empty page.
