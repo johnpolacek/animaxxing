@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
 import { SKILLS_REPO } from "./animaxx/content";
+import { SiteLogo } from "./SiteLogo";
 
 /*
  * The Strong Bad header: the logo stickered on at an angle, four coloured
@@ -64,22 +65,9 @@ export function StrongBadChrome() {
   return (
     <header className="px-gutter pt-4 sm:px-gutter-lg sm:pt-5">
       <div className="mx-auto flex w-full max-w-7xl flex-wrap items-end justify-between gap-x-4 gap-y-3">
-        <Link
-          href="/"
-          data-logo-intro
-          className="font-display text-[26px] leading-none text-[var(--sb-white)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus sm:text-[34px]"
-        >
-          {/* The tilt is the logo's own; GSAP works around it, not through it. */}
-          <span className="flex items-center gap-2 [transform:rotate(-3deg)]">
-            <span aria-hidden="true" className="flex items-center">
-              <i className="sb-arrow block" />
-              <i className="sb-arrow -ml-[0.26em] block" />
-            </span>
-            <span className="[-webkit-text-stroke:0.06em_var(--sb-ink)] [paint-order:stroke_fill] [text-shadow:0.09em_0.09em_0_var(--sb-ink)]">
-              Animaxxing
-            </span>
-          </span>
-        </Link>
+        <div className="pb-2">
+          <SiteLogo />
+        </div>
 
         <div className="flex flex-wrap items-end justify-end gap-1.5 [clip-path:inset(-400px_-400px_0_-400px)]">
           {TABS.map((tab) =>

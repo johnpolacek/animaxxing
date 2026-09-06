@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRef, type ReactNode } from "react";
 import {
   charsSpringIn,
@@ -19,6 +18,7 @@ import { SKILLS_REPO } from "./animaxx/content";
 import { EarlyWebChrome } from "./EarlyWebChrome";
 import { EarlyWebStatusBar } from "./EarlyWebStatusBar";
 import { FooterLink } from "./FooterLink";
+import { SiteLogo } from "./SiteLogo";
 import { StrongBadChrome } from "./StrongBadChrome";
 import { StrongBadFooter } from "./StrongBadFooter";
 
@@ -40,18 +40,17 @@ export function SiteShell({ children }: { children: ReactNode }) {
    */
   const earlyweb = look === "earlyweb";
   /*
-   * Strong Bad brings his own chrome too: a stickered logo, four coloured
-   * tabs standing on a black horizon, and a band of ink at the bottom with
+   * Strong Bad brings his own chrome too: the logo slapped onto the sky, four
+   * coloured tabs standing on a black horizon, and a band of ink at the bottom with
    * the chant running across it. None of the posterize shell's motion suits
    * a cartoon, so that look gets its own intro below rather than the one
    * underneath it.
    */
   const strongbad = look === "strongbad";
   /*
-   * The print's chrome: a red hanko in place of the ▶▶, the wordmark cut in
-   * mincho with its kanji reading beside it, and a hairline of sumi over a
-   * footer signed with three seals. It keeps the posterize shell intro —
-   * only the two looks above opt out of that.
+   * The print's chrome: a hairline of sumi over a footer signed with three
+   * seals. It keeps the posterize shell intro — only the two looks above opt
+   * out of that. (The logo itself is the same under every look: see SiteLogo.)
    */
   const ukiyoe = look === "ukiyoe";
 
@@ -227,62 +226,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
             pinned ? "h-12" : "min-h-9",
           ].join(" ")}
         >
-          <div data-logo-intro>
-            <Link
-              href="/"
-              className={
-                bauhaus
-                  ? "relative inline-block font-sans text-xl font-extrabold lowercase tracking-[-0.02em] text-foreground sm:text-[22px]"
-                  : constructivist
-                    ? "relative inline-block font-display text-xl uppercase tracking-[0.06em] text-foreground sm:text-[22px]"
-                  : pinned
-                    ? "relative inline-block font-sans text-[13px] font-semibold lowercase tracking-[-0.01em] text-foreground"
-                  : ukiyoe
-                    ? "relative inline-flex items-center gap-3 font-sans text-xl font-bold tracking-[0.06em] text-foreground sm:text-[22px]"
-                    : "relative inline-block font-[family-name:var(--font-jetbrains-mono)] text-base uppercase tracking-[0.08em] text-muted sm:text-lg"
-              }
-            >
-              {ukiyoe ? (
-                // The seal is carved, not set: it stays outside the split so
-                // the shell intro cannot take its kanji apart.
-                <span
-                  aria-hidden="true"
-                  data-logo-mark
-                  className="ukiyoe-seal h-[30px] w-[30px] shrink-0 text-[15px]"
-                >
-                  動
-                </span>
-              ) : null}
-              <span data-logo-text>
-                {ukiyoe ? null : (
-                  <span
-                    aria-hidden="true"
-                    data-logo-mark
-                    className={[
-                      "-mr-[0.1em] inline-block leading-none origin-[0_calc(100%-0.3em)] [transform:translateY(calc(-0.05em_-_1px))_scale(0.8,1.225)]",
-                      bauhaus ? "mr-[0.15em] text-shape-red" : "",
-                      constructivist ? "mr-[0.2em] text-poster-red" : "",
-                      pinned ? "mr-[0.2em] text-accent" : "",
-                    ].join(" ")}
-                  >
-                    <span className="inline-block">▶</span>
-                    <span className="inline-block -ml-[0.2em]">▶</span>
-                  </span>
-                )}
-                animaxxing
-                {ukiyoe ? (
-                  <span aria-hidden="true" className="ml-2 font-normal opacity-70">
-                    動画極
-                  </span>
-                ) : null}
-              </span>
-              <span
-                aria-hidden="true"
-                data-logo-underline
-                className="absolute -bottom-1 left-0 h-px w-full bg-current"
-              />
-            </Link>
-          </div>
+          <SiteLogo />
           <div data-shell-intro>
             <ThemeSwitcher />
           </div>

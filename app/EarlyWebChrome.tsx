@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useRef } from "react";
 import {
@@ -19,6 +18,7 @@ import {
   throbber,
 } from "@/lib/animation/effects/earlyweb";
 import { DEMOS } from "./showcase/demos";
+import { SiteLogo } from "./SiteLogo";
 
 /*
  * The Netscape Navigator window, wrapped around every route under the early
@@ -516,17 +516,9 @@ export function EarlyWebChrome() {
         only there for the look drop out rather than overflow.
       */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-[6px] py-[5px]">
-        <Link
-          href="/"
-          className="web-mono order-1 shrink-0 text-[17px] font-bold tracking-[0.04em] text-black no-underline sm:text-[19px]"
-        >
-          <span data-logo-text>
-            <span aria-hidden="true" data-logo-mark className="text-[var(--web-red)]">
-              &gt;&gt;
-            </span>
-            ANIMAXXING
-          </span>
-        </Link>
+        <span className="order-1 shrink-0">
+          <SiteLogo intro={false} />
+        </span>
         <span className="order-3 flex w-full min-w-0 items-center gap-[3px] overflow-hidden sm:order-2 sm:w-auto sm:flex-1">
           <button
             type="button"
