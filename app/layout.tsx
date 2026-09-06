@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { Barlow_Condensed, Cormorant_Garamond, Inter, JetBrains_Mono, Rethink_Sans } from "next/font/google";
+import {
+  Barlow_Condensed,
+  Cormorant_Garamond,
+  Inter,
+  JetBrains_Mono,
+  Jost,
+  Rethink_Sans,
+} from "next/font/google";
 import { cookies } from "next/headers";
 import { LOOK_COOKIE, lookFromCookie } from "@/components/theme/look";
 import { LookProvider } from "@/components/theme/LookProvider";
@@ -44,6 +51,14 @@ const barlowCondensed = Barlow_Condensed({
   preload: false,
 });
 
+/* Bauhaus. Jost is a Futura, the face the school's own printing settled on. */
+const jost = Jost({
+  variable: "--font-jost",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700", "800"],
+  preload: false,
+});
+
 export const metadata: Metadata = {
   title: "Animaxxing",
   description: "Motion to the Max.",
@@ -61,7 +76,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       // The theme script sets data-theme before hydration; the server cannot
       // know the stored choice, so that attribute is expected to differ.
       suppressHydrationWarning
-      className={`${rethinkSans.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${inter.variable} ${barlowCondensed.variable} h-full scroll-smooth antialiased`}
+      className={`${rethinkSans.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${inter.variable} ${barlowCondensed.variable} ${jost.variable} h-full scroll-smooth antialiased`}
     >
       <head>
         <ThemeScript />

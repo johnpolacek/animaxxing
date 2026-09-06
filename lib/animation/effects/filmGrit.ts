@@ -7,14 +7,15 @@ import { gsap } from "@/components/motion";
  *
  * The ambient wear of a print that has been through the projector a few
  * hundred times: grain that shifts every frame, hairline scratches that
- * run down the picture for a moment and heal, and the odd fleck of dust.
+ * run the full height of the picture and wander as the gate rattles, and
+ * dust and hairs that land for a frame or two and blow off.
  * All of it is drawn on one canvas in the page's own ink at a whisper of
  * alpha, so it reads as texture rather than as an effect.
  *
  * The grain is a handful of pre-rendered tiles shown in a random order at a
- * film-like frame rate; nothing is generated per frame. Scratches are
- * spawned at random and live a few frames each. Under reduced motion the
- * caller asks for one still and never plays.
+ * film-like frame rate; nothing is generated per frame. One to three
+ * scratches are on the print at any time, each living a second or so.
+ * Under reduced motion the caller asks for one still and never plays.
  */
 
 export type FilmGritOptions = {
@@ -24,9 +25,9 @@ export type FilmGritOptions = {
   scratch?: number;
   /** Grain frames a second. Film ran at 24; wear reads better a little slower. */
   fps?: number;
-  /** Average scratches spawned a second. */
-  scratchRate?: number;
-  /** Average dust flecks spawned a second. */
+  /** How many scratches are on the print at once, least to most. */
+  scratches?: [number, number];
+  /** Average dust flecks and hairs spawned a second. */
   dustRate?: number;
 };
 
@@ -42,9 +43,8 @@ export type FilmGrit = {
 
 type Scratch = {
   x: number;
+  /** Pixels a frame the scratch wanders sideways. */
   drift: number;
-  top: number;
-  bottom: number;
   width: number;
   life: number;
   age: number;
@@ -54,7 +54,13 @@ type Scratch = {
 type Dust = {
   x: number;
   y: number;
+  /** A speck is a dot; a hair is a short curved line. */
+  kind: "speck" | "hair";
   r: number;
+  /** Hair: end point relative to x, y, and the bend of its curve. */
+  dx: number;
+  dy: number;
+  bend: number;
   life: number;
   age: number;
 };
@@ -100,7 +106,7 @@ function makeTile(ink: [number, number, number]): HTMLCanvasElement {
 
 export function filmGrit(
   canvas: HTMLCanvasElement,
-  { grain = 0.05, scratch = 0.18, fps = 18, scratchRate = 0.35, dustRate = 0.6 }: FilmGritOptions = {},
+  { grain = 0.06, scratch = 0.22, fps = 18, scratches: scratchRange = [1, 3], dustRate = 10 }: FilmGritOptions = {},
 ): FilmGrit {
   const ctx = canvas.getContext("2d");
   let ink: [number, number, number] = [234, 227, 210];
@@ -132,24 +138,28 @@ export function filmGrit(
   };
 
   const spawnScratch = () => {
-    const life = gsap.utils.random(3, 14, 1);
     scratches.push({
       x: Math.random() * w,
-      drift: gsap.utils.random(-0.4, 0.4),
-      top: Math.random() < 0.6 ? 0 : Math.random() * h * 0.5,
-      bottom: Math.random() < 0.6 ? h : h * (0.5 + Math.random() * 0.5),
-      width: Math.random() < 0.85 ? 1 : 2,
-      life,
+      drift: gsap.utils.random(-1.2, 1.2),
+      width: Math.random() < 0.8 ? 1 : 2,
+      life: gsap.utils.random(12, 70, 1),
       age: 0,
-      peak: gsap.utils.random(0.3, 1),
+      peak: gsap.utils.random(0.35, 1),
     });
   };
 
   const spawnDust = () => {
+    const hair = Math.random() < 0.3;
+    const length = gsap.utils.random(6, 26);
+    const angle = Math.random() * Math.PI * 2;
     dust.push({
       x: Math.random() * w,
       y: Math.random() * h,
-      r: gsap.utils.random(0.6, 1.8),
+      kind: hair ? "hair" : "speck",
+      r: hair ? gsap.utils.random(0.5, 0.9) : gsap.utils.random(0.5, 1.6),
+      dx: Math.cos(angle) * length,
+      dy: Math.sin(angle) * length,
+      bend: gsap.utils.random(-8, 8),
       life: gsap.utils.random(1, 3, 1),
       age: 0,
     });
@@ -174,30 +184,66 @@ export function filmGrit(
     }
 
     const [r, g, b] = ink;
-    ctx.lineCap = "butt";
+    ctx.lineCap = "round";
     for (const s of scratches) {
       const t = s.age / s.life;
-      const fade = Math.sin(t * Math.PI);
-      const jitter = (Math.random() - 0.5) * 0.6;
-      const x = s.x + s.drift * s.age + jitter;
-      ctx.strokeStyle = `rgba(${r},${g},${b},${scratch * s.peak * fade})`;
+      const fade = Math.min(1, Math.sin(t * Math.PI) * 1.6);
+      // The gate never holds the print quite still: the line jitters every
+      // frame, wanders with its drift, and now and then jumps.
+      s.x += s.drift + (Math.random() - 0.5) * 1.5;
+      if (Math.random() < 0.06) {
+        s.x += gsap.utils.random(-6, 6);
+      }
+      const flicker = 0.6 + Math.random() * 0.4;
+      const x = ((s.x % w) + w) % w;
+      ctx.strokeStyle = `rgba(${r},${g},${b},${scratch * s.peak * fade * flicker})`;
       ctx.lineWidth = s.width;
       ctx.beginPath();
-      ctx.moveTo(x, s.top);
-      ctx.lineTo(x + jitter, s.bottom);
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x + (Math.random() - 0.5) * 1.2, h);
       ctx.stroke();
       s.age += 1;
     }
     scratches = scratches.filter((s) => s.age < s.life);
 
-    ctx.fillStyle = `rgba(${r},${g},${b},${scratch * 1.4})`;
+    const dustInk = `rgba(${r},${g},${b},${Math.min(1, scratch * 1.6)})`;
+    ctx.fillStyle = dustInk;
+    ctx.strokeStyle = dustInk;
     for (const d of dust) {
-      ctx.beginPath();
-      ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-      ctx.fill();
+      if (d.kind === "hair") {
+        ctx.lineWidth = d.r;
+        ctx.beginPath();
+        ctx.moveTo(d.x, d.y);
+        // Bow the hair: the control point sits off the midpoint, across the line.
+        const length = Math.hypot(d.dx, d.dy) || 1;
+        const cx = d.x + d.dx / 2 - (d.dy / length) * d.bend;
+        const cy = d.y + d.dy / 2 + (d.dx / length) * d.bend;
+        ctx.quadraticCurveTo(cx, cy, d.x + d.dx, d.y + d.dy);
+        ctx.stroke();
+      } else {
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
       d.age += 1;
     }
     dust = dust.filter((d) => d.age < d.life);
+  };
+
+  const [fewest, most] = scratchRange;
+
+  /** Keeps the print's scratch count inside its range. */
+  const wear = (elapsed: number) => {
+    while (scratches.length < fewest) {
+      spawnScratch();
+    }
+    if (scratches.length < most && Math.random() < 0.8 * elapsed) {
+      spawnScratch();
+    }
+    const flecks = dustRate * elapsed;
+    for (let n = Math.floor(flecks) + (Math.random() < flecks % 1 ? 1 : 0); n > 0; n--) {
+      spawnDust();
+    }
   };
 
   const tick = () => {
@@ -207,12 +253,7 @@ export function filmGrit(
     }
     const elapsed = Math.min(now - last, 0.5);
     last = now;
-    if (Math.random() < scratchRate * elapsed) {
-      spawnScratch();
-    }
-    if (Math.random() < dustRate * elapsed) {
-      spawnDust();
-    }
+    wear(elapsed);
     draw();
   };
 
@@ -224,7 +265,7 @@ export function filmGrit(
 
   const still = () => {
     sync();
-    spawnScratch();
+    wear(0.5);
     draw();
   };
 

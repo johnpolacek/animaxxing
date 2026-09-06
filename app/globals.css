@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./looks/cinematic.css";
+@import "./looks/bauhaus.css";
 
 /*
  * Semantic design tokens.
@@ -39,6 +40,17 @@
   --accent-bright: var(--muted);
   --line: var(--border);
   --faint: var(--border);
+
+  /*
+   * The primaries. Posterize never paints them; the Bauhaus look builds its
+   * shapes from them, and they hold their colour in either scheme. The
+   * shapes carry their own ink and paper, since text sits on them.
+   */
+  --shape-red: #d6321f;
+  --shape-yellow: #f0b323;
+  --shape-blue: #1a4c96;
+  --shape-ink: #141414;
+  --shape-paper: #f1ece1;
 
   /* A screen: black, with its own ink, whatever the scheme around it. */
   --screen: #000000;
@@ -117,6 +129,11 @@
   --color-screen: var(--screen);
   --color-screen-ink: var(--screen-ink);
   --color-screen-gold: var(--screen-gold);
+  --color-shape-red: var(--shape-red);
+  --color-shape-yellow: var(--shape-yellow);
+  --color-shape-blue: var(--shape-blue);
+  --color-shape-ink: var(--shape-ink);
+  --color-shape-paper: var(--shape-paper);
 
   --font-sans: var(--face-body);
   --font-mono: var(--face-label);
@@ -239,7 +256,8 @@ body {
 [data-reveal],
 [data-etymology],
 [data-arrive],
-[data-screen-intro] {
+[data-screen-intro],
+[data-form-intro] {
   visibility: hidden;
 }
 

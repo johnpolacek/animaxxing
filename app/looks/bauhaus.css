@@ -1,0 +1,94 @@
+/*
+ * Bauhaus.
+ *
+ * Paper and ink, and the three primaries the school reduced colour to: a
+ * red, a yellow, a blue, each with its shape. Type is Jost, a Futura, set
+ * extra bold and tight for headlines and in tracked capitals for labels.
+ * Rules are heavy. Nothing has a radius except the circle.
+ *
+ * The selectors carry the scheme attribute so they outrank the posterize
+ * scheme rules whatever the import order. Light is the look's home: paper.
+ * Dark is the same poster printed on ink.
+ */
+:root[data-look="bauhaus"]:not([data-theme="dark"]) {
+  color-scheme: light;
+
+  --canvas: #f1ece1;
+  --foreground: #141414;
+  --muted: #5d5a54;
+  --border: #141414;
+  --surface: #e9e3d6;
+  --surface-hover: #e1dacb;
+  --inverse: #141414;
+  --inverse-hover: #2b2b2b;
+  --inverse-foreground: #f1ece1;
+  --focus: #d6321f;
+  --selection: #f0b323;
+  --selection-foreground: #141414;
+
+  --accent: #d6321f;
+  --accent-bright: #e8452f;
+  --line: #141414;
+  --faint: rgba(20, 20, 20, 0.14);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="bauhaus"]:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --canvas: #141414;
+    --foreground: #f1ece1;
+    --muted: #a8a295;
+    --border: #f1ece1;
+    --surface: #1e1d1b;
+    --surface-hover: #292825;
+    --inverse: #f1ece1;
+    --inverse-hover: #ffffff;
+    --inverse-foreground: #141414;
+    --focus: #f0b323;
+    --selection: #f0b323;
+    --selection-foreground: #141414;
+
+    --accent: #d6321f;
+    --accent-bright: #ef4a35;
+    --line: #f1ece1;
+    --faint: rgba(241, 236, 225, 0.18);
+  }
+}
+
+:root[data-look="bauhaus"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas: #141414;
+  --foreground: #f1ece1;
+  --muted: #a8a295;
+  --border: #f1ece1;
+  --surface: #1e1d1b;
+  --surface-hover: #292825;
+  --inverse: #f1ece1;
+  --inverse-hover: #ffffff;
+  --inverse-foreground: #141414;
+  --focus: #f0b323;
+  --selection: #f0b323;
+  --selection-foreground: #141414;
+
+  --accent: #d6321f;
+  --accent-bright: #ef4a35;
+  --line: #f1ece1;
+  --faint: rgba(241, 236, 225, 0.18);
+}
+
+:root[data-look="bauhaus"] {
+  --face-body: var(--font-jost);
+  --face-label: var(--font-jost);
+  --face-billing: var(--font-jost);
+}
+
+/* The three shapes. A triangle is a clipped square; a circle is a rounded one. */
+.shape-circle {
+  border-radius: 9999px;
+}
+
+.shape-triangle {
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
