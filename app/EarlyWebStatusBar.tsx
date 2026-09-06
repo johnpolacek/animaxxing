@@ -52,7 +52,7 @@ export function EarlyWebStatusBar() {
                 |
               </span>
               <FooterLink href="https://github.com/johnpolacek/animaxxing">
-                View src on GitHub
+                Demo src on GitHub
               </FooterLink>
             </p>
             <ThemeToggle compact />

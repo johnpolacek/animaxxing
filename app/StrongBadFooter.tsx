@@ -30,12 +30,10 @@ export function StrongBadFooter() {
             Powered by <FooterLink href="https://gsap.com">GSAP</FooterLink>
           </span>
           <span>
-            <FooterLink href={SKILLS_REPO}>Grab the skills</FooterLink>
+            Grab <FooterLink href={SKILLS_REPO}>the skills</FooterLink>
           </span>
           <span>
-            <FooterLink href="https://github.com/johnpolacek/animaxxing">
-              View src on GitHub
-            </FooterLink>
+            Demo src <FooterLink href="https://github.com/johnpolacek/animaxxing">on GitHub</FooterLink>
           </span>
         </p>
 

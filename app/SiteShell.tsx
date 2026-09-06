@@ -334,11 +334,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
               </span>
               <span aria-hidden="true">·</span>
               <span>
-                <FooterLink href={SKILLS_REPO}>grab the skills</FooterLink>
+                grab <FooterLink href={SKILLS_REPO}>the skills</FooterLink>
               </span>
               <span aria-hidden="true">·</span>
               <span>
-                <FooterLink href="https://github.com/johnpolacek/animaxxing">view src on GitHub</FooterLink>
+                demo src <FooterLink href="https://github.com/johnpolacek/animaxxing">on GitHub</FooterLink>
               </span>
             </p>
           )}

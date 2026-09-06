@@ -297,7 +297,7 @@ export function ConstructivistHero() {
         >
           Created by John Polacek · Powered by GSAP
           <br />
-          Grab the skills · View src on GitHub
+          Grab the skills · Demo src on GitHub
         </p>
       </div>
     </div>
