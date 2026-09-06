@@ -1,0 +1,812 @@
+/*
+ * Early web.
+ *
+ * 1997, in a Netscape Navigator window. Light is the GeoCities page every
+ * webmaster made: #c0c0c0 system gray under a dotted tile, white sunken
+ * boxes, navy heading bars, Times New Roman copy, Arial chrome, Courier New
+ * counters and Comic Sans for the personal voice. Dark is the *other* page
+ * the same webmaster made — the black starfield version — lime and cyan on
+ * #000, with a twinkle and a shooting star.
+ *
+ * The scheme blocks carry the scheme attribute so they outrank the posterize
+ * scheme rules whatever the import order, exactly as bauhaus.css does.
+ *
+ * Alongside the semantic tokens the look publishes the fixed 1997 colours as
+ * `--web-*` custom properties. Components reach them through Tailwind
+ * arbitrary values (`bg-[var(--web-navy)]`) for anything that is *always*
+ * that colour whatever the scheme; the semantic tokens stay for anything
+ * that should follow light and dark.
+ */
+:root[data-look="earlyweb"]:not([data-theme="dark"]) {
+  color-scheme: light;
+
+  --canvas: #c0c0c0;
+  --foreground: #000000;
+  --muted: #404040;
+  --border: #808080;
+  --surface: #ffffff;
+  --surface-hover: #f0f0f0;
+  --inverse: #000080;
+  --inverse-hover: #1084d0;
+  --inverse-foreground: #ffffff;
+  --focus: #000080;
+  --selection: #000080;
+  --selection-foreground: #ffffff;
+
+  --accent: #ff0000;
+  --accent-bright: #ff4444;
+  --accent-cool: #000080;
+  --line: #808080;
+  --faint: rgba(0, 0, 0, 0.16);
+
+  /* The fixed palette of the era. */
+  --web-gray: #c0c0c0;
+  --web-dark: #808080;
+  --web-light: #ffffff;
+  --web-shadow: #404040;
+  --web-link: #0000ee;
+  --web-visited: #551a8b;
+  --web-lime: #00ff00;
+  --web-yellow: #ffff00;
+  --web-red: #ff0000;
+  --web-navy: #000080;
+  --web-teal: #008080;
+  --web-cream: #fffff0;
+
+  /* The dotted gray tile the whole page sits on. */
+  --web-tile: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='64' height='64' fill='%23c0c0c0'/><circle cx='9' cy='14' r='1.3' fill='%23a8a8a8'/><circle cx='40' cy='6' r='1' fill='%23d8d8d8'/><circle cx='55' cy='30' r='1.4' fill='%23a0a0a0'/><circle cx='22' cy='44' r='1' fill='%23dcdcdc'/><circle cx='47' cy='54' r='1.2' fill='%23a8a8a8'/><circle cx='30' cy='26' r='.8' fill='%23e0e0e0'/><circle cx='8' cy='58' r='1.1' fill='%23a4a4a4'/></svg>");
+  /* No sky in daylight: the twinkle layer and the shooting star are off. */
+  --web-sky: none;
+  --web-twinkle: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="earlyweb"]:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --canvas: #000000;
+    --foreground: #00ff00;
+    --muted: #9acd32;
+    --border: #808080;
+    --surface: #101010;
+    --surface-hover: #1a1a1a;
+    --inverse: #00ff00;
+    --inverse-hover: #66ff66;
+    --inverse-foreground: #000000;
+    --focus: #ffff00;
+    --selection: #00ffff;
+    --selection-foreground: #000000;
+
+    --accent: #ffff00;
+    --accent-bright: #ffff99;
+    --accent-cool: #00ffff;
+    --line: #808080;
+    --faint: rgba(0, 255, 0, 0.2);
+
+    --web-gray: #c0c0c0;
+    --web-dark: #808080;
+    --web-light: #ffffff;
+    --web-shadow: #404040;
+    --web-link: #00ffff;
+    --web-visited: #ff00ff;
+    --web-lime: #00ff00;
+    --web-yellow: #ffff00;
+    --web-red: #ff0000;
+    --web-navy: #000080;
+    --web-teal: #008080;
+    --web-cream: #101010;
+
+    --web-tile: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><rect width='180' height='180' fill='%23000000'/><circle cx='14' cy='26' r='1.1' fill='%23ffffff'/><circle cx='62' cy='9' r='.7' fill='%23b0b0c0'/><circle cx='121' cy='34' r='1.4' fill='%23ffffff'/><circle cx='158' cy='16' r='.8' fill='%23c8c8d8'/><circle cx='33' cy='71' r='.9' fill='%23e8e8f0'/><circle cx='96' cy='63' r='.6' fill='%23909098'/><circle cx='142' cy='88' r='1.2' fill='%23ffffff'/><circle cx='9' cy='112' r='.7' fill='%23b8b8c8'/><circle cx='71' cy='126' r='1.3' fill='%23ffffff'/><circle cx='113' cy='149' r='.8' fill='%23d0d0dc'/><circle cx='166' cy='131' r='1' fill='%23f0f0f8'/><circle cx='45' cy='163' r='.6' fill='%23888890'/><circle cx='131' cy='172' r='.9' fill='%23e0e0ea'/><circle cx='88' cy='101' r='.5' fill='%23a0a0aa'/></svg>");
+    --web-sky: block;
+    /* The second, brighter star layer, whose opacity pulses. */
+    --web-twinkle: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><circle cx='27' cy='41' r='1.5' fill='%23ffffff'/><circle cx='104' cy='18' r='1.1' fill='%23aee7ff'/><circle cx='183' cy='57' r='1.6' fill='%23ffffff'/><circle cx='58' cy='97' r='1.2' fill='%23fff6c0'/><circle cx='149' cy='118' r='1' fill='%23ffffff'/><circle cx='16' cy='158' r='1.4' fill='%23c8f0ff'/><circle cx='95' cy='176' r='1.1' fill='%23ffffff'/><circle cx='205' cy='196' r='1.3' fill='%23ffffff'/><circle cx='131' cy='73' r='.9' fill='%23ffffff'/><circle cx='73' cy='213' r='1' fill='%23ffe0a0'/></svg>");
+  }
+}
+
+:root[data-look="earlyweb"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas: #000000;
+  --foreground: #00ff00;
+  --muted: #9acd32;
+  --border: #808080;
+  --surface: #101010;
+  --surface-hover: #1a1a1a;
+  --inverse: #00ff00;
+  --inverse-hover: #66ff66;
+  --inverse-foreground: #000000;
+  --focus: #ffff00;
+  --selection: #00ffff;
+  --selection-foreground: #000000;
+
+  --accent: #ffff00;
+  --accent-bright: #ffff99;
+  --accent-cool: #00ffff;
+  --line: #808080;
+  --faint: rgba(0, 255, 0, 0.2);
+
+  --web-gray: #c0c0c0;
+  --web-dark: #808080;
+  --web-light: #ffffff;
+  --web-shadow: #404040;
+  --web-link: #00ffff;
+  --web-visited: #ff00ff;
+  --web-lime: #00ff00;
+  --web-yellow: #ffff00;
+  --web-red: #ff0000;
+  --web-navy: #000080;
+  --web-teal: #008080;
+  --web-cream: #101010;
+
+  --web-tile: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><rect width='180' height='180' fill='%23000000'/><circle cx='14' cy='26' r='1.1' fill='%23ffffff'/><circle cx='62' cy='9' r='.7' fill='%23b0b0c0'/><circle cx='121' cy='34' r='1.4' fill='%23ffffff'/><circle cx='158' cy='16' r='.8' fill='%23c8c8d8'/><circle cx='33' cy='71' r='.9' fill='%23e8e8f0'/><circle cx='96' cy='63' r='.6' fill='%23909098'/><circle cx='142' cy='88' r='1.2' fill='%23ffffff'/><circle cx='9' cy='112' r='.7' fill='%23b8b8c8'/><circle cx='71' cy='126' r='1.3' fill='%23ffffff'/><circle cx='113' cy='149' r='.8' fill='%23d0d0dc'/><circle cx='166' cy='131' r='1' fill='%23f0f0f8'/><circle cx='45' cy='163' r='.6' fill='%23888890'/><circle cx='131' cy='172' r='.9' fill='%23e0e0ea'/><circle cx='88' cy='101' r='.5' fill='%23a0a0aa'/></svg>");
+  --web-sky: block;
+  --web-twinkle: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><circle cx='27' cy='41' r='1.5' fill='%23ffffff'/><circle cx='104' cy='18' r='1.1' fill='%23aee7ff'/><circle cx='183' cy='57' r='1.6' fill='%23ffffff'/><circle cx='58' cy='97' r='1.2' fill='%23fff6c0'/><circle cx='149' cy='118' r='1' fill='%23ffffff'/><circle cx='16' cy='158' r='1.4' fill='%23c8f0ff'/><circle cx='95' cy='176' r='1.1' fill='%23ffffff'/><circle cx='205' cy='196' r='1.3' fill='%23ffffff'/><circle cx='131' cy='73' r='.9' fill='%23ffffff'/><circle cx='73' cy='213' r='1' fill='%23ffe0a0'/></svg>");
+}
+
+/*
+ * Faces. All system stacks — the era had no webfonts — except Comic Neue,
+ * loaded by next/font as the stand-in for machines without Comic Sans MS.
+ */
+:root[data-look="earlyweb"] {
+  --face-body: "Times New Roman", Times, serif;
+  --face-label: Arial, Helvetica, sans-serif;
+  --face-billing: "Comic Sans MS", "Comic Sans", var(--font-comic-neue), "Chalkboard SE", cursive;
+  --face-code: "Courier New", Courier, monospace;
+}
+
+/* ------------------------------------------------------------ the page */
+
+/*
+ * The tile goes on <html>, not <body>, so the two sky layers below can sit
+ * at a negative z-index in front of it and behind everything else.
+ */
+:root[data-look="earlyweb"] {
+  background-color: var(--canvas);
+  background-image: var(--web-tile);
+}
+
+:root[data-look="earlyweb"] body {
+  background: transparent;
+}
+
+/* The twinkle: a second star tile whose opacity breathes. Dark only. */
+:root[data-look="earlyweb"] body::before {
+  content: "";
+  display: var(--web-sky);
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--web-twinkle);
+  opacity: 0.55;
+  animation: web-twinkle 5.5s ease-in-out infinite;
+}
+
+/* A shooting star crosses the sky every ten seconds. Dark only. */
+:root[data-look="earlyweb"] body::after {
+  content: "";
+  display: var(--web-sky);
+  position: fixed;
+  top: 8vh;
+  left: -20vw;
+  width: 170px;
+  height: 2px;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, #ffffff);
+  animation: web-shooting-star 10s linear infinite;
+}
+
+@keyframes web-twinkle {
+  0%,
+  100% {
+    opacity: 0.28;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+@keyframes web-shooting-star {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(21deg);
+    opacity: 0;
+  }
+  2% {
+    opacity: 0.95;
+  }
+  11% {
+    transform: translate3d(140vw, 52vh, 0) rotate(21deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(140vw, 52vh, 0) rotate(21deg);
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------------------- 1997 utilities */
+
+/*
+ * Everything below is scoped to the look, so the class names cannot leak
+ * into posterize, cinematic or bauhaus.
+ */
+
+/* Raised chrome: the bevel every button, badge and panel edge is made of. */
+:root[data-look="earlyweb"] .web-bevel {
+  border: 2px outset var(--web-light);
+  background: var(--web-gray);
+}
+
+/* Sunken chrome: a field, a well, a text box. */
+:root[data-look="earlyweb"] .web-inset {
+  border: 2px inset var(--web-light);
+  background: var(--surface);
+}
+
+/* The <blink> tag, rebuilt. Hard on/off, never a fade. */
+:root[data-look="earlyweb"] .web-blink {
+  animation: web-blink 1s steps(1) infinite;
+}
+
+@keyframes web-blink {
+  50% {
+    visibility: hidden;
+  }
+}
+
+/* WordArt: the hue slides through the letters. */
+:root[data-look="earlyweb"] .web-rainbow {
+  background-image: linear-gradient(
+    90deg,
+    #f00,
+    #ff8000,
+    #ff0,
+    #0f0,
+    #0ff,
+    #00f,
+    #8000ff,
+    #f00
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: web-rainbow-slide 3s linear infinite;
+}
+
+@keyframes web-rainbow-slide {
+  to {
+    background-position: 200% 0;
+  }
+}
+
+:root[data-look="earlyweb"] .web-spin {
+  display: inline-block;
+  animation: web-spin 2s linear infinite;
+}
+
+@keyframes web-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+:root[data-look="earlyweb"] .web-bounce {
+  display: inline-block;
+  animation: web-bounce 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes web-bounce {
+  to {
+    transform: translateY(-6px);
+  }
+}
+
+/*
+ * The construction barrier. The stripes crawl: one diagonal period is 24px
+ * along the gradient axis, which is 24 / cos(45°) ≈ 33.94px along x, so
+ * shifting the background that far in x lands exactly one stripe on.
+ */
+:root[data-look="earlyweb"] .web-stripes {
+  background-image: repeating-linear-gradient(45deg, #000 0 12px, var(--web-yellow) 12px 24px);
+  animation: web-stripes-crawl 0.9s linear infinite;
+}
+
+@keyframes web-stripes-crawl {
+  to {
+    background-position: -33.94px 0;
+  }
+}
+
+/* The two-tone <hr>: a dark line with a light one under it. */
+:root[data-look="earlyweb"] .web-hr {
+  border: 0;
+  border-top: 1px solid var(--web-dark);
+  border-bottom: 1px solid var(--web-light);
+  margin: 8px 0;
+}
+
+/* A hit-counter digit: lime on black behind a sunken bezel. */
+:root[data-look="earlyweb"] .web-lcd {
+  background: #000000;
+  color: var(--web-lime);
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+  line-height: 1;
+  border: 1px inset #666666;
+  padding: 3px 4px;
+}
+
+/* The 88×31 web badge, to the pixel. */
+:root[data-look="earlyweb"] .web-badge {
+  width: 88px;
+  height: 31px;
+  display: inline-grid;
+  place-items: center;
+  text-align: center;
+  font: bold 10px/1 Arial, Helvetica, sans-serif;
+  border: 1px solid #000000;
+}
+
+/* The Navigator window's title bar. */
+:root[data-look="earlyweb"] .web-titlebar {
+  background: linear-gradient(90deg, var(--web-navy), #1084d0);
+  color: #ffffff;
+  font: bold 13px Arial, Helvetica, sans-serif;
+  padding: 3px 6px;
+}
+
+/*
+ * A diagonal highlight that sweeps across on hover — the shimmer every
+ * award badge and web-ring button had. Pure CSS transition, no loop.
+ */
+:root[data-look="earlyweb"] .web-gleam {
+  position: relative;
+  overflow: hidden;
+}
+
+:root[data-look="earlyweb"] .web-gleam::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  bottom: -60%;
+  left: 0;
+  width: 45%;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.15) 35%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(255, 255, 255, 0.15) 65%,
+    transparent
+  );
+  transform: translateX(-260%) skewX(-18deg);
+  transition: transform 0.55s linear;
+}
+
+:root[data-look="earlyweb"] .web-gleam:hover::after,
+:root[data-look="earlyweb"] .web-gleam:focus-visible::after {
+  transform: translateX(360%) skewX(-18deg);
+}
+
+/*
+ * The interlaced-image wrapper, driven by `interlaceIn` in
+ * lib/animation/effects/earlyweb.ts. The DOM it expects:
+ *
+ *   <span class="web-interlace" style="aspect-ratio: 4 / 3">
+ *     <img data-web-img-coarse aria-hidden="true" src=… alt="" />
+ *     <img data-web-img-sharp src=… alt="…" />
+ *     <span data-web-placeholder>⊠ alt text</span>
+ *   </span>
+ *
+ * The sharp copy is in flow and sets the height; the coarse copy fills the
+ * box behind it and stands in for the rows that have not arrived yet; the
+ * placeholder covers both until the first pass. Passes are driven by the
+ * two custom properties below: `--web-band` is how much of each `--web-period`
+ * of rows has been painted, so the picture fills in as widening horizontal
+ * bands rather than as a blur.
+ */
+:root[data-look="earlyweb"] .web-interlace {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: var(--web-gray);
+  --web-band: 0px;
+  --web-period: 16px;
+  --web-coarse: 9px;
+}
+
+:root[data-look="earlyweb"] .web-interlace [data-web-img-sharp] {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  -webkit-mask-image: repeating-linear-gradient(
+    to bottom,
+    #000 0 var(--web-band),
+    transparent var(--web-band) var(--web-period)
+  );
+  mask-image: repeating-linear-gradient(
+    to bottom,
+    #000 0 var(--web-band),
+    transparent var(--web-band) var(--web-period)
+  );
+}
+
+:root[data-look="earlyweb"] .web-interlace [data-web-img-coarse] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+  filter: blur(var(--web-coarse)) saturate(1.15);
+  transform: scale(1.06);
+}
+
+:root[data-look="earlyweb"] .web-interlace [data-web-placeholder] {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  padding: 8px;
+  text-align: center;
+  background: var(--web-gray);
+  color: var(--web-shadow);
+  font: 11px/1.3 Arial, Helvetica, sans-serif;
+  border: 2px inset var(--web-light);
+}
+
+/* Anything that should show its pixels rather than smooth them. */
+:root[data-look="earlyweb"] .web-pixel {
+  image-rendering: pixelated;
+}
+
+/* The cursor-sparkle overlay, built by `sparkleTrail`. */
+:root[data-look="earlyweb"] .web-sparkle-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+:root[data-look="earlyweb"] .web-sparkle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font: 13px/1 Arial, Helvetica, sans-serif;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* ---------------------------------------------------------- reduced motion */
+
+/*
+ * Every infinite loop in this file, stopped. The media query is skipped when
+ * the site's own switch has been set to `full`, and `data-motion="reduced"`
+ * turns the loops off whatever the operating system says — the pattern
+ * globals.css uses for the switcher ring, with the override added.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root[data-look="earlyweb"]:not([data-motion="full"]) body::before,
+  :root[data-look="earlyweb"]:not([data-motion="full"]) body::after,
+  :root[data-look="earlyweb"]:not([data-motion="full"]) .web-blink,
+  :root[data-look="earlyweb"]:not([data-motion="full"]) .web-rainbow,
+  :root[data-look="earlyweb"]:not([data-motion="full"]) .web-spin,
+  :root[data-look="earlyweb"]:not([data-motion="full"]) .web-bounce,
+  :root[data-look="earlyweb"]:not([data-motion="full"]) .web-stripes {
+    animation: none;
+  }
+
+  :root[data-look="earlyweb"]:not([data-motion="full"]) .web-gleam::after {
+    display: none;
+  }
+}
+
+:root[data-look="earlyweb"][data-motion="reduced"] body::before,
+:root[data-look="earlyweb"][data-motion="reduced"] body::after,
+:root[data-look="earlyweb"][data-motion="reduced"] .web-blink,
+:root[data-look="earlyweb"][data-motion="reduced"] .web-rainbow,
+:root[data-look="earlyweb"][data-motion="reduced"] .web-spin,
+:root[data-look="earlyweb"][data-motion="reduced"] .web-bounce,
+:root[data-look="earlyweb"][data-motion="reduced"] .web-stripes {
+  animation: none;
+}
+
+:root[data-look="earlyweb"][data-motion="reduced"] .web-gleam::after {
+  display: none;
+}
+
+/*
+ * The `<font color="#0000ff">` blue of the Comic Sans pitch. Pure blue is
+ * unreadable on the black starfield page, so the dark scheme swaps it for
+ * the cyan that version used. (Its neighbour in the same sentence, the
+ * `<font color="#008000">` green, is `--web-green`, declared with the
+ * article accents further down.)
+ */
+:root[data-look="earlyweb"] {
+  --web-blue: #0000ff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="earlyweb"]:not([data-theme="light"]) {
+    --web-blue: #00ffff;
+  }
+}
+
+:root[data-look="earlyweb"][data-theme="dark"] {
+  --web-blue: #00ffff;
+}
+
+/* ------------------------------------------------ the Navigator window */
+
+/*
+ * The chrome wrapping every route under this look: title bar, menubar,
+ * toolbar, address bar at the top; status bar and footer at the bottom.
+ *
+ * Chrome is chrome in both schemes. A 1997 machine drew its window frame in
+ * system gray whether the page inside it was the daylight GeoCities version
+ * or the black starfield one, so none of these follow the light/dark tokens
+ * — they are pinned to the fixed `--web-*` palette. Only what sits *on the
+ * page* below the window (the footer copy) takes the scheme's colours.
+ */
+:root[data-look="earlyweb"] .web-window {
+  background: var(--web-gray);
+  color: #000000;
+  border-bottom: 2px solid var(--web-dark);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+:root[data-look="earlyweb"] .web-ui {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+:root[data-look="earlyweb"] .web-mono {
+  font-family: "Courier New", Courier, monospace;
+}
+
+/* A sunken chrome cell that stays system gray: a status-bar box. */
+:root[data-look="earlyweb"] .web-cell {
+  border: 2px inset var(--web-light);
+  background: var(--web-gray);
+  color: #000000;
+}
+
+/* A sunken chrome field that stays white: the Location box. */
+:root[data-look="earlyweb"] .web-field {
+  border: 2px inset var(--web-light);
+  background: #ffffff;
+  color: #000000;
+}
+
+/* The three window buttons at the right of the title bar. */
+:root[data-look="earlyweb"] .web-winbtn {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 14px;
+  border: 2px outset var(--web-light);
+  background: var(--web-gray);
+  color: #000000;
+  font: 10px/1 Arial, Helvetica, sans-serif;
+  font-style: normal;
+}
+
+:root[data-look="earlyweb"] button.web-winbtn:active {
+  border-style: inset;
+}
+
+/* Windows 95 tooltip: appears after a beat, on hover or keyboard focus. */
+:root[data-look="earlyweb"] .web-tip {
+  position: relative;
+}
+
+:root[data-look="earlyweb"] .web-tip::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 60;
+  padding: 1px 5px;
+  border: 1px solid #000000;
+  background: #ffffe1;
+  color: #000000;
+  font: 11px/1.4 Arial, Helvetica, sans-serif;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0s linear;
+}
+
+:root[data-look="earlyweb"] .web-tip:hover::after,
+:root[data-look="earlyweb"] .web-tip:focus-visible::after {
+  opacity: 1;
+  transition-delay: 0.45s;
+}
+
+/* A menubar item. The underlined first letter is the accelerator key. */
+:root[data-look="earlyweb"] .web-menu {
+  display: inline-block;
+  padding: 1px 6px;
+  color: #000000;
+  white-space: nowrap;
+  cursor: default;
+}
+
+:root[data-look="earlyweb"] .web-menu::first-letter {
+  text-decoration: underline;
+}
+
+:root[data-look="earlyweb"] .web-menu:hover {
+  background: var(--web-navy);
+  color: #ffffff;
+}
+
+/*
+ * A toolbar button, raised until it is pressed. It deliberately does not set
+ * `display`, so a `hidden` utility can take the wider buttons out of a phone's
+ * toolbar without having to fight this rule's specificity.
+ */
+:root[data-look="earlyweb"] .web-tbtn {
+  padding: 3px 7px;
+  border: 2px outset var(--web-light);
+  background: var(--web-gray);
+  color: #000000;
+  font: 11px/1 Arial, Helvetica, sans-serif;
+  white-space: nowrap;
+}
+
+:root[data-look="earlyweb"] button.web-tbtn:active,
+:root[data-look="earlyweb"] a.web-tbtn:active {
+  border-style: inset;
+}
+
+/* The label rides 1px down and right as the button sinks. */
+:root[data-look="earlyweb"] button.web-tbtn:active > span,
+:root[data-look="earlyweb"] a.web-tbtn:active > span {
+  display: inline-block;
+  transform: translate(1px, 1px);
+}
+
+/*
+ * The Netscape "N": a black window onto the sky, with the meteors of
+ * `throbber` streaking past behind the letter while a page is coming in.
+ */
+:root[data-look="earlyweb"] .web-throbber {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 32px;
+  overflow: hidden;
+  border: 2px inset var(--web-light);
+  background: #000014;
+}
+
+:root[data-look="earlyweb"] .web-throbber > span {
+  position: relative;
+  z-index: 1;
+  color: #ffffff;
+  font: bold 20px/1 "Times New Roman", Times, serif;
+  text-shadow: 0 0 7px #4f9fff;
+}
+
+/* The dashed-navy transfer meter in the status bar. */
+:root[data-look="earlyweb"] .web-progress {
+  position: relative;
+  height: 17px;
+  width: 120px;
+}
+
+:root[data-look="earlyweb"] .web-progress > i {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  width: 8px;
+  background: var(--web-navy);
+}
+
+/* ------------------------------------------------------- article accents */
+
+/*
+ * The `<font color>` green the lead's emphasised words are set in. The other
+ * three (red, blue, purple) already have fixed variables that read in both
+ * schemes; #008000 does not, so it gets a bright twin for the starfield page.
+ * Declared last so the value lands after the scheme blocks above.
+ */
+:root[data-look="earlyweb"] {
+  --web-green: #008000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="earlyweb"]:not([data-theme="light"]) {
+    --web-green: #00e000;
+  }
+}
+
+:root[data-look="earlyweb"][data-theme="dark"] {
+  --web-green: #00e000;
+}
+
+/*
+ * The status bar. It is the window's, not the page's, so it keeps a solid
+ * system-gray face and sticks to the bottom of the viewport with the
+ * document scrolling underneath it. Being last in the flow, it also occupies
+ * its own space at the end of the page, so scrolling to the bottom leaves it
+ * sitting exactly where it already was rather than over the last line.
+ */
+:root[data-look="earlyweb"] .web-statusbar {
+  background: var(--web-gray);
+  border-top: 2px solid var(--web-dark);
+  color: #000000;
+}
+
+/*
+ * The Themes switcher, wearing the toolbar's clothes. Only the button's face
+ * changes under this look — its particle field, its twitch and the picker
+ * panel are all left alone.
+ */
+:root[data-look="earlyweb"] .web-switcher {
+  padding: 3px 10px;
+  border: 2px outset var(--web-light);
+  background: var(--web-gray);
+  color: #000000;
+  font: bold 12px/1.4 Arial, Helvetica, sans-serif;
+}
+
+:root[data-look="earlyweb"] .web-switcher:active {
+  border-style: inset;
+}
+
+:root[data-look="earlyweb"] .web-switcher-label {
+  display: inline-block;
+}
+
+:root[data-look="earlyweb"] .web-switcher-label::first-letter {
+  text-decoration: underline;
+}
+
+/* Keyboard focus draws the dotted rectangle Windows drew inside the bevel. */
+:root[data-look="earlyweb"] .web-switcher-focus {
+  display: none;
+  border: 1px dotted #000000;
+}
+
+:root[data-look="earlyweb"] .web-switcher:focus-visible .web-switcher-focus {
+  display: block;
+}
+
+/*
+ * The showcase index keeps its posterize composition under this look, but
+ * Times Bold runs wider than Rethink Sans: let the card titles shrink to fit.
+ */
+:root[data-look="earlyweb"] [data-particle-card] h2 {
+  font-size: clamp(1.75rem, 2.6vw, 2.5rem);
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+/*
+ * The row above every demo. Back is a plain 1997 link; Replay and Next are
+ * dialog buttons — a size up from the toolbar's, since they sit in the page
+ * rather than in the chrome.
+ */
+:root[data-look="earlyweb"] .web-navbtn {
+  padding: 4px 14px;
+  border: 2px outset var(--web-light);
+  background: var(--web-gray);
+  color: #000000;
+  font: bold 12px/1.4 Arial, Helvetica, sans-serif;
+}
+
+:root[data-look="earlyweb"] .web-navbtn:active {
+  border-style: inset;
+}

@@ -15,6 +15,8 @@ import { useLook } from "@/components/theme/LookProvider";
 import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { SKILLS_REPO } from "./animaxx/content";
+import { EarlyWebChrome } from "./EarlyWebChrome";
+import { EarlyWebStatusBar } from "./EarlyWebStatusBar";
 import { FooterLink } from "./FooterLink";
 
 /** Persistent chrome: it enters once, then remains untouched by route motion. */
@@ -26,11 +28,19 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const constructivist = look === "constructivist";
   // The keynote's chrome: a 48px bar of frosted glass the stages run under.
   const pinned = look === "pinned";
+  /*
+   * The early web look does not hang a header and a footer around the page:
+   * it puts the page inside a Netscape Navigator window, which brings its own
+   * title bar, menubar, toolbar and status bar, and its own dial-up load-in.
+   * The posterize shell intro below is skipped for it — the window is chrome,
+   * and chrome is painted before the document, not sprung in after it.
+   */
+  const earlyweb = look === "earlyweb";
 
   useGSAP(
     () => {
       const root = scope.current;
-      if (!root) {
+      if (!root || earlyweb) {
         return;
       }
       const items = gsap.utils.toArray<HTMLElement>("[data-shell-intro]", root);
@@ -88,8 +98,20 @@ export function SiteShell({ children }: { children: ReactNode }) {
         )
         .set(logoUnderline, { clearProps: "transform,transformOrigin,willChange" }, ">");
     },
-    { scope },
+    // The look decides which chrome is in the tree, so the intro has to be
+    // able to run again when the switcher swaps one set of nodes for another.
+    { scope, dependencies: [earlyweb] },
   );
+
+  if (earlyweb) {
+    return (
+      <div ref={scope} className="flex min-h-screen flex-col overflow-x-clip">
+        <EarlyWebChrome />
+        <PageTransition>{children}</PageTransition>
+        <EarlyWebStatusBar />
+      </div>
+    );
+  }
 
   return (
     // Particle canvases bleed past the elements they belong to. Clip them

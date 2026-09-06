@@ -9,7 +9,6 @@ import { DEFAULT_LOOK, isLook, type Look } from "./look";
  */
 export type ExplorationSlug =
   | Look
-  | "earlyweb"
   | "pinned"
   | "strongbad"
   | "ukiyoe"

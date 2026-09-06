@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import {
   Anton,
   Barlow_Condensed,
+  Comic_Neue,
   Cormorant_Garamond,
   Courier_Prime,
   Inter,
@@ -126,6 +127,14 @@ const interTight = Inter_Tight({
   preload: false,
 });
 
+/* Early web. A stand-in for Comic Sans MS on machines that never had it. */
+const comicNeue = Comic_Neue({
+  variable: "--font-comic-neue",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  preload: false,
+});
+
 export const metadata: Metadata = {
   title: "Animaxxing",
   description: "Motion to the Max.",
@@ -143,7 +152,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       // The theme script sets data-theme before hydration; the server cannot
       // know the stored choice, so that attribute is expected to differ.
       suppressHydrationWarning
-      className={`${rethinkSans.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${inter.variable} ${barlowCondensed.variable} ${courierPrime.variable} ${jost.variable} ${spaceMono.variable} ${anton.variable} ${oswald.variable} ${robotoCondensed.variable} ${robotoMono.variable} ${interTight.variable} h-full scroll-smooth antialiased`}
+      className={`${rethinkSans.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${inter.variable} ${barlowCondensed.variable} ${courierPrime.variable} ${jost.variable} ${spaceMono.variable} ${anton.variable} ${oswald.variable} ${robotoCondensed.variable} ${robotoMono.variable} ${interTight.variable} ${comicNeue.variable} h-full scroll-smooth antialiased`}
     >
       <head>
         <ThemeScript />

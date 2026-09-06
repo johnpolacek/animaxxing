@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useRef, useState, type MouseEvent } from "react";
 import { gsap, prefersReducedMotion, useGSAP } from "@/components/motion";
 import { useParticleEffect } from "@/components/motion/particles/useParticleEffect";
+import { useLook } from "@/components/theme/LookProvider";
 import { slipstream } from "@/lib/animation/effects/slipstream";
 import { watchPageTransition } from "@/lib/animation/pageState";
 import { nextDemo } from "./demos";
@@ -16,6 +17,9 @@ import { nextDemo } from "./demos";
  */
 const BUTTON =
   "inline-flex cursor-pointer items-center gap-3 rounded-lg border-2 border-border bg-surface px-4 py-2 font-mono text-caption uppercase text-muted transition-colors hover:border-foreground hover:bg-surface-hover hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus";
+/* 1997: the same bevel as Replay, with a >> that will not stop blinking. */
+const WEB_BUTTON =
+  "web-navbtn inline-flex cursor-pointer items-center gap-2 no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus";
 
 /** How far, in px, the button launches on its way out. */
 const LAUNCH = 64;
@@ -24,6 +28,7 @@ export function ShowcaseNext({ slug }: { slug?: string | undefined }) {
   // The slug is read once: while the route transition holds the old page,
   // the pathname has already moved on, and the button must not follow it.
   const pathname = usePathname();
+  const earlyweb = useLook() === "earlyweb";
   const [demo] = useState(() => nextDemo(slug ?? pathname.split("/")[2] ?? ""));
   const scope = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -83,9 +88,16 @@ export function ShowcaseNext({ slug }: { slug?: string | undefined }) {
         className="pointer-events-none absolute z-10 text-foreground"
         style={{ left: -slipstream.bleed, top: -slipstream.bleed }}
       />
-      <Link ref={linkRef} href={`/showcase/${demo.slug}`} className={BUTTON} onClick={launch}>
+      <Link
+        ref={linkRef}
+        href={`/showcase/${demo.slug}`}
+        className={earlyweb ? WEB_BUTTON : BUTTON}
+        onClick={launch}
+      >
         <span>Next</span>
-        <span aria-hidden="true">→</span>
+        <span aria-hidden="true" className={earlyweb ? "web-blink" : undefined}>
+          {earlyweb ? ">>" : "→"}
+        </span>
       </Link>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { gsap, prefersReducedMotion, replayPageTransition } from "@/components/motion";
+import { useLook } from "@/components/theme/LookProvider";
 
 /*
  * Plays the demo again. The page exits the way it would before a navigation,
@@ -10,9 +11,13 @@ import { gsap, prefersReducedMotion, replayPageTransition } from "@/components/m
  */
 const BUTTON =
   "inline-flex cursor-pointer items-center gap-2 rounded-lg border-2 border-border bg-surface px-3 py-2 font-mono text-caption uppercase text-muted transition-colors hover:border-foreground hover:bg-surface-hover hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus";
+/* 1997: a dialog button that sinks into its bevel when you push it. */
+const WEB_BUTTON =
+  "web-navbtn inline-flex cursor-pointer items-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus";
 
 export function ShowcaseReplay() {
   const iconRef = useRef<SVGSVGElement>(null);
+  const earlyweb = useLook() === "earlyweb";
 
   const replay = () => {
     if (iconRef.current && !prefersReducedMotion()) {
@@ -27,7 +32,12 @@ export function ShowcaseReplay() {
 
   return (
     <div data-page-transition>
-      <button type="button" className={BUTTON} onClick={replay} aria-label="Replay the animation">
+      <button
+        type="button"
+        className={earlyweb ? WEB_BUTTON : BUTTON}
+        onClick={replay}
+        aria-label="Replay the animation"
+      >
         <svg
           ref={iconRef}
           aria-hidden="true"
@@ -44,7 +54,7 @@ export function ShowcaseReplay() {
           <path d="M13.5 8a5.5 5.5 0 1 1-1.61-3.89" />
           <path d="M13.5 2.5v3h-3" />
         </svg>
-        <span>Replay</span>
+        <span>{earlyweb ? "Reload" : "Replay"}</span>
       </button>
     </div>
   );

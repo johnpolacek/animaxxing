@@ -3,6 +3,7 @@
 @import "./looks/bauhaus.css";
 @import "./looks/constructivist.css";
 @import "./looks/pinned.css";
+@import "./looks/earlyweb.css";
 
 /*
  * Semantic design tokens.
@@ -298,7 +299,8 @@ body {
 [data-arrive],
 [data-screen-intro],
 [data-pin-intro],
-[data-form-intro] {
+[data-form-intro],
+[data-web-intro] {
   visibility: hidden;
 }
 

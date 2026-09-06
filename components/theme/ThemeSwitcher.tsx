@@ -51,6 +51,8 @@ export function ThemeSwitcher({ className }: { className?: string }) {
   const panelField = useRef<ParticleField | null>(null);
 
   const look = useLook();
+  /* The early web look wears the toolbar's bevel instead of the pill. */
+  const earlyweb = look === "earlyweb";
   const setLook = useSetLook();
   const [open, setOpen] = useState(false);
   // The panel stays mounted through its exit; `visible` lags `open` on close.
@@ -271,18 +273,32 @@ export function ThemeSwitcher({ className }: { className?: string }) {
         onClick={show}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="switcher-button group relative inline-flex items-center gap-2.5 rounded-sm bg-inverse px-4 py-2 font-mono text-sm font-bold uppercase tracking-[0.16em] text-inverse-foreground transition-colors hover:bg-inverse-hover focus-visible:outline-none"
+        className={
+          // 1997 has no pill: in that look the switcher is a toolbar button
+          // like the ones beside it, and its orbiting ring becomes the dotted
+          // focus rectangle Windows drew inside a bevel.
+          earlyweb
+            ? "switcher-button web-switcher group relative inline-flex items-center gap-1.5 focus-visible:outline-none"
+            : "switcher-button group relative inline-flex items-center gap-2.5 rounded-sm bg-inverse px-4 py-2 font-mono text-sm font-bold uppercase tracking-[0.16em] text-inverse-foreground transition-colors hover:bg-inverse-hover focus-visible:outline-none"
+        }
       >
-        <span aria-hidden="true" className="switcher-ring pointer-events-none absolute -inset-1.5 rounded-md" />
+        <span
+          aria-hidden="true"
+          className={
+            earlyweb
+              ? "web-switcher-focus pointer-events-none absolute inset-[2px]"
+              : "switcher-ring pointer-events-none absolute -inset-1.5 rounded-md"
+          }
+        />
         <HugeiconsIcon
           icon={RefreshCcwIcon}
-          size={18}
+          size={earlyweb ? 13 : 18}
           strokeWidth={2}
           aria-hidden="true"
           data-switcher-mark
           className="shrink-0"
         />
-        Themes
+        {earlyweb ? <span className="web-switcher-label">Themes</span> : "Themes"}
       </button>
 
       {mounted &&

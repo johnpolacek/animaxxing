@@ -6,6 +6,7 @@ import { BauhausArticle } from "./BauhausArticle";
 import { CinematicArticle } from "./CinematicArticle";
 import { ConstructivistArticle } from "./ConstructivistArticle";
 import { PinnedArticle } from "./PinnedArticle";
+import { EarlyWebArticle } from "./EarlyWebArticle";
 
 /** The article composes differently under each look; pick the one for the look in force. */
 export function ArticleByLook() {
@@ -19,6 +20,8 @@ export function ArticleByLook() {
       return <ConstructivistArticle />;
     case "pinned":
       return <PinnedArticle />;
+    case "earlyweb":
+      return <EarlyWebArticle />;
     default:
       return <Article />;
   }
