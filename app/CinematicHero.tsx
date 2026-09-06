@@ -19,6 +19,7 @@ import {
   trackIn,
 } from "@/lib/animation/effects/cinematic";
 import { watchPageTransition } from "@/lib/animation/pageState";
+import { CinematicGrit } from "./CinematicGrit";
 
 /*
  * The front door, cinematic.
@@ -171,6 +172,7 @@ export function CinematicHero() {
 
   return (
     <div ref={scope} className="flex flex-col items-center">
+      <CinematicGrit />
       <div
         data-page-transition
         data-frame
