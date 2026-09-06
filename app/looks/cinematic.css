@@ -29,6 +29,10 @@
   --accent-bright: #d8b876;
   --line: rgba(185, 152, 90, 0.4);
   --faint: rgba(234, 227, 210, 0.12);
+
+  --stage-light: rgba(185, 152, 90, 0.35);
+  --stage-mid: rgba(60, 55, 45, 0.5);
+  --stage-edge: rgba(0, 0, 0, 0.85);
 }
 
 :root[data-look="cinematic"][data-theme="light"] {
@@ -51,12 +55,27 @@
   --accent-bright: #a3843c;
   --line: rgba(138, 109, 47, 0.45);
   --faint: rgba(22, 19, 14, 0.12);
+
+  --stage-light: rgba(138, 109, 47, 0.28);
+  --stage-mid: rgba(255, 250, 238, 0.5);
+  --stage-edge: rgba(22, 19, 14, 0.35);
 }
 
 :root[data-look="cinematic"] {
   --face-body: var(--font-cormorant);
   --face-label: var(--font-inter);
   --face-billing: var(--font-barlow-condensed);
+}
+
+/*
+ * The stage light behind the whole page: a gold glow from the footlights,
+ * a warm pool in the middle, and the edges falling off to dark.
+ */
+:root[data-look="cinematic"] .cinematic-stage {
+  background-image:
+    radial-gradient(ellipse at 50% 50%, transparent 40%, var(--stage-edge) 100%),
+    radial-gradient(ellipse at 50% 115%, var(--stage-light), transparent 55%),
+    radial-gradient(ellipse at 50% 40%, var(--stage-mid), transparent 60%);
 }
 
 /* Film grain over the whole picture. */

@@ -21,6 +21,7 @@ import { FooterLink } from "./FooterLink";
 export function SiteShell({ children }: { children: ReactNode }) {
   const scope = useRef<HTMLDivElement>(null);
   const look = useLook();
+  const bauhaus = look === "bauhaus";
 
   useGSAP(
     () => {
@@ -97,13 +98,20 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <div data-logo-intro>
             <Link
               href="/"
-              className="relative inline-block font-[family-name:var(--font-jetbrains-mono)] text-base uppercase tracking-[0.08em] text-muted sm:text-lg"
+              className={
+                bauhaus
+                  ? "relative inline-block font-sans text-xl font-extrabold lowercase tracking-[-0.02em] text-foreground sm:text-[22px]"
+                  : "relative inline-block font-[family-name:var(--font-jetbrains-mono)] text-base uppercase tracking-[0.08em] text-muted sm:text-lg"
+              }
             >
               <span data-logo-text>
                 <span
                   aria-hidden="true"
                   data-logo-mark
-                  className="-mr-[0.1em] inline-block leading-none origin-[0_calc(100%-0.3em)] [transform:translateY(calc(-0.05em_-_1px))_scale(0.8,1.225)]"
+                  className={[
+                    "-mr-[0.1em] inline-block leading-none origin-[0_calc(100%-0.3em)] [transform:translateY(calc(-0.05em_-_1px))_scale(0.8,1.225)]",
+                    bauhaus ? "mr-[0.15em] text-shape-red" : "",
+                  ].join(" ")}
                 >
                   <span className="inline-block">▶</span>
                   <span className="inline-block -ml-[0.2em]">▶</span>
@@ -127,7 +135,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
       <footer
         data-footer-intro
-        className="mt-auto border-t border-border px-gutter py-10 sm:px-gutter-lg"
+        className={[
+          "mt-auto px-gutter py-10 sm:px-gutter-lg",
+          bauhaus ? "border-t-[10px] border-foreground" : "border-t border-border",
+        ].join(" ")}
       >
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-6">
           {look === "cinematic" ? (
@@ -137,7 +148,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
               Animaxxing · MMXXVI
             </p>
           ) : (
-            <p className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-caption uppercase text-muted">
+            <p
+              className={[
+                "flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-caption uppercase",
+                bauhaus ? "font-medium tracking-[0.06em] text-foreground" : "text-muted",
+              ].join(" ")}
+            >
               <span>
                 created by <FooterLink href="https://johnpolacek.com">John Polacek</FooterLink>
               </span>
@@ -155,7 +171,17 @@ export function SiteShell({ children }: { children: ReactNode }) {
               </span>
             </p>
           )}
-          <ThemeToggle compact />
+          <div className="flex items-center gap-6">
+            {bauhaus && (
+              // The school's three shapes sign the page off.
+              <span aria-hidden="true" className="flex gap-2.5">
+                <i className="block h-[22px] w-[22px] rounded-full bg-shape-red" />
+                <i className="block h-[22px] w-[22px] bg-shape-blue" />
+                <i className="shape-triangle block h-[22px] w-[22px] bg-shape-yellow" />
+              </span>
+            )}
+            <ThemeToggle compact />
+          </div>
         </div>
       </footer>
     </div>

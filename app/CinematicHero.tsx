@@ -10,7 +10,6 @@ import {
   type SplitText,
 } from "@/components/motion";
 import {
-  beamSweep,
   cutToBlack,
   fadeUp,
   projector,
@@ -24,12 +23,13 @@ import { CinematicGrit } from "./CinematicGrit";
 /*
  * The front door, cinematic.
  *
- * A letterboxed frame holds the title card. Once the route has brought the
- * frame up, the projector's light finds it: a beam sweeps the screen and
- * settles, "Animaxxing presents" glows up, the title tracks in from wide
- * spacing while it pulls into focus, and the subtitle cuts in line by line.
- * The timecode in the corner runs the whole time. Below the frame, the calls
- * to action and the billing block fade up like end credits.
+ * The whole page is the screen: a stage light glows up behind everything,
+ * edge to edge, and flickers like a projector for as long as the page is
+ * up. Inside the letterboxed frame, "Animaxxing presents" glows up, the
+ * title tracks in from wide spacing while it pulls into focus, and the
+ * subtitle cuts in line by line. The timecode in the corner runs the whole
+ * time. Below the frame, the calls to action and the billing block fade up
+ * like end credits.
  *
  * Pressing either call to action cuts to black, and the cut hands off to the
  * route: Showcase leaves for the showcase, Get Animaxxed for the install page.
@@ -73,7 +73,6 @@ export function CinematicHero() {
       const q = gsap.utils.selector(root);
       const frame = q<HTMLElement>("[data-frame]")[0];
       const glow = q<HTMLElement>("[data-glow]")[0];
-      const beam = q<HTMLElement>("[data-beam]")[0];
       const presents = q<HTMLElement>("[data-presents]")[0];
       const titleLine = q<HTMLElement>("[data-title-line]")[0];
       const titleEm = q<HTMLElement>("[data-title-em]")[0];
@@ -84,14 +83,13 @@ export function CinematicHero() {
       const billing = q<HTMLElement>("[data-billing]")[0];
       const shutter = q<HTMLElement>("[data-shutter]")[0];
       const below = q<HTMLElement>("[data-below]")[0];
-      if (!frame || !glow || !beam || !presents || !titleLine || !titleEm || !timecode || !ratio || !billing || !shutter || !below) {
+      if (!frame || !glow || !presents || !titleLine || !titleEm || !timecode || !ratio || !billing || !shutter || !below) {
         return;
       }
       const intro = [presents, titleLine, titleEm, ...subtitleLines, timecode, ratio, ...ctas, billing];
 
       if (prefersReducedMotion()) {
         gsap.set(intro, { autoAlpha: 1 });
-        gsap.set(beam, { autoAlpha: 1 });
         press.current = (action: Action) => navigateWithPageTransition(HREF[action]);
         return;
       }
@@ -135,7 +133,6 @@ export function CinematicHero() {
           sequence = tl;
           gsap.set(glow, { autoAlpha: 0 });
           tl.to(glow, { autoAlpha: 1, duration: 1.8, ease: "sine.out" }, 0);
-          beamSweep(tl, beam, frame.offsetWidth, 0.1);
           tl.call(() => {
             stopTimecode = runTimecode(timecode, 1 / 24);
           }, [], 0);
@@ -172,31 +169,18 @@ export function CinematicHero() {
 
   return (
     <div ref={scope} className="flex flex-col items-center">
+      <div data-glow aria-hidden="true" className="cinematic-stage pointer-events-none fixed inset-0 -z-20" />
       <CinematicGrit />
       <div
         data-page-transition
         data-frame
-        className="relative aspect-[4/3] max-h-[66vh] w-full overflow-hidden bg-screen text-screen-ink sm:aspect-[2.39/1]"
+        className="relative aspect-[4/3] max-h-[66vh] w-full sm:aspect-[2.39/1]"
       >
-        <div
-          data-glow
-          aria-hidden="true"
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_120%,rgba(185,152,90,0.35),transparent_55%),radial-gradient(ellipse_at_50%_40%,rgba(60,55,45,0.5),transparent_60%)]"
-        />
-        <div
-          data-beam
-          aria-hidden="true"
-          className="absolute left-1/2 top-[-10%] h-[120%] w-0.5 -translate-x-1/2 bg-[linear-gradient(transparent,rgba(234,227,210,0.25),transparent)] opacity-0"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,transparent_40%,rgba(0,0,0,0.85)_100%)]"
-        />
         <div className="absolute inset-0 z-[2] grid place-content-center px-6 text-center">
           <p
             data-presents
             data-screen-intro
-            className="mb-5 font-mono text-[11px] font-light uppercase tracking-[0.34em] text-screen-gold [text-shadow:0_1px_3px_#000] sm:mb-8"
+            className="mb-5 font-mono text-[11px] font-light uppercase tracking-[0.34em] text-accent sm:mb-8"
           >
             Animaxxing presents
           </p>
@@ -207,13 +191,13 @@ export function CinematicHero() {
             <em
               data-title-em
               data-screen-intro
-              className="mt-[0.12em] block text-[0.72em] normal-case italic tracking-normal text-screen-gold"
+              className="mt-[0.12em] block text-[0.72em] normal-case italic tracking-normal text-accent"
             >
               the Max
             </em>
           </h1>
         </div>
-        <p className="absolute inset-x-0 bottom-7 z-[3] px-[8%] text-center font-mono text-[13px] font-light leading-[1.5] text-white [text-shadow:0_1px_2px_#000,0_0_12px_rgba(0,0,0,0.8)] sm:bottom-9 sm:text-base">
+        <p className="absolute inset-x-0 bottom-7 z-[3] px-[8%] text-center font-mono text-[13px] font-light leading-[1.5] text-foreground sm:bottom-9 sm:text-base">
           <span data-subtitle-line data-screen-intro>
             Your static low rizz website is cooked. It has negative aura.
           </span>
@@ -225,20 +209,20 @@ export function CinematicHero() {
         <span
           data-timecode
           data-screen-intro
-          className="absolute bottom-2.5 left-4 z-[3] font-mono text-[10px] font-light tracking-[0.2em] text-screen-ink/50 tabular-nums sm:bottom-[18px] sm:left-7 sm:text-[11px]"
+          className="absolute bottom-2.5 left-4 z-[3] font-mono text-[10px] font-light tracking-[0.2em] text-foreground/50 tabular-nums sm:bottom-[18px] sm:left-7 sm:text-[11px]"
         >
           TC 00:00:00:01
         </span>
         <span
           data-ratio
           data-screen-intro
-          className="absolute bottom-2.5 right-4 z-[3] font-mono text-[10px] font-light tracking-[0.2em] text-screen-ink/50 sm:bottom-[18px] sm:right-7 sm:text-[11px]"
+          className="absolute bottom-2.5 right-4 z-[3] font-mono text-[10px] font-light tracking-[0.2em] text-foreground/50 sm:bottom-[18px] sm:right-7 sm:text-[11px]"
         >
           <span className="sm:hidden">4 : 3</span>
           <span className="hidden sm:inline">2.39 : 1</span>
         </span>
-        <div data-shutter aria-hidden="true" className="pointer-events-none absolute inset-0 z-[4] bg-screen opacity-0" />
-      </div>
+        </div>
+      <div data-shutter aria-hidden="true" className="pointer-events-none fixed inset-0 z-[4] bg-canvas opacity-0" />
 
       <div data-page-transition data-below className="mt-8 w-full max-w-[1100px] text-center sm:mt-12">
         <div className="mb-8 flex flex-wrap justify-center gap-4 sm:mb-11 sm:gap-7">

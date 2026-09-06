@@ -38,6 +38,8 @@
    */
   --accent: var(--foreground);
   --accent-bright: var(--muted);
+  /* A second, cooler accent for looks that have one; posterize reads it as ink. */
+  --accent-cool: var(--foreground);
   --line: var(--border);
   --faint: var(--border);
 
@@ -124,6 +126,7 @@
   --color-selection-foreground: var(--selection-foreground);
   --color-accent: var(--accent);
   --color-accent-bright: var(--accent-bright);
+  --color-accent-cool: var(--accent-cool);
   --color-line: var(--line);
   --color-faint: var(--faint);
   --color-screen: var(--screen);

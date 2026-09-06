@@ -7,9 +7,8 @@ import { gsap, SplitText } from "@/components/motion";
  *
  * The motion vocabulary of the cinematic look, all of it borrowed from the
  * projection booth: titles that track in from wide spacing while they pull
- * into focus, a subtitle that cuts in rather than fades, a beam of light
- * that sweeps the frame before it settles, a projector's flicker, a running
- * timecode, and the cut to black that ends a scene.
+ * into focus, a subtitle that cuts in rather than fades, a projector's
+ * flicker, a running timecode, and the cut to black that ends a scene.
  */
 
 /** Frames per second the timecode counts at. */
@@ -101,26 +100,6 @@ export function fadeUp(
     { autoAlpha: 1, y: 0, duration, ease: "sine.out", stagger },
     at,
   );
-}
-
-/**
- * The beam: a vertical streak of light crosses the frame once, then settles
- * in the middle. `width` is the frame's width in px.
- */
-export function beamSweep(
-  timeline: gsap.core.Timeline,
-  beam: HTMLElement,
-  width: number,
-  at: number | string,
-): void {
-  timeline
-    .fromTo(
-      beam,
-      { autoAlpha: 0, x: -width * 0.55 },
-      { autoAlpha: 1, x: width * 0.5, duration: 1.6, ease: "power2.inOut" },
-      at,
-    )
-    .to(beam, { x: 0, duration: 1.4, ease: "power3.out" }, ">-0.1");
 }
 
 /**

@@ -30,7 +30,7 @@ export function stampIn(
       { autoAlpha: 1, scale: 1, rotation: 0, duration, ease: "back.out(2.2)", stagger },
       at,
     )
-    .set(targets, { clearProps: "transform,willChange" }, ">");
+    .set(targets, { clearProps: "willChange" }, ">");
 }
 
 /**
@@ -51,6 +51,26 @@ export function linesRise(
     { yPercent: 0, duration, ease, stagger },
     at,
   );
+  return split;
+}
+
+/** Words step onto the line one after another. Returns the split to revert. */
+export function wordsRise(
+  timeline: gsap.core.Timeline,
+  el: HTMLElement,
+  at: At,
+  { duration = 0.6, each = 0.03 }: { duration?: number; each?: number } = {},
+): SplitText {
+  const split = SplitText.create(el, { type: "words", aria: "auto" });
+  gsap.set(el, { autoAlpha: 1 });
+  timeline
+    .fromTo(
+      split.words,
+      { autoAlpha: 0, y: 22, willChange: "transform, opacity" },
+      { autoAlpha: 1, y: 0, duration, ease: "back.out(1.4)", stagger: each },
+      at,
+    )
+    .set(split.words, { clearProps: "willChange" }, ">");
   return split;
 }
 

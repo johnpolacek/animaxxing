@@ -28,6 +28,7 @@
 
   --accent: #d6321f;
   --accent-bright: #e8452f;
+  --accent-cool: #1a4c96;
   --line: #141414;
   --faint: rgba(20, 20, 20, 0.14);
 }
@@ -51,6 +52,7 @@
 
     --accent: #d6321f;
     --accent-bright: #ef4a35;
+    --accent-cool: #7ba6e6;
     --line: #f1ece1;
     --faint: rgba(241, 236, 225, 0.18);
   }
@@ -74,6 +76,7 @@
 
   --accent: #d6321f;
   --accent-bright: #ef4a35;
+  --accent-cool: #7ba6e6;
   --line: #f1ece1;
   --faint: rgba(241, 236, 225, 0.18);
 }
