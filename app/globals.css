@@ -289,6 +289,12 @@ body {
   animation: switcher-spin 2.2s linear infinite;
 }
 
+/* Keyboard focus fills the same ring in solid, rather than drawing a second outline. */
+.switcher-button:focus-visible .switcher-ring {
+  background: var(--focus);
+  animation: none;
+}
+
 @keyframes switcher-spin {
   to {
     --switcher-angle: 360deg;

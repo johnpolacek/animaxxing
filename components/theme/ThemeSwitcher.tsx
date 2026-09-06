@@ -271,7 +271,7 @@ export function ThemeSwitcher({ className }: { className?: string }) {
         onClick={show}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="group relative inline-flex items-center gap-2.5 rounded-sm bg-inverse px-4 py-2 font-mono text-sm font-bold uppercase tracking-[0.16em] text-inverse-foreground transition-colors hover:bg-inverse-hover focus-visible:outline-2 focus-visible:outline-offset-[7px] focus-visible:outline-focus"
+        className="switcher-button group relative inline-flex items-center gap-2.5 rounded-sm bg-inverse px-4 py-2 font-mono text-sm font-bold uppercase tracking-[0.16em] text-inverse-foreground transition-colors hover:bg-inverse-hover focus-visible:outline-none"
       >
         <span aria-hidden="true" className="switcher-ring pointer-events-none absolute -inset-1.5 rounded-md" />
         <HugeiconsIcon
