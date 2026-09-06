@@ -1,0 +1,136 @@
+/*
+ * Constructivist.
+ *
+ * Agitprop: paper the colour of old newsprint, ink, and one red. Anton for
+ * the wood type, Oswald in tracked capitals for the captions and labels,
+ * Roboto Condensed for the small print. Everything is set on a diagonal or
+ * cut by one. Rules are heavy, corners square, and the only circle is the
+ * one the ▶▶ sits in.
+ *
+ * The selectors carry the scheme attribute so they outrank the posterize
+ * scheme rules whatever the import order. Light is the look's home: the
+ * poster on paper. Dark is the same poster printed on ink.
+ */
+:root[data-look="constructivist"]:not([data-theme="dark"]) {
+  color-scheme: light;
+
+  --canvas: #e8dfc9;
+  --foreground: #141312;
+  --muted: #6e6858;
+  --border: #141312;
+  --surface: #e0d6bd;
+  --surface-hover: #d7ccb0;
+  --inverse: #141312;
+  --inverse-hover: #2a2825;
+  --inverse-foreground: #e8dfc9;
+  --focus: #c4271b;
+  --selection: #c4271b;
+  --selection-foreground: #e8dfc9;
+
+  --accent: #c4271b;
+  --accent-bright: #e0392b;
+  --accent-cool: #141312;
+  --line: #141312;
+  --faint: rgba(20, 19, 18, 0.14);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="constructivist"]:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --canvas: #141312;
+    --foreground: #e8dfc9;
+    --muted: #a39b88;
+    --border: #e8dfc9;
+    --surface: #1e1c1a;
+    --surface-hover: #292724;
+    --inverse: #e8dfc9;
+    --inverse-hover: #f5eedb;
+    --inverse-foreground: #141312;
+    --focus: #e0392b;
+    --selection: #c4271b;
+    --selection-foreground: #e8dfc9;
+
+    --accent: #c4271b;
+    --accent-bright: #e0392b;
+    --accent-cool: #e8dfc9;
+    --line: #e8dfc9;
+    --faint: rgba(232, 223, 201, 0.16);
+  }
+}
+
+:root[data-look="constructivist"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas: #141312;
+  --foreground: #e8dfc9;
+  --muted: #a39b88;
+  --border: #e8dfc9;
+  --surface: #1e1c1a;
+  --surface-hover: #292724;
+  --inverse: #e8dfc9;
+  --inverse-hover: #f5eedb;
+  --inverse-foreground: #141312;
+  --focus: #e0392b;
+  --selection: #c4271b;
+  --selection-foreground: #e8dfc9;
+
+  --accent: #c4271b;
+  --accent-bright: #e0392b;
+  --accent-cool: #e8dfc9;
+  --line: #e8dfc9;
+  --faint: rgba(232, 223, 201, 0.16);
+}
+
+:root[data-look="constructivist"] {
+  --face-body: var(--font-roboto-condensed);
+  --face-label: var(--font-oswald);
+  --face-billing: var(--font-oswald);
+  --face-code: var(--font-roboto-mono);
+  --face-display: var(--font-anton);
+
+  /* On paper the poster's ink is the page's ink; on ink it is the paper. */
+  --poster-ink: var(--foreground);
+  --poster-paper: var(--canvas);
+}
+
+/* Newsprint: a faint grain multiplied over the whole page. */
+:root[data-look="constructivist"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .2 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="constructivist"]:not([data-theme="light"]) body::after {
+    mix-blend-mode: screen;
+    opacity: 0.18;
+  }
+}
+
+:root[data-look="constructivist"][data-theme="dark"] body::after {
+  mix-blend-mode: screen;
+  opacity: 0.18;
+}
+
+/*
+ * A wedge: the red triangle that drives in from the corner. Four points,
+ * the last repeating the first, so the outro can tween it to a rectangle.
+ */
+.poster-wedge {
+  clip-path: polygon(0 100%, 100% 6%, 100% 100%, 0 100%);
+}
+
+/* An arrowhead pointing right, drawn from borders so it takes any colour. */
+.poster-arrow {
+  width: 0;
+  height: 0;
+  border-top: 0.625em solid transparent;
+  border-bottom: 0.625em solid transparent;
+  border-left: 1em solid currentColor;
+}

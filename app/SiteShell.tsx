@@ -22,6 +22,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const scope = useRef<HTMLDivElement>(null);
   const look = useLook();
   const bauhaus = look === "bauhaus";
+  // The poster's chrome: wood type, a red arrowhead, and a heavy rule under the footer.
+  const constructivist = look === "constructivist";
 
   useGSAP(
     () => {
@@ -101,7 +103,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
               className={
                 bauhaus
                   ? "relative inline-block font-sans text-xl font-extrabold lowercase tracking-[-0.02em] text-foreground sm:text-[22px]"
-                  : "relative inline-block font-[family-name:var(--font-jetbrains-mono)] text-base uppercase tracking-[0.08em] text-muted sm:text-lg"
+                  : constructivist
+                    ? "relative inline-block font-display text-xl uppercase tracking-[0.06em] text-foreground sm:text-[22px]"
+                    : "relative inline-block font-[family-name:var(--font-jetbrains-mono)] text-base uppercase tracking-[0.08em] text-muted sm:text-lg"
               }
             >
               <span data-logo-text>
@@ -111,6 +115,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   className={[
                     "-mr-[0.1em] inline-block leading-none origin-[0_calc(100%-0.3em)] [transform:translateY(calc(-0.05em_-_1px))_scale(0.8,1.225)]",
                     bauhaus ? "mr-[0.15em] text-shape-red" : "",
+                    constructivist ? "mr-[0.2em] text-poster-red" : "",
                   ].join(" ")}
                 >
                   <span className="inline-block">▶</span>
@@ -137,7 +142,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         data-footer-intro
         className={[
           "mt-auto px-gutter py-10 sm:px-gutter-lg",
-          bauhaus ? "border-t-[10px] border-foreground" : "border-t border-border",
+          bauhaus ? "border-t-[10px] border-foreground" : constructivist ? "border-t-4 border-foreground" : "border-t border-border",
         ].join(" ")}
       >
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-6">
@@ -151,7 +156,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <p
               className={[
                 "flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-caption uppercase",
-                bauhaus ? "font-medium tracking-[0.06em] text-foreground" : "text-muted",
+                bauhaus ? "font-medium tracking-[0.06em] text-foreground" : "",
+                constructivist ? "font-medium tracking-[0.14em] text-foreground" : "",
+                !bauhaus && !constructivist ? "text-muted" : "",
               ].join(" ")}
             >
               <span>
@@ -179,6 +186,10 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 <i className="block h-[22px] w-[22px] bg-shape-blue" />
                 <i className="shape-triangle block h-[22px] w-[22px] bg-shape-yellow" />
               </span>
+            )}
+            {constructivist && (
+              // The poster's arrowhead signs the page off.
+              <span aria-hidden="true" className="poster-arrow text-[22px] text-poster-red" />
             )}
             <ThemeToggle compact />
           </div>

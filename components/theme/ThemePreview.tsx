@@ -51,21 +51,20 @@ export function ThemePreview({ slug }: { slug: ExplorationSlug }) {
       );
     case "constructivist":
       return (
-        <div className="relative h-full w-full overflow-hidden bg-[#e8dcc2] text-[#1a1a1a]">
+        <div className="relative h-full w-full overflow-hidden bg-[#e8dfc9] text-[#141312]">
           <div
-            className="absolute inset-0 bg-[#c8102e]"
-            style={{ clipPath: "polygon(0 100%, 100% 0, 100% 100%)" }}
+            className="absolute bottom-[-6%] left-[-10%] h-[70%] w-[120%] bg-[#c4271b]"
+            style={{ clipPath: "polygon(0 100%, 100% 6%, 100% 100%)" }}
           />
-          <div className="absolute left-[-6%] top-[30%] h-[9%] w-[120%] rotate-[-35deg] bg-[#1a1a1a]" />
-          <div className="absolute left-[8%] top-[8%] rotate-[-35deg] font-[family-name:var(--font-rethink-sans)] text-[1.6rem] font-extrabold uppercase leading-[0.85] tracking-[-0.04em]">
-            Motion
+          <div className="absolute right-[6%] top-[6%] grid h-[44%] w-[44%] place-items-center rounded-full bg-[#141312] font-[family-name:var(--font-anton)] text-[1.4rem] leading-none text-[#e8dfc9] outline outline-2 outline-offset-[3px] outline-[#141312]">
+            <span>
+              ▶<span className="-ml-[0.32em] text-[#c4271b]">▶</span>
+            </span>
           </div>
-          <div className="absolute bottom-[8%] right-[8%] text-right font-[family-name:var(--font-rethink-sans)] text-[1.15rem] font-extrabold uppercase leading-[0.85] text-[#e8dcc2]">
-            to the
-            <br />
-            max!
+          <div className="absolute left-[-6%] top-[84%] h-[5%] w-[112%] origin-left rotate-[-18deg] bg-[#141312]" />
+          <div className="absolute bottom-[22%] left-[8%] origin-bottom-left rotate-[-18deg] whitespace-nowrap font-[family-name:var(--font-anton)] text-[1.5rem] uppercase leading-[0.85]">
+            Motion to <span className="text-[#c4271b]">the Max</span>
           </div>
-          <div className="absolute left-[10%] top-[70%] h-[16%] w-[16%] rounded-full border-[3px] border-[#1a1a1a]" />
         </div>
       );
     case "earlyweb":

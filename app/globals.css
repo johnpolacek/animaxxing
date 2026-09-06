@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./looks/cinematic.css";
 @import "./looks/bauhaus.css";
+@import "./looks/constructivist.css";
 
 /*
  * Semantic design tokens.
@@ -36,6 +37,8 @@
   --face-label: var(--font-jetbrains-mono);
   --face-billing: var(--font-jetbrains-mono);
   --face-code: var(--font-jetbrains-mono);
+  /* Headlines. Posterize sets them in the body face, heavy; a look may bring its own wood type. */
+  --face-display: var(--font-rethink-sans);
 
   /*
    * Accent tokens. Posterize has no accent colour: the accent is the ink,
@@ -58,6 +61,14 @@
   --shape-blue: #1a4c96;
   --shape-ink: #141414;
   --shape-paper: #f1ece1;
+
+  /*
+   * The poster's three colours. Posterize never paints them; the
+   * constructivist look builds everything from them, in either scheme.
+   */
+  --poster-paper: #e8dfc9;
+  --poster-ink: #141312;
+  --poster-red: #c4271b;
 
   /* A screen: black, with its own ink, whatever the scheme around it. */
   --screen: #000000;
@@ -137,6 +148,9 @@
   --color-screen: var(--screen);
   --color-screen-ink: var(--screen-ink);
   --color-screen-gold: var(--screen-gold);
+  --color-poster-paper: var(--poster-paper);
+  --color-poster-ink: var(--poster-ink);
+  --color-poster-red: var(--poster-red);
   --color-shape-red: var(--shape-red);
   --color-shape-yellow: var(--shape-yellow);
   --color-shape-blue: var(--shape-blue);
@@ -147,6 +161,7 @@
   --font-mono: var(--face-label);
   --font-billing: var(--face-billing);
   --font-code: var(--face-code);
+  --font-display: var(--face-display);
 
   /* Spacing: semantic names for the recurring layout rhythm. */
   --spacing-gutter: 1.5rem;

@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import {
+  Anton,
   Barlow_Condensed,
   Cormorant_Garamond,
   Courier_Prime,
   Inter,
   JetBrains_Mono,
   Jost,
+  Oswald,
   Rethink_Sans,
+  Roboto_Condensed,
+  Roboto_Mono,
   Space_Mono,
 } from "next/font/google";
 import { cookies } from "next/headers";
@@ -77,6 +81,39 @@ const spaceMono = Space_Mono({
   preload: false,
 });
 
+/*
+ * Constructivist. Anton is the poster's wood type, Oswald its stencilled
+ * captions, Roboto Condensed the small print, and Roboto Mono the wire.
+ */
+const anton = Anton({
+  variable: "--font-anton",
+  subsets: ["latin"],
+  weight: "400",
+  preload: false,
+});
+
+const oswald = Oswald({
+  variable: "--font-oswald",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  preload: false,
+});
+
+const robotoCondensed = Roboto_Condensed({
+  variable: "--font-roboto-condensed",
+  subsets: ["latin"],
+  weight: ["300", "400", "700"],
+  style: ["normal", "italic"],
+  preload: false,
+});
+
+const robotoMono = Roboto_Mono({
+  variable: "--font-roboto-mono",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  preload: false,
+});
+
 export const metadata: Metadata = {
   title: "Animaxxing",
   description: "Motion to the Max.",
@@ -94,7 +131,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       // The theme script sets data-theme before hydration; the server cannot
       // know the stored choice, so that attribute is expected to differ.
       suppressHydrationWarning
-      className={`${rethinkSans.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${inter.variable} ${barlowCondensed.variable} ${courierPrime.variable} ${jost.variable} ${spaceMono.variable} h-full scroll-smooth antialiased`}
+      className={`${rethinkSans.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${inter.variable} ${barlowCondensed.variable} ${courierPrime.variable} ${jost.variable} ${spaceMono.variable} ${anton.variable} ${oswald.variable} ${robotoCondensed.variable} ${robotoMono.variable} h-full scroll-smooth antialiased`}
     >
       <head>
         <ThemeScript />
