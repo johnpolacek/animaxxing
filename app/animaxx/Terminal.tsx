@@ -22,7 +22,7 @@ const COPIED_FOR = 1.4;
 const PANEL =
   "flex h-full flex-col rounded-lg border-2 border-border bg-surface p-5 transition-colors hover:border-foreground focus-within:border-foreground sm:p-6";
 const TEXT =
-  "mt-4 block w-full resize-none overflow-hidden bg-transparent font-mono text-body leading-6 text-foreground outline-none select-all sm:text-lead sm:leading-7";
+  "mt-4 block w-full resize-none overflow-hidden bg-transparent font-code text-body leading-6 text-foreground outline-none select-all sm:text-lead sm:leading-7";
 const COPY =
   "inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-lg border-2 border-foreground px-4 py-2 font-sans text-caption font-extrabold uppercase tracking-[0.04em] text-foreground transition-colors hover:bg-inverse hover:text-inverse-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus";
 

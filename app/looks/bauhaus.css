@@ -85,6 +85,7 @@
   --face-body: var(--font-jost);
   --face-label: var(--font-jost);
   --face-billing: var(--font-jost);
+  --face-code: var(--font-space-mono);
 }
 
 /* The three shapes. A triangle is a clipped square; a circle is a rounded one. */

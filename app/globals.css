@@ -27,10 +27,15 @@
 :root {
   color-scheme: light;
 
-  /* Faces. The utilities font-sans / font-mono / font-billing resolve here. */
+  /*
+   * Faces. The utilities font-sans / font-mono / font-billing / font-code
+   * resolve here. A look may set its label face to anything, but its code
+   * face must be monospaced: it sets the text people copy and paste.
+   */
   --face-body: var(--font-rethink-sans);
   --face-label: var(--font-jetbrains-mono);
   --face-billing: var(--font-jetbrains-mono);
+  --face-code: var(--font-jetbrains-mono);
 
   /*
    * Accent tokens. Posterize has no accent colour: the accent is the ink,
@@ -141,6 +146,7 @@
   --font-sans: var(--face-body);
   --font-mono: var(--face-label);
   --font-billing: var(--face-billing);
+  --font-code: var(--face-code);
 
   /* Spacing: semantic names for the recurring layout rhythm. */
   --spacing-gutter: 1.5rem;

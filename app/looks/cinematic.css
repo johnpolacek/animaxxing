@@ -2,8 +2,9 @@
  * Cinematic.
  *
  * A dark theatre: near-black canvas, bone-white type set in Cormorant
- * Garamond, gold for light and lines, Inter light for the captions, and
- * Barlow Condensed for the billing block. Film grain sits over everything.
+ * Garamond, gold for light and lines, Inter light for the captions, Barlow
+ * Condensed for the billing block, and Courier Prime, the shooting script's
+ * typewriter, for anything to be copied. Film grain sits over everything.
  *
  * The selectors carry the scheme attribute so they outrank the posterize
  * scheme rules whatever the import order. Dark is the look's home; light is
@@ -65,6 +66,7 @@
   --face-body: var(--font-cormorant);
   --face-label: var(--font-inter);
   --face-billing: var(--font-barlow-condensed);
+  --face-code: var(--font-courier-prime);
 }
 
 /*

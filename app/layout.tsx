@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import {
   Barlow_Condensed,
   Cormorant_Garamond,
+  Courier_Prime,
   Inter,
   JetBrains_Mono,
   Jost,
   Rethink_Sans,
+  Space_Mono,
 } from "next/font/google";
 import { cookies } from "next/headers";
 import { LOOK_COOKIE, lookFromCookie } from "@/components/theme/look";
@@ -51,11 +53,27 @@ const barlowCondensed = Barlow_Condensed({
   preload: false,
 });
 
+/* The typewriter face of a shooting script, for anything meant to be copied. */
+const courierPrime = Courier_Prime({
+  variable: "--font-courier-prime",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  preload: false,
+});
+
 /* Bauhaus. Jost is a Futura, the face the school's own printing settled on. */
 const jost = Jost({
   variable: "--font-jost",
   subsets: ["latin"],
   weight: ["300", "400", "500", "700", "800"],
+  preload: false,
+});
+
+/* A geometric monospace for the Bauhaus look's copyable text. */
+const spaceMono = Space_Mono({
+  variable: "--font-space-mono",
+  subsets: ["latin"],
+  weight: ["400", "700"],
   preload: false,
 });
 
@@ -76,7 +94,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       // The theme script sets data-theme before hydration; the server cannot
       // know the stored choice, so that attribute is expected to differ.
       suppressHydrationWarning
-      className={`${rethinkSans.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${inter.variable} ${barlowCondensed.variable} ${jost.variable} h-full scroll-smooth antialiased`}
+      className={`${rethinkSans.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${inter.variable} ${barlowCondensed.variable} ${courierPrime.variable} ${jost.variable} ${spaceMono.variable} h-full scroll-smooth antialiased`}
     >
       <head>
         <ThemeScript />
