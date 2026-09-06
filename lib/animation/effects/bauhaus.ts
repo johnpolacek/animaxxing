@@ -406,16 +406,16 @@ export function parallax(root: HTMLElement, layers: HTMLElement[], travel = 24):
 export function flyApart(
   shapes: { el: HTMLElement; x?: number; y?: number; rotation?: number }[],
   type: gsap.TweenTarget,
-  { duration = 0.7 }: { duration?: number } = {},
+  { duration = 0.55 }: { duration?: number } = {},
 ): gsap.core.Timeline {
   const tl = gsap.timeline();
   shapes.forEach(({ el, x = 0, y = 0, rotation = 0 }, index) => {
     tl.to(
       el,
-      { x, y, rotation, autoAlpha: 0, duration, ease: "power3.in", overwrite: "auto" },
-      index * 0.04,
+      { x, y, rotation, autoAlpha: 0, duration, ease: "power2.in", overwrite: "auto" },
+      index * 0.03,
     );
   });
-  tl.to(type, { y: 60, autoAlpha: 0, duration: duration * 0.8, ease: "power3.in", stagger: 0.04, overwrite: "auto" }, 0);
+  tl.to(type, { y: 60, autoAlpha: 0, duration: duration * 0.8, ease: "power2.in", stagger: 0.03, overwrite: "auto" }, 0);
   return tl;
 }

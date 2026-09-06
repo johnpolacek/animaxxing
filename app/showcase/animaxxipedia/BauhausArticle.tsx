@@ -116,12 +116,16 @@ function splitLabel(label: string): [string, string | null] {
   return match ? [match[1] ?? label, match[2] ?? null] : [label, null];
 }
 
-/** Every fact in reading order, so their shapes cycle across the article. */
+/** Every fact and figure in reading order: shapes cycle across the article, plates are numbered. */
 const FACT_ORDER = new Map<Fact, number>();
+const FIGURE_ORDER = new Map<Figure, number>([[INFOBOX_FIGURE, 1]]);
 CHAPTERS.forEach((chapter) =>
   chapter.subsections.forEach((subsection) => {
     if (subsection.fact) {
       FACT_ORDER.set(subsection.fact, FACT_ORDER.size);
+    }
+    if (subsection.figure) {
+      FIGURE_ORDER.set(subsection.figure, FIGURE_ORDER.size + 1);
     }
   }),
 );
@@ -437,7 +441,7 @@ export function BauhausArticle() {
           </span>
         </div>
         <div className={GRID}>
-          <h1 className="relative z-[2] m-0 font-sans text-[clamp(6rem,17vw,15.25rem)] font-extrabold lowercase leading-[0.78] tracking-[-0.06em] md:col-span-8 md:row-start-1">
+          <h1 className="relative z-[2] m-0 font-sans text-[clamp(6rem,17vw,15.25rem)] font-extrabold lowercase leading-[0.78] tracking-[-0.06em] md:col-start-1 md:col-end-9 md:row-start-1">
             <span data-title-line data-form-intro className="block overflow-hidden pb-[0.05em]">
               <span data-title-inner className="block">
                 octo
@@ -455,7 +459,7 @@ export function BauhausArticle() {
               </span>
             </span>
           </h1>
-          <div data-art className="relative z-[1] mt-6 aspect-square md:col-span-5 md:col-start-8 md:row-span-3 md:row-start-1 md:mt-0">
+          <div data-art className="relative z-[1] mt-6 aspect-square md:col-start-8 md:col-end-13 md:row-start-1 md:row-end-4 md:mt-0">
             <div data-depth="0.5" className="absolute right-0 top-0 h-[78%] w-[78%]">
               <div data-art-square data-form-intro className="h-full w-full bg-shape-yellow" />
             </div>
@@ -479,11 +483,11 @@ export function BauhausArticle() {
               fig. 1 · {INFOBOX_FIGURE.caption.toLowerCase()}
             </p>
           </div>
-          <div data-rule data-form-intro aria-hidden="true" className="mb-10 mt-16 h-2.5 bg-foreground md:col-span-7 md:mt-9" />
-          <p data-lead data-form-intro className="m-0 font-sans text-[clamp(1.25rem,2vw,1.5625rem)] leading-[1.4] tracking-[-0.005em] md:col-span-6">
+          <div data-rule data-form-intro aria-hidden="true" className="mb-10 mt-16 h-2.5 bg-foreground md:col-start-1 md:col-end-8 md:row-start-2 md:mt-9" />
+          <p data-lead data-form-intro className="m-0 font-sans text-[clamp(1.25rem,2vw,1.5625rem)] leading-[1.4] tracking-[-0.005em] md:col-start-1 md:col-end-7 md:row-start-3">
             {emphasise(LEAD, LEAD_EMPHASIS)}
           </p>
-          <div className="mt-10 grid gap-x-12 gap-y-6 font-sans text-sm sm:grid-cols-3 md:col-span-7">
+          <div className="mt-10 grid gap-x-12 gap-y-6 font-sans text-sm sm:grid-cols-3 md:col-start-1 md:col-end-8 md:row-start-4">
             {(
               [
                 ["temporal range", `${TEMPORAL_RANGE.from} – ${TEMPORAL_RANGE.to}`, TEMPORAL_RANGE.fromAge],
@@ -506,7 +510,7 @@ export function BauhausArticle() {
 
       {/* ---------------------------------------------------------- contents */}
       <nav data-page-transition data-scene aria-label="Contents" className="mt-24 sm:mt-28">
-        <div data-band data-form-intro className="grid grid-cols-2 bg-inverse text-inverse-foreground sm:grid-cols-4 lg:grid-cols-9">
+        <div data-band data-form-intro className="grid grid-cols-2 bg-inverse text-inverse-foreground sm:grid-cols-4 lg:grid-cols-8">
           {[...CHAPTERS, SOURCES_CHAPTER].map((chapter, index) => (
             <a
               key={chapter.id}
@@ -671,21 +675,18 @@ function ChapterBlock({ chapter, index }: { chapter: Chapter; index: number }) {
       {single && first?.fact && <Numeral fact={first.fact} />}
       {!single &&
         chapter.subsections.map((subsection) => (
-          <section key={subsection.id} id={subsection.id} data-scene className="scroll-mt-8 pt-10 sm:pt-14">
-            <div className={GRID}>
-              <div className="md:col-span-6 md:col-start-5">
-                <h3 data-h3 data-form-intro className={`${LABEL} mb-2.5 flex items-center gap-3 text-accent`}>
-                  <span data-h3-rule aria-hidden="true" className="inline-block h-0.5 w-7 bg-accent" />
-                  {subsection.title}
-                </h3>
-                <Prose subsection={subsection} />
-              </div>
-            </div>
-          </section>
-        ))}
-      {!single &&
-        chapter.subsections.map((subsection) => (
           <Fragment key={subsection.id}>
+            <section id={subsection.id} data-scene className="scroll-mt-8 pt-10 sm:pt-14">
+              <div className={GRID}>
+                <div className="md:col-span-6 md:col-start-5">
+                  <h3 data-h3 data-form-intro className={`${LABEL} mb-2.5 flex items-center gap-3 text-accent`}>
+                    <span data-h3-rule aria-hidden="true" className="inline-block h-0.5 w-7 bg-accent" />
+                    {subsection.title}
+                  </h3>
+                  <Prose subsection={subsection} />
+                </div>
+              </div>
+            </section>
             {subsection.figure && <Plate figure={subsection.figure} />}
             {subsection.fact && <Numeral fact={subsection.fact} />}
           </Fragment>
@@ -728,7 +729,8 @@ function Plate({ figure }: { figure: Figure }) {
           />
         </div>
         <figcaption data-fig-cap data-form-intro className={`${LABEL} mt-3 flex flex-wrap justify-between gap-x-6 gap-y-1 tracking-[0.2em]`}>
-          <span>{figure.caption.toLowerCase()}</span>
+          <span>fig. {FIGURE_ORDER.get(figure) ?? "?"}</span>
+          <span>{figure.caption}</span>
         </figcaption>
       </div>
     </figure>
