@@ -1,0 +1,1018 @@
+/*
+ * Strong Bad.
+ *
+ * Homestar Runner's sbemail, 2003, as a website. A cartoon world drawn in one
+ * weight of ink: flat sky above, flat grass below, a black horizon between
+ * them, and everything on top of it stickered, outlined and dropped on a hard
+ * shadow with no blur in it anywhere. Luckiest Guy does the shouting, Nunito
+ * does the talking, and VT323 is the green phosphor inside the Compy 386.
+ *
+ * Light is day: the sky is #7ec8f2 and the grass is #5cb531. Dark is the same
+ * cartoon at night: the sky goes to #14224a, the grass darkens, a pale moon
+ * and a handful of four-point stars come out. The ink never changes, and
+ * neither do the stickers, the cards, the Compy or its screen. A cartoon does
+ * not restyle itself after dark; the lights just go down.
+ *
+ * The scheme blocks carry the scheme attribute so they outrank the posterize
+ * scheme rules whatever the import order, exactly as earlyweb.css does. Only
+ * the things that actually differ between day and night live in them; the
+ * fixed cartoon palette is published once, below, as `--sb-*` custom
+ * properties. Components reach those through Tailwind arbitrary values
+ * (`bg-[var(--sb-red)]`) for anything that is always that colour, and keep
+ * the semantic tokens for anything that should follow light and dark.
+ */
+:root[data-look="strongbad"]:not([data-theme="dark"]) {
+  color-scheme: light;
+
+  --canvas: #7ec8f2;
+  --foreground: #1b1b1b;
+  --muted: #2f5a72;
+  --border: #1b1b1b;
+  --surface: #ffffff;
+  --surface-hover: #f4efe2;
+  --inverse: #1b1b1b;
+  --inverse-hover: #333333;
+  --inverse-foreground: #ffffff;
+  --focus: #c9302c;
+  --selection: #f9d24b;
+  --selection-foreground: #1b1b1b;
+
+  --accent: #c9302c;
+  --accent-bright: #f9d24b;
+  --accent-cool: #3f6fb5;
+  --line: #1b1b1b;
+  --faint: rgba(27, 27, 27, 0.18);
+
+  /* Daylight: the sky and the grass at full strength, and no night sky. */
+  --sb-sky: #7ec8f2;
+  --sb-grass: #5cb531;
+  --sb-night: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="strongbad"]:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --canvas: #14224a;
+    --foreground: #f6f3e8;
+    --muted: #a9b6d8;
+    --border: #1b1b1b;
+    --surface: #ffffff;
+    --surface-hover: #f0ece0;
+    --inverse: #1b1b1b;
+    --inverse-hover: #333333;
+    --inverse-foreground: #ffffff;
+    --focus: #f9d24b;
+    --selection: #f9d24b;
+    --selection-foreground: #1b1b1b;
+
+    --accent: #e0453f;
+    --accent-bright: #f9d24b;
+    --accent-cool: #8fb0e8;
+    --line: #1b1b1b;
+    --faint: rgba(246, 243, 232, 0.2);
+
+    --sb-sky: #14224a;
+    --sb-grass: #2f7a1f;
+    --sb-night: block;
+  }
+}
+
+:root[data-look="strongbad"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas: #14224a;
+  --foreground: #f6f3e8;
+  --muted: #a9b6d8;
+  --border: #1b1b1b;
+  --surface: #ffffff;
+  --surface-hover: #f0ece0;
+  --inverse: #1b1b1b;
+  --inverse-hover: #333333;
+  --inverse-foreground: #ffffff;
+  --focus: #f9d24b;
+  --selection: #f9d24b;
+  --selection-foreground: #1b1b1b;
+
+  --accent: #e0453f;
+  --accent-bright: #f9d24b;
+  --accent-cool: #8fb0e8;
+  --line: #1b1b1b;
+  --faint: rgba(246, 243, 232, 0.2);
+
+  --sb-sky: #14224a;
+  --sb-grass: #2f7a1f;
+  --sb-night: block;
+}
+
+/*
+ * The fixed half of the palette, and the faces. These hold their colour in
+ * either scheme: the ink is the ink, the gloves are red, the Compy is beige
+ * and its screen is green on almost-black whatever time of day it is.
+ */
+:root[data-look="strongbad"] {
+  --sb-dirt: #8a5a2b;
+  --sb-ink: #1b1b1b;
+  --sb-red: #c9302c;
+  --sb-blue: #3f6fb5;
+  --sb-green: #40e340;
+  --sb-crt: #050a05;
+  --sb-beige: #d9d0b8;
+  --sb-beige2: #bfb497;
+  --sb-yellow: #f9d24b;
+  --sb-white: #ffffff;
+  --sb-sea: #2a8fbd;
+  /* The bright phosphor the screen uses for a word it wants you to read. */
+  --sb-phosphor-hi: #bfffbf;
+
+  --face-body: var(--font-nunito), system-ui, sans-serif;
+  --face-label: var(--font-nunito), system-ui, sans-serif;
+  --face-billing: var(--font-luckiest-guy), var(--font-nunito), sans-serif;
+  --face-code: var(--font-vt323), "Courier New", monospace;
+  --face-display: var(--font-luckiest-guy), var(--font-nunito), sans-serif;
+}
+
+/*
+ * The page is the sky. Nunito's body weight in this world is 700; nothing in
+ * a cartoon is set at 400.
+ */
+:root[data-look="strongbad"] body {
+  background: var(--canvas);
+  font-weight: 700;
+}
+
+/*
+ * Night. A pale cartoon moon in the top right and a scattering of four-point
+ * stars across the whole sky, both drawn in one fixed layer behind the page.
+ * `--sb-night` is `none` in daylight, so the layer costs nothing there.
+ */
+:root[data-look="strongbad"] body::before {
+  content: "";
+  display: var(--sb-night);
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><circle cx='70' cy='70' r='50' fill='%23f4efd2' stroke='%231b1b1b' stroke-width='5'/><circle cx='52' cy='56' r='10' fill='%23ddd6b4'/><circle cx='87' cy='85' r='13' fill='%23ddd6b4'/><circle cx='90' cy='48' r='6' fill='%23ddd6b4'/></svg>"),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='520'><path fill='%23fdf8e3' d='M92 61L95.1 70.9L105 74L95.1 77.1L92 87L88.9 77.1L79 74L88.9 70.9ZM420 36L421.9 42.1L428 44L421.9 45.9L420 52L418.1 45.9L412 44L418.1 42.1ZM268 226L270.4 233.6L278 236L270.4 238.4L268 246L265.6 238.4L258 236L265.6 233.6ZM556 159L557.7 164.3L563 166L557.7 167.7L556 173L554.3 167.7L549 166L554.3 164.3ZM128 383L130.2 389.8L137 392L130.2 394.2L128 401L125.8 394.2L119 392L125.8 389.8ZM470 416L472.9 425.1L482 428L472.9 430.9L470 440L467.1 430.9L458 428L467.1 425.1ZM600 312L601.4 316.6L606 318L601.4 319.4L600 324L598.6 319.4L594 318L598.6 316.6ZM318 462L319.9 468.1L326 470L319.9 471.9L318 478L316.1 471.9L310 470L316.1 468.1Z'/></svg>");
+  background-repeat: no-repeat, repeat;
+  background-position: right 7vw top 11vh, 0 0;
+  background-size: 140px 140px, 640px 520px;
+  opacity: 0.9;
+}
+
+/* --------------------------------------------------------------- stickers */
+
+/*
+ * Sticker type: the letters are cut out with a thick black stroke and dropped
+ * on a hard shadow. The shadow is measured in `em` so it grows with the type
+ * rather than staying a fixed 5px under a 280px numeral. Override
+ * `--sb-sticker-stroke` and `--sb-sticker-drop` where a size wants more or
+ * less than the default.
+ */
+:root[data-look="strongbad"] .sb-sticker {
+  --sb-sticker-stroke: 0.045em;
+  --sb-sticker-drop: 0.07em;
+  -webkit-text-stroke: var(--sb-sticker-stroke) var(--sb-ink);
+  paint-order: stroke fill;
+  text-shadow: var(--sb-sticker-drop) var(--sb-sticker-drop) 0 var(--sb-ink);
+}
+
+/* Hard offset shadows. No blur ever: ink does not blur. */
+:root[data-look="strongbad"] .sb-shadow {
+  box-shadow: 4px 4px 0 var(--sb-ink);
+}
+
+:root[data-look="strongbad"] .sb-shadow-lg {
+  box-shadow: 8px 8px 0 var(--sb-ink);
+}
+
+/* A white card, outlined, round-cornered and dropped on its shadow. */
+:root[data-look="strongbad"] .sb-card {
+  position: relative;
+  border: 3px solid var(--sb-ink);
+  border-radius: 22px;
+  background: var(--sb-white);
+  color: var(--sb-ink);
+  box-shadow: 6px 6px 0 var(--sb-ink);
+}
+
+/*
+ * Speech tails. A card with a tail is something somebody said: the tail is a
+ * solid ink triangle hung off one side, `--sb-tail-top` down from the top.
+ * The white body of the card overlaps its base, so the tail reads as part of
+ * the same outline rather than a triangle stuck to it.
+ */
+:root[data-look="strongbad"] .sb-tail-left,
+:root[data-look="strongbad"] .sb-tail-right {
+  --sb-tail-top: 48px;
+  --sb-tail-size: 14px;
+}
+
+:root[data-look="strongbad"] .sb-tail-left::before {
+  content: "";
+  position: absolute;
+  top: var(--sb-tail-top);
+  left: calc(var(--sb-tail-size) * -1.7);
+  border: var(--sb-tail-size) solid transparent;
+  border-right-color: var(--sb-ink);
+}
+
+:root[data-look="strongbad"] .sb-tail-right::after {
+  content: "";
+  position: absolute;
+  top: var(--sb-tail-top);
+  right: calc(var(--sb-tail-size) * -1.6);
+  border: var(--sb-tail-size) solid transparent;
+  border-left-color: var(--sb-ink);
+}
+
+/*
+ * A tab. It rises off the black bar: rounded at the top, open at the bottom,
+ * so the bar itself closes it and there is no seam to hide. Padding is left
+ * to whatever wears it, since a nav tab and a chapter tab want different room.
+ */
+:root[data-look="strongbad"] .sb-tab {
+  display: inline-flex;
+  align-items: baseline;
+  border: 3px solid var(--sb-ink);
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  text-decoration: none;
+  line-height: 1;
+}
+
+/*
+ * A tab that has wrapped onto its own line is standing on nothing, and an
+ * open bottom edge then reads as a mistake rather than as a tab. On a phone,
+ * where the nav always wraps, they close up into buttons instead.
+ */
+@media (max-width: 639px) {
+  :root[data-look="strongbad"] .sb-tab {
+    border-bottom: 3px solid var(--sb-ink);
+    border-radius: 12px;
+  }
+}
+
+/*
+ * The ▶ of the logo, drawn from borders so it takes a colour without an SVG,
+ * and sized in `em` so a pair of them scales with the type they sit against.
+ */
+:root[data-look="strongbad"] .sb-arrow {
+  width: 0;
+  height: 0;
+  border-top: 0.4em solid transparent;
+  border-bottom: 0.4em solid transparent;
+  border-left: 0.65em solid var(--sb-red);
+  filter: drop-shadow(0.06em 0.06em 0 var(--sb-ink));
+}
+
+/* The horizon: 6px of ink across the page. */
+:root[data-look="strongbad"] .sb-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--sb-ink);
+}
+
+/* ------------------------------------------------------------- the compy */
+
+/*
+ * The CRT. Almost-black glass with the phosphor glowing on the inside of it,
+ * two-pixel scanlines over the top and a vignette pulling the corners down.
+ * The scanlines are positioned from `--sb-scan-y` so `scanlineDrift` can
+ * scroll them without touching a transform.
+ */
+:root[data-look="strongbad"] .sb-crt {
+  --sb-scan-y: 0px;
+  position: relative;
+  overflow: hidden;
+  border: 4px solid var(--sb-ink);
+  border-radius: 14px;
+  background: var(--sb-crt);
+  box-shadow: inset 0 0 40px rgba(64, 227, 64, 0.18);
+}
+
+:root[data-look="strongbad"] .sb-crt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.28) 0 2px,
+    transparent 2px 4px
+  );
+  background-position: 0 var(--sb-scan-y);
+}
+
+:root[data-look="strongbad"] .sb-crt::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.5));
+}
+
+/* Green text on the glass, lit from behind. */
+:root[data-look="strongbad"] .sb-phosphor {
+  color: var(--sb-green);
+  font-family: var(--face-code);
+  text-shadow: 0 0 6px rgba(64, 227, 64, 0.7);
+}
+
+/* Two voices on the screen: the machine's own asides, and the words it means. */
+:root[data-look="strongbad"] .sb-dim {
+  opacity: 0.55;
+}
+
+:root[data-look="strongbad"] .sb-hi {
+  color: var(--sb-phosphor-hi);
+}
+
+/* The block cursor. `cursorBlink` blinks it; without JS it simply sits there. */
+:root[data-look="strongbad"] .sb-cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1em;
+  vertical-align: -0.15em;
+  background: var(--sb-green);
+}
+
+/* --------------------------------------------------------------- labels */
+
+/* The yellow kicker pill above a headline. */
+:root[data-look="strongbad"] .sb-kick {
+  display: inline-block;
+  border: 3px solid var(--sb-ink);
+  border-radius: 999px;
+  padding: 6px 16px;
+  background: var(--sb-yellow);
+  color: var(--sb-ink);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 3px 3px 0 var(--sb-ink);
+}
+
+/* A phone is narrower than the kicker's line: smaller, and never wrapped. */
+@media (max-width: 479px) {
+  :root[data-look="strongbad"] .sb-kick {
+    font-size: 11px;
+    padding: 5px 12px;
+    letter-spacing: 0.06em;
+  }
+}
+
+/* The black pill that names a chapter. */
+:root[data-look="strongbad"] .sb-pill-label {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: var(--sb-ink);
+  color: var(--sb-white);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------- chrome */
+
+/*
+ * The Themes switcher wears a tab in this look, in the same yellow as the
+ * kicker. The pill's orbiting ring is off: a tab's own outline is the loudest
+ * thing on the bar already.
+ */
+:root[data-look="strongbad"] .sb-switcher {
+  background: var(--sb-yellow);
+  color: var(--sb-ink);
+  font-family: var(--face-display);
+}
+
+/*
+ * The footer band is ink, so inside it the tokens flip: the shared footer
+ * link and the compact scheme toggle both paint from these, and both would
+ * otherwise draw the day scheme's black-on-black.
+ */
+:root[data-look="strongbad"] [data-sb-footer] {
+  --foreground: var(--sb-white);
+  --muted: #bdbdbd;
+  --border: #4a4a4a;
+  --surface-hover: #333333;
+  --inverse: var(--sb-white);
+  --inverse-hover: #e6e6e6;
+  --inverse-foreground: var(--sb-ink);
+  --focus: var(--sb-yellow);
+}
+
+/* Kept out of the first paint, the way every other look's intro items are. */
+:root[data-look="strongbad"] [data-sb-intro] {
+  visibility: hidden;
+}
+
+/* --------------------------------------------------- the octopus article */
+
+/*
+ * Everything below belongs to the Animaxxipedia article in this look, and
+ * nothing else uses it, so it is all prefixed `sb-art-`. The article is a
+ * cartoon in two halves: a sky with the title stickered on it and the Compy
+ * 386 beside it, and a field of grass below the horizon where the chapters
+ * stand. The pieces are the mockup's, one for one.
+ */
+
+/* Held back until the piece's own scene plays it in. */
+:root[data-look="strongbad"] [data-sb-art-intro] {
+  visibility: hidden;
+}
+
+/*
+ * The ground. The grass has to run the full width of the window while the
+ * article itself stays inside the page's measure, so it is painted by a
+ * pseudo-element a viewport wide, centred on the column. The horizon is that
+ * layer's top border, which puts the contents tabs directly on it. The
+ * article's own content is positioned so it sits over the paint.
+ */
+:root[data-look="strongbad"] .sb-art-ground {
+  position: relative;
+}
+
+:root[data-look="strongbad"] .sb-art-ground::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  background: var(--sb-grass);
+  border-top: 6px solid var(--sb-ink);
+}
+
+:root[data-look="strongbad"] .sb-art-ground > * {
+  position: relative;
+}
+
+/* --------------------------------------------------------- the hero sky */
+
+/*
+ * The title. Three px of stroke and five of shadow, fixed rather than scaled
+ * off the type, exactly as the mockup cuts it: at 170px the sticker recipe's
+ * own em-based defaults would draw a 7px outline and the letters would close
+ * up inside it.
+ */
+:root[data-look="strongbad"] .sb-art-title {
+  --sb-sticker-stroke: 3px;
+  --sb-sticker-drop: 5px;
+  margin: 0;
+  font-family: var(--face-display);
+  font-size: clamp(76px, 11vw, 170px);
+  line-height: 0.84;
+  color: var(--sb-yellow);
+}
+
+:root[data-look="strongbad"] .sb-art-title span {
+  display: block;
+}
+
+:root[data-look="strongbad"] .sb-art-title span + span {
+  padding-left: 0.25em;
+  color: var(--sb-white);
+}
+
+/* A fact card under the title: the rank in red small caps over the name. */
+:root[data-look="strongbad"] .sb-art-meta {
+  border: 3px solid var(--sb-ink);
+  border-radius: 12px;
+  padding: 8px 12px;
+  background: var(--sb-white);
+  color: var(--sb-ink);
+  font-size: 14px;
+  box-shadow: 3px 3px 0 var(--sb-ink);
+}
+
+:root[data-look="strongbad"] .sb-art-meta span {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sb-red);
+}
+
+:root[data-look="strongbad"] .sb-art-meta b {
+  font-size: 15px;
+}
+
+/* The Compy 386: a beige case with vents and a badge, holding the CRT. */
+:root[data-look="strongbad"] .sb-art-compy {
+  position: relative;
+  border: 4px solid var(--sb-ink);
+  border-radius: 22px 22px 10px 10px;
+  padding: 16px 16px 34px;
+  background: var(--sb-beige);
+  box-shadow: 8px 8px 0 var(--sb-ink);
+}
+
+@media (min-width: 640px) {
+  :root[data-look="strongbad"] .sb-art-compy {
+    padding: 20px 20px 34px;
+  }
+}
+
+:root[data-look="strongbad"] .sb-art-brand {
+  position: absolute;
+  left: 26px;
+  bottom: 8px;
+  font-family: var(--face-display);
+  font-size: 16px;
+  letter-spacing: 0.06em;
+  color: var(--sb-ink);
+}
+
+:root[data-look="strongbad"] .sb-art-brand b {
+  color: var(--sb-red);
+}
+
+:root[data-look="strongbad"] .sb-art-vents {
+  position: absolute;
+  right: 26px;
+  bottom: 12px;
+  display: flex;
+  gap: 4px;
+}
+
+:root[data-look="strongbad"] .sb-art-vents i {
+  width: 4px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--sb-ink);
+  opacity: 0.5;
+}
+
+/*
+ * The text on the glass. `pre-wrap` keeps the letter's own line breaks and
+ * lets the long answer wrap to whatever width the screen happens to be, so
+ * the same copy reads on a phone and on a desk.
+ */
+:root[data-look="strongbad"] .sb-art-pre {
+  margin: 0;
+  font-size: clamp(15px, 3.4vw, 22px);
+  line-height: 1.15;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+/* ------------------------------------------------------ contents on the bar */
+
+:root[data-look="strongbad"] .sb-art-toc {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+:root[data-look="strongbad"] .sb-art-toc a {
+  flex: 1 1 130px;
+  gap: 8px;
+  padding: 10px 12px 6px;
+  background: var(--sb-white);
+  color: var(--sb-ink);
+  /*
+   * The inactive tabs stand a few pixels lower than the live one. It is the
+   * `translate` property rather than a transform, so `tabsRise` and the idle
+   * wobble can use the transform without knocking a tab off the bar.
+   */
+  translate: 0 6px;
+  opacity: 0.92;
+}
+
+:root[data-look="strongbad"] .sb-art-toc a[data-on="true"] {
+  background: var(--sb-yellow);
+  translate: 0 0;
+  opacity: 1;
+}
+
+:root[data-look="strongbad"] .sb-art-toc b {
+  font-family: var(--face-display);
+  font-size: 26px;
+  line-height: 1;
+  color: var(--sb-red);
+}
+
+:root[data-look="strongbad"] .sb-art-toc span {
+  font-size: 13px;
+  font-weight: 900;
+}
+
+/* ------------------------------------------------------------- chapters */
+
+/* The numeral. Big enough to read from the back of the room. */
+:root[data-look="strongbad"] .sb-art-num {
+  --sb-sticker-stroke: 4px;
+  --sb-sticker-drop: 8px;
+  display: block;
+  font-family: var(--face-display);
+  font-size: clamp(120px, 18vw, 280px);
+  line-height: 0.8;
+  color: var(--sb-red);
+  rotate: -4deg;
+}
+
+:root[data-look="strongbad"] .sb-art-pill {
+  rotate: -2deg;
+}
+
+:root[data-look="strongbad"] .sb-art-card {
+  padding: 22px 20px;
+}
+
+@media (min-width: 640px) {
+  :root[data-look="strongbad"] .sb-art-card {
+    padding: 28px 32px;
+  }
+}
+
+:root[data-look="strongbad"] .sb-art-h2 {
+  --sb-sticker-stroke: 2px;
+  --sb-sticker-drop: 4px;
+  margin: 0 0 20px;
+  font-family: var(--face-display);
+  font-weight: 400;
+  font-size: clamp(30px, 4.4vw, 52px);
+  line-height: 0.95;
+  color: var(--sb-blue);
+}
+
+:root[data-look="strongbad"] .sb-art-h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 26px 0 6px;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sb-red);
+}
+
+/* The dot is an element rather than a `::before` so a scene can pop it. */
+:root[data-look="strongbad"] .sb-art-dot {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--sb-ink);
+  border-radius: 50%;
+  background: var(--sb-yellow);
+}
+
+:root[data-look="strongbad"] .sb-art-p {
+  margin: 0 0 14px;
+  max-width: 62ch;
+  font-weight: 700;
+  color: var(--sb-ink);
+}
+
+/* The small print under a paragraph: where the paragraph came from. */
+:root[data-look="strongbad"] .sb-art-src {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--sb-blue);
+}
+
+:root[data-look="strongbad"] .sb-art-src:hover {
+  color: var(--sb-red);
+}
+
+/* Strong Bad's own line at the bottom of a card, on a scrap of CRT glass. */
+:root[data-look="strongbad"] .sb-art-aside {
+  display: inline-block;
+  margin-top: 18px;
+  border: 3px solid var(--sb-ink);
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: var(--sb-crt);
+  font-family: var(--face-code);
+  font-size: 20px;
+  line-height: 1.2;
+  color: var(--sb-green);
+  text-shadow: 0 0 6px rgba(64, 227, 64, 0.7);
+}
+
+:root[data-look="strongbad"] .sb-art-aside::before {
+  content: "> ";
+  color: var(--sb-phosphor-hi);
+}
+
+/* ------------------------------------------------------ gloves and facts */
+
+/* A red boxing glove: a mitt, a thumb, and a number shouted out of it. */
+:root[data-look="strongbad"] .sb-art-glove {
+  position: relative;
+  flex: none;
+  width: 150px;
+  height: 120px;
+}
+
+:root[data-look="strongbad"] .sb-art-glove-mitt {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  width: 150px;
+  height: 100px;
+  padding: 0 8px;
+  border: 5px solid var(--sb-ink);
+  border-radius: 50%;
+  background: var(--sb-red);
+}
+
+:root[data-look="strongbad"] .sb-art-glove-thumb {
+  position: absolute;
+  left: 48px;
+  top: 0;
+  width: 54px;
+  height: 32px;
+  border: 5px solid var(--sb-ink);
+  border-radius: 10px;
+  background: var(--sb-red);
+}
+
+:root[data-look="strongbad"] .sb-art-glove-num {
+  --sb-sticker-stroke: 2px;
+  --sb-sticker-drop: 3px;
+  font-family: var(--face-display);
+  font-size: 48px;
+  line-height: 1;
+  color: var(--sb-white);
+  white-space: nowrap;
+}
+
+:root[data-look="strongbad"] .sb-art-glove-num small {
+  font-size: 0.45em;
+}
+
+/* The yellow card the glove hits. */
+:root[data-look="strongbad"] .sb-art-fact-label {
+  max-width: 40ch;
+  border: 3px solid var(--sb-ink);
+  border-radius: 16px;
+  padding: 14px 20px;
+  background: var(--sb-yellow);
+  color: var(--sb-ink);
+  font-size: 18px;
+  box-shadow: 4px 4px 0 var(--sb-ink);
+  rotate: -1deg;
+}
+
+:root[data-look="strongbad"] .sb-art-fact-label span {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sb-red);
+}
+
+:root[data-look="strongbad"] .sb-art-hearts {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+:root[data-look="strongbad"] .sb-art-hearts i {
+  font-style: normal;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--sb-red);
+}
+
+/* ---------------------------------------------------------- photographs */
+
+/*
+ * A polaroid taped to the grass. The resting tilt is on the `rotate`
+ * property, so `polaroidToss` can spin the photo in through the transform
+ * and leave the tilt where the stylesheet put it.
+ */
+:root[data-look="strongbad"] .sb-art-polaroid {
+  position: relative;
+  margin: 0;
+  max-width: 640px;
+  border: 3px solid var(--sb-ink);
+  padding: 14px 14px 10px;
+  background: var(--sb-white);
+  box-shadow: 6px 6px 0 var(--sb-ink);
+  rotate: 1.5deg;
+}
+
+:root[data-look="strongbad"] .sb-art-polaroid[data-tilt="left"] {
+  rotate: -1.5deg;
+}
+
+:root[data-look="strongbad"] .sb-art-photo {
+  display: block;
+  overflow: hidden;
+  border: 3px solid var(--sb-ink);
+  background: var(--sb-sea);
+}
+
+:root[data-look="strongbad"] .sb-art-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(1.4) contrast(1.1);
+}
+
+/* The strip of tape. Centred on a margin rather than a transform, again so
+ * the slap that puts it there has the transform to itself. */
+:root[data-look="strongbad"] .sb-art-tape {
+  position: absolute;
+  left: 50%;
+  top: -14px;
+  width: 110px;
+  height: 28px;
+  margin-left: -55px;
+  border: 2px solid var(--sb-ink);
+  background: rgba(249, 210, 75, 0.85);
+  rotate: -3deg;
+}
+
+:root[data-look="strongbad"] .sb-art-cap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin-top: 10px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sb-ink);
+}
+
+:root[data-look="strongbad"] .sb-art-credit {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: #5f5f5f;
+}
+
+:root[data-look="strongbad"] .sb-art-credit a {
+  color: var(--sb-blue);
+}
+
+/* ------------------------------------------------------------- sources */
+
+/* A link shaped like a tab, but closed on all four sides: it is standing on
+ * a card rather than on the horizon. */
+:root[data-look="strongbad"] .sb-art-linktab {
+  display: inline-flex;
+  align-items: center;
+  border: 3px solid var(--sb-ink);
+  border-radius: 12px;
+  padding: 6px 12px;
+  background: var(--sb-white);
+  color: var(--sb-ink);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.1;
+  text-decoration: none;
+  box-shadow: 3px 3px 0 var(--sb-ink);
+}
+
+:root[data-look="strongbad"] .sb-art-linktab:hover {
+  background: var(--sb-yellow);
+}
+
+:root[data-look="strongbad"] .sb-art-dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 18px;
+  margin: 0;
+  font-size: 16px;
+  color: var(--sb-ink);
+}
+
+:root[data-look="strongbad"] .sb-art-dl dt {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sb-red);
+  padding-top: 4px;
+}
+
+:root[data-look="strongbad"] .sb-art-dl dd {
+  margin: 0;
+}
+
+:root[data-look="strongbad"] .sb-art-dl a {
+  color: var(--sb-blue);
+  font-weight: 900;
+}
+
+/* ------------------------------------------------- the demo's own controls */
+
+/*
+ * Back, Replay and Next above the article. The posterize pills read as
+ * somebody else's website in here, so in this look they become cartoon
+ * buttons: ink outline, hard shadow, no blur. The lift and the press are CSS
+ * rather than `buttonPress`, because these three are shared components and
+ * this is the only thing they need from the look.
+ *
+ * The lift moves `translate`, not a transform: the Next button is launched
+ * off to the right by GSAP on the way out, and the two must not fight over
+ * the same property.
+ */
+:root[data-look="strongbad"] .sb-art-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 3px solid var(--sb-ink);
+  border-radius: 14px;
+  padding: 8px 16px;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--sb-ink);
+  transition:
+    translate 0.16s ease-out,
+    box-shadow 0.16s ease-out,
+    background-color 0.16s ease-out;
+}
+
+:root[data-look="strongbad"] .sb-art-btn:hover,
+:root[data-look="strongbad"] .sb-art-btn:focus-visible {
+  translate: 0 -2px;
+  box-shadow: 7px 7px 0 var(--sb-ink);
+}
+
+/* Pressed: the button goes below its resting line and the shadow collapses. */
+:root[data-look="strongbad"] .sb-art-btn:active {
+  translate: 0 2px;
+  box-shadow: 0 0 0 var(--sb-ink);
+  transition-duration: 0.08s;
+}
+
+:root[data-look="strongbad"] .sb-art-btn-white {
+  background: var(--sb-white);
+  color: var(--sb-ink);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+:root[data-look="strongbad"] .sb-art-btn-white:hover {
+  background: var(--sb-yellow);
+}
+
+/* The two sticker buttons: Luckiest Guy sits high in its box, so the padding
+ * is uneven to put the type back in the middle of the button. */
+:root[data-look="strongbad"] .sb-art-btn-yellow,
+:root[data-look="strongbad"] .sb-art-btn-red {
+  padding: 11px 18px 7px;
+  font-family: var(--face-display);
+  font-size: 17px;
+  letter-spacing: 0.02em;
+}
+
+:root[data-look="strongbad"] .sb-art-btn-yellow {
+  background: var(--sb-yellow);
+  color: var(--sb-ink);
+}
+
+:root[data-look="strongbad"] .sb-art-btn-red {
+  background: var(--sb-red);
+  color: var(--sb-white);
+}
+
+/*
+ * On a phone the three controls share one row with the site's gutters, and
+ * the desk-sized sticker buttons do not fit in what is left. They come down
+ * a size rather than wrapping, because a wrapped row would push the hero
+ * further off the first screen than the buttons are worth.
+ */
+@media (max-width: 639px) {
+  :root[data-look="strongbad"] .sb-art-btn {
+    gap: 5px;
+    padding: 6px 10px;
+    box-shadow: 3px 3px 0 var(--sb-ink);
+  }
+
+  :root[data-look="strongbad"] .sb-art-btn:hover,
+  :root[data-look="strongbad"] .sb-art-btn:focus-visible {
+    box-shadow: 5px 5px 0 var(--sb-ink);
+  }
+
+  :root[data-look="strongbad"] .sb-art-btn-white {
+    font-size: 12px;
+  }
+
+  :root[data-look="strongbad"] .sb-art-btn-yellow,
+  :root[data-look="strongbad"] .sb-art-btn-red {
+    padding: 8px 11px 5px;
+    font-size: 14px;
+  }
+}

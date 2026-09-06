@@ -20,6 +20,9 @@ const BUTTON =
 /* 1997: the same bevel as Replay, with a >> that will not stop blinking. */
 const WEB_BUTTON =
   "web-navbtn inline-flex cursor-pointer items-center gap-2 no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus";
+/* Strong Bad: the loudest thing on the row, a red sticker button in Luckiest Guy. */
+const SB_BUTTON =
+  "sb-art-btn sb-art-btn-red focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus";
 
 /** How far, in px, the button launches on its way out. */
 const LAUNCH = 64;
@@ -28,7 +31,9 @@ export function ShowcaseNext({ slug }: { slug?: string | undefined }) {
   // The slug is read once: while the route transition holds the old page,
   // the pathname has already moved on, and the button must not follow it.
   const pathname = usePathname();
-  const earlyweb = useLook() === "earlyweb";
+  const look = useLook();
+  const earlyweb = look === "earlyweb";
+  const strongbad = look === "strongbad";
   const [demo] = useState(() => nextDemo(slug ?? pathname.split("/")[2] ?? ""));
   const scope = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -91,7 +96,7 @@ export function ShowcaseNext({ slug }: { slug?: string | undefined }) {
       <Link
         ref={linkRef}
         href={`/showcase/${demo.slug}`}
-        className={earlyweb ? WEB_BUTTON : BUTTON}
+        className={strongbad ? SB_BUTTON : earlyweb ? WEB_BUTTON : BUTTON}
         onClick={launch}
       >
         <span>Next</span>

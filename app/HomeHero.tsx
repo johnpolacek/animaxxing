@@ -7,6 +7,7 @@ import { ConstructivistHero } from "./ConstructivistHero";
 import { EarlyWebHero } from "./EarlyWebHero";
 import { Hero } from "./Hero";
 import { PinnedHero } from "./PinnedHero";
+import { StrongBadHero } from "./StrongBadHero";
 
 /** The front door composes differently under each look; pick the hero for the one in force. */
 export function HomeHero() {
@@ -22,6 +23,8 @@ export function HomeHero() {
       return <PinnedHero />;
     case "earlyweb":
       return <EarlyWebHero />;
+    case "strongbad":
+      return <StrongBadHero />;
     default:
       return <Hero />;
   }

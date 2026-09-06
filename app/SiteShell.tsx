@@ -14,10 +14,13 @@ import {
 import { useLook } from "@/components/theme/LookProvider";
 import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { cursorBlink, slapDown, tabsRise, typeOut } from "@/lib/animation/effects/strongbad";
 import { SKILLS_REPO } from "./animaxx/content";
 import { EarlyWebChrome } from "./EarlyWebChrome";
 import { EarlyWebStatusBar } from "./EarlyWebStatusBar";
 import { FooterLink } from "./FooterLink";
+import { StrongBadChrome } from "./StrongBadChrome";
+import { StrongBadFooter } from "./StrongBadFooter";
 
 /** Persistent chrome: it enters once, then remains untouched by route motion. */
 export function SiteShell({ children }: { children: ReactNode }) {
@@ -36,6 +39,14 @@ export function SiteShell({ children }: { children: ReactNode }) {
    * and chrome is painted before the document, not sprung in after it.
    */
   const earlyweb = look === "earlyweb";
+  /*
+   * Strong Bad brings his own chrome too: a stickered logo, four coloured
+   * tabs standing on a black horizon, and a band of ink at the bottom with
+   * the chant running across it. None of the posterize shell's motion suits
+   * a cartoon, so that look gets its own intro below rather than the one
+   * underneath it.
+   */
+  const strongbad = look === "strongbad";
 
   useGSAP(
     () => {
@@ -43,6 +54,69 @@ export function SiteShell({ children }: { children: ReactNode }) {
       if (!root || earlyweb) {
         return;
       }
+
+      if (strongbad) {
+        const logo = root.querySelector<HTMLElement>("[data-logo-intro]");
+        const tabs = gsap.utils.toArray<HTMLElement>("[data-sb-tab]", root);
+        const bar = root.querySelector<HTMLElement>("[data-sb-bar]");
+        const band = root.querySelector<HTMLElement>("[data-footer-intro]");
+        const chant = root.querySelector<HTMLElement>("[data-sb-chant]");
+        const caret = root.querySelector<HTMLElement>("[data-sb-chant-cursor]");
+        const settled = [logo, bar, band, ...tabs].filter(
+          (el): el is HTMLElement => el instanceof HTMLElement,
+        );
+
+        if (prefersReducedMotion()) {
+          gsap.set(settled, { autoAlpha: 1 });
+          return;
+        }
+
+        const timeline = gsap.timeline({ defaults: { overwrite: "auto" } });
+        timeline.addLabel("chrome", 0);
+        if (logo) {
+          // The logo is slapped onto the sky, shadow and all, on the first beat.
+          slapDown(timeline, logo, "chrome", { from: 1.9, rotate: -14, duration: 0.34 });
+        }
+        if (bar) {
+          // The horizon is slashed in from the left, under everything else.
+          timeline
+            .fromTo(
+              bar,
+              { autoAlpha: 1, scaleX: 0, transformOrigin: "left center", willChange: "transform" },
+              { scaleX: 1, duration: 0.55, ease: "power4.out" },
+              "chrome+=0.1",
+            )
+            .set(bar, { clearProps: "transform,willChange" }, ">");
+        }
+        if (tabs.length > 0) {
+          tabsRise(timeline, tabs, "chrome+=0.34");
+        }
+        if (band) {
+          timeline.fromTo(
+            band,
+            { autoAlpha: 0, y: 18 },
+            { autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out", clearProps: "transform" },
+            "chrome+=0.5",
+          );
+        }
+
+        /*
+         * The chant. It is typed out once the band is up, and then, after a
+         * pause, typed out again, and again: Strong Bad is still checking his
+         * email and he is not going to stop while you are reading this.
+         */
+        const chantLoop = gsap.timeline({ repeat: -1, repeatDelay: 3.5, delay: 1.2 });
+        const run = typeOut(chantLoop, chant, 0, { cps: 22, cursor: caret });
+        const blink = cursorBlink(caret);
+        blink?.delay(1.2);
+
+        return () => {
+          chantLoop.kill();
+          blink?.kill();
+          run?.revert();
+        };
+      }
+
       const items = gsap.utils.toArray<HTMLElement>("[data-shell-intro]", root);
       const footer = root.querySelector<HTMLElement>("[data-footer-intro]");
       const logo = root.querySelector<HTMLElement>("[data-logo-intro]");
@@ -97,10 +171,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
           "logo+=0.25",
         )
         .set(logoUnderline, { clearProps: "transform,transformOrigin,willChange" }, ">");
+      // Only the Strong Bad branch above has anything to tear down; the rest
+      // of the shell's motion is owned by the hook's own context.
+      return undefined;
     },
     // The look decides which chrome is in the tree, so the intro has to be
     // able to run again when the switcher swaps one set of nodes for another.
-    { scope, dependencies: [earlyweb] },
+    { scope, dependencies: [earlyweb, strongbad] },
   );
 
   if (earlyweb) {
@@ -109,6 +186,16 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <EarlyWebChrome />
         <PageTransition>{children}</PageTransition>
         <EarlyWebStatusBar />
+      </div>
+    );
+  }
+
+  if (strongbad) {
+    return (
+      <div ref={scope} className="flex min-h-screen flex-col overflow-x-clip">
+        <StrongBadChrome />
+        <PageTransition>{children}</PageTransition>
+        <StrongBadFooter />
       </div>
     );
   }

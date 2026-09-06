@@ -14,10 +14,15 @@ const BUTTON =
 /* 1997: a dialog button that sinks into its bevel when you push it. */
 const WEB_BUTTON =
   "web-navbtn inline-flex cursor-pointer items-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus";
+/* Strong Bad: a yellow sticker button that lifts on hover and squashes flat when pressed. */
+const SB_BUTTON =
+  "sb-art-btn sb-art-btn-yellow focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus";
 
 export function ShowcaseReplay() {
   const iconRef = useRef<SVGSVGElement>(null);
-  const earlyweb = useLook() === "earlyweb";
+  const look = useLook();
+  const earlyweb = look === "earlyweb";
+  const strongbad = look === "strongbad";
 
   const replay = () => {
     if (iconRef.current && !prefersReducedMotion()) {
@@ -34,7 +39,7 @@ export function ShowcaseReplay() {
     <div data-page-transition>
       <button
         type="button"
-        className={earlyweb ? WEB_BUTTON : BUTTON}
+        className={strongbad ? SB_BUTTON : earlyweb ? WEB_BUTTON : BUTTON}
         onClick={replay}
         aria-label="Replay the animation"
       >

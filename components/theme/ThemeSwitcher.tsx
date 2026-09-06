@@ -53,6 +53,8 @@ export function ThemeSwitcher({ className }: { className?: string }) {
   const look = useLook();
   /* The early web look wears the toolbar's bevel instead of the pill. */
   const earlyweb = look === "earlyweb";
+  /* Strong Bad's chrome is a row of tabs on a black bar; this is the last one. */
+  const strongbad = look === "strongbad";
   const setLook = useSetLook();
   const [open, setOpen] = useState(false);
   // The panel stays mounted through its exit; `visible` lags `open` on close.
@@ -77,11 +79,20 @@ export function ThemeSwitcher({ className }: { className?: string }) {
 
       let twitch: gsap.core.Timeline | null = null;
       let crackling: ((dt: number) => void) | null = null;
+      // The Strong Bad look keeps the twitch but not the sparks and rings:
+      // a cartoon drawn in one weight of ink has no hairline particles in
+      // it. Read off <html> at the moment rather than closed over, so a
+      // look chosen from the picker is honoured without remounting.
+      const sparks = () => document.documentElement.dataset.look !== "strongbad";
       if (!prefersReducedMotion()) {
         gsap.set(target, { transformOrigin: "50% 50%" });
         twitch = gsap
           .timeline({ repeat: -1, repeatDelay: TWITCH_EVERY, delay: 1.5 })
-          .call(() => twitchBurst(field))
+          .call(() => {
+            if (sparks()) {
+              twitchBurst(field);
+            }
+          })
           .to(target, {
             keyframes: [
               { rotation: -8, x: -3, scale: 1.1, duration: 0.06 },
@@ -95,7 +106,7 @@ export function ThemeSwitcher({ className }: { className?: string }) {
           .to("[data-switcher-mark]", { rotation: "-=360", duration: 0.5, ease: "back.out(1.6)" }, "<");
 
         const on = () => {
-          if (!crackling) {
+          if (!crackling && sparks()) {
             crackling = crackle(field);
           }
         };
@@ -226,7 +237,7 @@ export function ThemeSwitcher({ className }: { className?: string }) {
 
   function show() {
     const field = buttonField.current;
-    if (field && !prefersReducedMotion()) {
+    if (field && !prefersReducedMotion() && look !== "strongbad") {
       openBurst(field);
     }
     setVisible(true);
@@ -276,10 +287,15 @@ export function ThemeSwitcher({ className }: { className?: string }) {
         className={
           // 1997 has no pill: in that look the switcher is a toolbar button
           // like the ones beside it, and its orbiting ring becomes the dotted
-          // focus rectangle Windows drew inside a bevel.
+          // focus rectangle Windows drew inside a bevel. Strong Bad has no
+          // pill either: there, it is another tab standing on the black bar,
+          // and the ring gives way to a plain focus outline, since a tab is
+          // already the loudest thing on the horizon.
           earlyweb
             ? "switcher-button web-switcher group relative inline-flex items-center gap-1.5 focus-visible:outline-none"
-            : "switcher-button group relative inline-flex items-center gap-2.5 rounded-sm bg-inverse px-4 py-2 font-mono text-sm font-bold uppercase tracking-[0.16em] text-inverse-foreground transition-colors hover:bg-inverse-hover focus-visible:outline-none"
+            : strongbad
+              ? "switcher-button sb-switcher sb-tab group relative gap-1.5 px-3 pb-1.5 pt-2 text-[14px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus sm:gap-2 sm:px-[18px] sm:pb-[6px] sm:pt-[10px] sm:text-[19px]"
+              : "switcher-button group relative inline-flex items-center gap-2.5 rounded-sm bg-inverse px-4 py-2 font-mono text-sm font-bold uppercase tracking-[0.16em] text-inverse-foreground transition-colors hover:bg-inverse-hover focus-visible:outline-none"
         }
       >
         <span
@@ -287,16 +303,18 @@ export function ThemeSwitcher({ className }: { className?: string }) {
           className={
             earlyweb
               ? "web-switcher-focus pointer-events-none absolute inset-[2px]"
-              : "switcher-ring pointer-events-none absolute -inset-1.5 rounded-md"
+              : strongbad
+                ? "hidden"
+                : "switcher-ring pointer-events-none absolute -inset-1.5 rounded-md"
           }
         />
         <HugeiconsIcon
           icon={RefreshCcwIcon}
-          size={earlyweb ? 13 : 18}
+          size={earlyweb ? 13 : strongbad ? 16 : 18}
           strokeWidth={2}
           aria-hidden="true"
           data-switcher-mark
-          className="shrink-0"
+          className={strongbad ? "shrink-0 self-center" : "shrink-0"}
         />
         {earlyweb ? <span className="web-switcher-label">Themes</span> : "Themes"}
       </button>

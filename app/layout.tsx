@@ -9,11 +9,14 @@ import {
   Inter_Tight,
   JetBrains_Mono,
   Jost,
+  Luckiest_Guy,
+  Nunito,
   Oswald,
   Rethink_Sans,
   Roboto_Condensed,
   Roboto_Mono,
   Space_Mono,
+  VT323,
 } from "next/font/google";
 import { cookies } from "next/headers";
 import { LOOK_COOKIE, lookFromCookie } from "@/components/theme/look";
@@ -135,6 +138,33 @@ const comicNeue = Comic_Neue({
   preload: false,
 });
 
+/*
+ * Strong Bad. Luckiest Guy is the sticker type every cartoon shouts in, VT323
+ * is the phosphor inside the Compy 386, and Nunito, at 700 and 900, is the
+ * voice that does the talking around them.
+ */
+const luckiestGuy = Luckiest_Guy({
+  variable: "--font-luckiest-guy",
+  subsets: ["latin"],
+  weight: "400",
+  preload: false,
+});
+
+const vt323 = VT323({
+  variable: "--font-vt323",
+  subsets: ["latin"],
+  weight: "400",
+  preload: false,
+});
+
+const nunito = Nunito({
+  variable: "--font-nunito",
+  subsets: ["latin"],
+  weight: ["700", "900"],
+  style: ["normal", "italic"],
+  preload: false,
+});
+
 export const metadata: Metadata = {
   title: "Animaxxing",
   description: "Motion to the Max.",
@@ -152,7 +182,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       // The theme script sets data-theme before hydration; the server cannot
       // know the stored choice, so that attribute is expected to differ.
       suppressHydrationWarning
-      className={`${rethinkSans.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${inter.variable} ${barlowCondensed.variable} ${courierPrime.variable} ${jost.variable} ${spaceMono.variable} ${anton.variable} ${oswald.variable} ${robotoCondensed.variable} ${robotoMono.variable} ${interTight.variable} ${comicNeue.variable} h-full scroll-smooth antialiased`}
+      className={`${rethinkSans.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${inter.variable} ${barlowCondensed.variable} ${courierPrime.variable} ${jost.variable} ${spaceMono.variable} ${anton.variable} ${oswald.variable} ${robotoCondensed.variable} ${robotoMono.variable} ${interTight.variable} ${comicNeue.variable} ${luckiestGuy.variable} ${vt323.variable} ${nunito.variable} h-full scroll-smooth antialiased`}
     >
       <head>
         <ThemeScript />
