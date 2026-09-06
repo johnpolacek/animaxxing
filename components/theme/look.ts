@@ -19,6 +19,7 @@ export const LOOKS = [
   "pinned",
   "earlyweb",
   "strongbad",
+  "ukiyoe",
 ] as const;
 
 export type Look = (typeof LOOKS)[number];

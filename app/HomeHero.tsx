@@ -8,6 +8,7 @@ import { EarlyWebHero } from "./EarlyWebHero";
 import { Hero } from "./Hero";
 import { PinnedHero } from "./PinnedHero";
 import { StrongBadHero } from "./StrongBadHero";
+import { UkiyoeHero } from "./UkiyoeHero";
 
 /** The front door composes differently under each look; pick the hero for the one in force. */
 export function HomeHero() {
@@ -25,6 +26,8 @@ export function HomeHero() {
       return <EarlyWebHero />;
     case "strongbad":
       return <StrongBadHero />;
+    case "ukiyoe":
+      return <UkiyoeHero />;
     default:
       return <Hero />;
   }

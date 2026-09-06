@@ -5,6 +5,7 @@
 @import "./looks/pinned.css";
 @import "./looks/earlyweb.css";
 @import "./looks/strongbad.css";
+@import "./looks/ukiyoe.css";
 
 /*
  * Semantic design tokens.
@@ -72,6 +73,23 @@
   --poster-paper: #e8dfc9;
   --poster-ink: #141312;
   --poster-red: #c4271b;
+
+  /*
+   * The print's pigments. Posterize never paints them; the ukiyo-e look
+   * pulls every plate from them. Paper and sumi are roles rather than
+   * colours — the look's dark scheme swaps the sheet for indigo night
+   * paper and the ink for light — so components should read them as
+   * "the print's ground" and "the print's ink", not as cream and brown.
+   */
+  --ukiyoe-paper: #ede2c6;
+  --ukiyoe-paper2: #e4d7b5;
+  --ukiyoe-sumi: #2a231d;
+  --ukiyoe-indigo: #1e3a5f;
+  --ukiyoe-indigo2: #2d5787;
+  --ukiyoe-mizu: #9dbccb;
+  --ukiyoe-beni: #c23b2a;
+  --ukiyoe-ochre: #c9a45c;
+  --ukiyoe-grey: #6f8fa8;
 
   /*
    * The keynote's gradient, and the two washes painted from it. Posterize
@@ -174,6 +192,15 @@
   --color-shape-blue: var(--shape-blue);
   --color-shape-ink: var(--shape-ink);
   --color-shape-paper: var(--shape-paper);
+  --color-ukiyoe-paper: var(--ukiyoe-paper);
+  --color-ukiyoe-paper2: var(--ukiyoe-paper2);
+  --color-ukiyoe-sumi: var(--ukiyoe-sumi);
+  --color-ukiyoe-indigo: var(--ukiyoe-indigo);
+  --color-ukiyoe-indigo2: var(--ukiyoe-indigo2);
+  --color-ukiyoe-mizu: var(--ukiyoe-mizu);
+  --color-ukiyoe-beni: var(--ukiyoe-beni);
+  --color-ukiyoe-ochre: var(--ukiyoe-ochre);
+  --color-ukiyoe-grey: var(--ukiyoe-grey);
 
   --font-sans: var(--face-body);
   --font-mono: var(--face-label);
@@ -301,7 +328,8 @@ body {
 [data-screen-intro],
 [data-pin-intro],
 [data-form-intro],
-[data-web-intro] {
+[data-web-intro],
+[data-print-intro] {
   visibility: hidden;
 }
 

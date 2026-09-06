@@ -5,6 +5,7 @@ import {
   Comic_Neue,
   Cormorant_Garamond,
   Courier_Prime,
+  IBM_Plex_Mono,
   Inter,
   Inter_Tight,
   JetBrains_Mono,
@@ -15,6 +16,8 @@ import {
   Rethink_Sans,
   Roboto_Condensed,
   Roboto_Mono,
+  Shippori_Mincho,
+  Shippori_Mincho_B1,
   Space_Mono,
   VT323,
 } from "next/font/google";
@@ -165,6 +168,38 @@ const nunito = Nunito({
   preload: false,
 });
 
+/*
+ * Ukiyo-e. Shippori Mincho is the brush-cut serif the text is set in and
+ * Shippori Mincho B1 its heavier display cut; between them they carry the
+ * Latin, and the Japanese fallbacks named in the look's `--face-*` carry
+ * the kanji on machines that already have a mincho. Google publishes only
+ * the latin subsets for these families, so `subsets` names those; `swap`
+ * keeps the text readable while they load.
+ */
+const shipporiMincho = Shippori_Mincho({
+  variable: "--font-shippori-mincho",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+  preload: false,
+});
+
+const shipporiMinchoB1 = Shippori_Mincho_B1({
+  variable: "--font-shippori-mincho-b1",
+  subsets: ["latin"],
+  weight: ["600", "800"],
+  display: "swap",
+  preload: false,
+});
+
+/* The print's code face: what is meant to be copied is always monospaced. */
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex-mono",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  preload: false,
+});
+
 export const metadata: Metadata = {
   title: "Animaxxing",
   description: "Motion to the Max.",
@@ -182,7 +217,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       // The theme script sets data-theme before hydration; the server cannot
       // know the stored choice, so that attribute is expected to differ.
       suppressHydrationWarning
-      className={`${rethinkSans.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${inter.variable} ${barlowCondensed.variable} ${courierPrime.variable} ${jost.variable} ${spaceMono.variable} ${anton.variable} ${oswald.variable} ${robotoCondensed.variable} ${robotoMono.variable} ${interTight.variable} ${comicNeue.variable} ${luckiestGuy.variable} ${vt323.variable} ${nunito.variable} h-full scroll-smooth antialiased`}
+      className={`${rethinkSans.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${inter.variable} ${barlowCondensed.variable} ${courierPrime.variable} ${jost.variable} ${spaceMono.variable} ${anton.variable} ${oswald.variable} ${robotoCondensed.variable} ${robotoMono.variable} ${interTight.variable} ${comicNeue.variable} ${luckiestGuy.variable} ${vt323.variable} ${nunito.variable} ${shipporiMincho.variable} ${shipporiMinchoB1.variable} ${ibmPlexMono.variable} h-full scroll-smooth antialiased`}
     >
       <head>
         <ThemeScript />

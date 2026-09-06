@@ -8,6 +8,7 @@ import { ConstructivistArticle } from "./ConstructivistArticle";
 import { PinnedArticle } from "./PinnedArticle";
 import { EarlyWebArticle } from "./EarlyWebArticle";
 import { StrongBadArticle } from "./StrongBadArticle";
+import { UkiyoeArticle } from "./UkiyoeArticle";
 
 /** The article composes differently under each look; pick the one for the look in force. */
 export function ArticleByLook() {
@@ -25,6 +26,8 @@ export function ArticleByLook() {
       return <EarlyWebArticle />;
     case "strongbad":
       return <StrongBadArticle />;
+    case "ukiyoe":
+      return <UkiyoeArticle />;
     default:
       return <Article />;
   }

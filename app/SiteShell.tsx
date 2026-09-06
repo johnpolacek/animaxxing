@@ -47,6 +47,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
    * underneath it.
    */
   const strongbad = look === "strongbad";
+  /*
+   * The print's chrome: a red hanko in place of the ▶▶, the wordmark cut in
+   * mincho with its kanji reading beside it, and a hairline of sumi over a
+   * footer signed with three seals. It keeps the posterize shell intro —
+   * only the two looks above opt out of that.
+   */
+  const ukiyoe = look === "ukiyoe";
 
   useGSAP(
     () => {
@@ -230,24 +237,44 @@ export function SiteShell({ children }: { children: ReactNode }) {
                     ? "relative inline-block font-display text-xl uppercase tracking-[0.06em] text-foreground sm:text-[22px]"
                   : pinned
                     ? "relative inline-block font-sans text-[13px] font-semibold lowercase tracking-[-0.01em] text-foreground"
+                  : ukiyoe
+                    ? "relative inline-flex items-center gap-3 font-sans text-xl font-bold tracking-[0.06em] text-foreground sm:text-[22px]"
                     : "relative inline-block font-[family-name:var(--font-jetbrains-mono)] text-base uppercase tracking-[0.08em] text-muted sm:text-lg"
               }
             >
-              <span data-logo-text>
+              {ukiyoe ? (
+                // The seal is carved, not set: it stays outside the split so
+                // the shell intro cannot take its kanji apart.
                 <span
                   aria-hidden="true"
                   data-logo-mark
-                  className={[
-                    "-mr-[0.1em] inline-block leading-none origin-[0_calc(100%-0.3em)] [transform:translateY(calc(-0.05em_-_1px))_scale(0.8,1.225)]",
-                    bauhaus ? "mr-[0.15em] text-shape-red" : "",
-                    constructivist ? "mr-[0.2em] text-poster-red" : "",
-                    pinned ? "mr-[0.2em] text-accent" : "",
-                  ].join(" ")}
+                  className="ukiyoe-seal h-[30px] w-[30px] shrink-0 text-[15px]"
                 >
-                  <span className="inline-block">▶</span>
-                  <span className="inline-block -ml-[0.2em]">▶</span>
+                  動
                 </span>
+              ) : null}
+              <span data-logo-text>
+                {ukiyoe ? null : (
+                  <span
+                    aria-hidden="true"
+                    data-logo-mark
+                    className={[
+                      "-mr-[0.1em] inline-block leading-none origin-[0_calc(100%-0.3em)] [transform:translateY(calc(-0.05em_-_1px))_scale(0.8,1.225)]",
+                      bauhaus ? "mr-[0.15em] text-shape-red" : "",
+                      constructivist ? "mr-[0.2em] text-poster-red" : "",
+                      pinned ? "mr-[0.2em] text-accent" : "",
+                    ].join(" ")}
+                  >
+                    <span className="inline-block">▶</span>
+                    <span className="inline-block -ml-[0.2em]">▶</span>
+                  </span>
+                )}
                 animaxxing
+                {ukiyoe ? (
+                  <span aria-hidden="true" className="ml-2 font-normal opacity-70">
+                    動画極
+                  </span>
+                ) : null}
               </span>
               <span
                 aria-hidden="true"
@@ -268,7 +295,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
         data-footer-intro
         className={[
           "mt-auto px-gutter py-10 sm:px-gutter-lg",
-          bauhaus ? "border-t-[10px] border-foreground" : constructivist ? "border-t-4 border-foreground" : "border-t border-border",
+          bauhaus
+            ? "border-t-[10px] border-foreground"
+            : constructivist
+              ? "border-t-4 border-foreground"
+              : ukiyoe
+                ? "border-t border-ukiyoe-sumi"
+                : "border-t border-border",
         ].join(" ")}
       >
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-6">
@@ -284,10 +317,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 "flex flex-wrap items-center gap-x-4 gap-y-2",
                 pinned
                   ? "font-sans text-[12px] text-muted"
-                  : "font-mono text-caption uppercase",
+                  : ukiyoe
+                    ? "font-sans text-[13px] tracking-[0.08em] text-foreground"
+                    : "font-mono text-caption uppercase",
                 bauhaus ? "font-medium tracking-[0.06em] text-foreground" : "",
                 constructivist ? "font-medium tracking-[0.14em] text-foreground" : "",
-                !bauhaus && !pinned && !constructivist ? "text-muted" : "",
+                !bauhaus && !pinned && !constructivist && !ukiyoe ? "text-muted" : "",
               ].join(" ")}
             >
               <span>
@@ -319,6 +354,16 @@ export function SiteShell({ children }: { children: ReactNode }) {
             {constructivist && (
               // The poster's arrowhead signs the page off.
               <span aria-hidden="true" className="poster-arrow text-[22px] text-poster-red" />
+            )}
+            {ukiyoe && (
+              // Three hanko sign the print off: 動 画 極, motion picture, the utmost.
+              <span aria-hidden="true" className="flex gap-2">
+                {["動", "画", "極"].map((kanji) => (
+                  <span key={kanji} className="ukiyoe-seal h-[28px] w-[28px] text-[14px]">
+                    {kanji}
+                  </span>
+                ))}
+              </span>
             )}
             <ThemeToggle compact />
           </div>

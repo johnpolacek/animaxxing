@@ -132,17 +132,49 @@ export function ThemePreview({ slug }: { slug: ExplorationSlug }) {
       );
     case "ukiyoe":
       return (
-        <div className="relative h-full w-full overflow-hidden bg-[#f3e9d2] text-[#1f2a44]">
-          <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden="true">
-            <path d="M-5 78 C 15 60, 30 60, 45 74 S 75 88, 105 66" fill="none" stroke="#1f2a44" strokeWidth="3.5" />
-            <path d="M-5 88 C 15 72, 30 72, 45 84 S 75 98, 105 78" fill="none" stroke="#3f6fb5" strokeWidth="3" />
-            <path d="M8 62 C 20 44, 40 40, 54 52 C 50 44, 44 36, 36 34 C 46 30, 56 34, 62 44" fill="#1f2a44" />
-            <circle cx="76" cy="26" r="13" fill="#c0392b" />
+        <div className="relative h-full w-full overflow-hidden bg-[#ede2c6] text-[#2a231d]">
+          {/* Bokashi: the sky graded from indigo down into the paper. */}
+          <div className="absolute inset-x-0 top-0 h-[44%] bg-[linear-gradient(180deg,#1e3a5f_0%,#2d5787_30%,rgba(157,188,203,0.5)_70%,transparent_100%)]" />
+          <div className="absolute left-[56%] top-[8%] h-[26%] w-[26%] rounded-full bg-[#c23b2a] opacity-90" />
+          <svg
+            viewBox="0 0 100 60"
+            preserveAspectRatio="none"
+            className="absolute inset-x-0 bottom-0 h-[48%] w-full"
+            aria-hidden="true"
+          >
+            <path d="M0 60V33c9-7 16-21 27-19 8 1 12 14 20 13 8-1 13-15 22-16 11-2 20 9 31 6V60z" fill="#9dbccb" />
+            <path d="M0 60V42c11-9 18-22 28-20 8 1 13 14 21 13 8-1 13-13 21-14 10-2 20 8 30 5V60z" fill="#2d5787" />
+            <path d="M0 60V48c12-7 20-18 29-16 7 2 12 12 19 12 7 0 12-10 20-11 9-1 19 7 32 4V60z" fill="#1e3a5f" />
+            {/* The great crest, in three blues, curling to the right. */}
+            <path
+              d="M50 52c3-21 11-33 22-34 8-1 14 10 14 26-2-9-7-13-11-11 4 2 7 10 7 20-3-9-8-13-12-9-5 5-8 15-9 25z"
+              fill="#1e3a5f"
+            />
+            <path
+              d="M55 52c3-16 9-27 17-28 5-1 9 8 10 18-2-6-6-9-9-7 3 2 5 8 5 16-2-8-6-10-10-6-4 4-6 12-7 19z"
+              fill="#2d5787"
+            />
+            <path
+              d="M59 52c2-11 7-20 12-20 3 0 5 4 6 10-2-4-4-5-7-4 2 2 3 6 3 10-2-5-5-6-8-3-3 4-4 8-5 12z"
+              fill="#9dbccb"
+              opacity=".55"
+            />
+            {/* Foam claws along the curl. */}
+            <g fill="#ede2c6">
+              <circle cx="86" cy="38" r="2.2" />
+              <circle cx="84" cy="43" r="1.8" />
+              <circle cx="80" cy="47" r="1.4" />
+              <circle cx="84" cy="30" r="1.7" />
+              <circle cx="79" cy="24" r="1.4" />
+              <circle cx="73" cy="19" r="1.1" />
+              <circle cx="14" cy="41" r="1.3" />
+              <circle cx="10" cy="45" r="1" />
+            </g>
           </svg>
-          <div className="absolute right-[10%] top-[54%] rounded-[2px] bg-[#c0392b] px-[3px] py-[4px] font-[family-name:var(--font-rethink-sans)] text-[0.55rem] font-bold leading-none text-[#f3e9d2] [writing-mode:vertical-rl]">
+          <span className="absolute right-[8%] top-[44%] grid h-[26%] w-[14%] rotate-[-2deg] place-items-center bg-[#c23b2a] font-[family-name:var(--font-shippori-mincho-b1)] text-[0.6rem] font-extrabold leading-none text-[#ede2c6] shadow-[inset_0_0_0_1.5px_#ede2c6,inset_0_0_0_3px_#c23b2a] [text-orientation:mixed] [writing-mode:vertical-rl]">
             動
-          </div>
-          <div className="absolute left-[8%] top-[8%] font-serif text-[1.15rem] leading-none [writing-mode:vertical-rl]">
+          </span>
+          <div className="absolute left-[8%] top-[7%] font-[family-name:var(--font-shippori-mincho)] text-[1.15rem] font-medium leading-none text-[#ede2c6] [text-orientation:mixed] [writing-mode:vertical-rl]">
             Motion
           </div>
         </div>

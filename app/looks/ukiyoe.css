@@ -1,0 +1,700 @@
+/*
+ * Ukiyo-e.
+ *
+ * A woodblock print: toned paper, sumi ink key lines, and flat colour
+ * blocks pulled one plate at a time — indigo, mizu, beni. Shippori Mincho
+ * sets the text and Shippori Mincho B1 the display, so the Latin sits in
+ * the same brush-cut serif as the kanji. IBM Plex Mono is the code face:
+ * whatever the look, the text people copy is monospaced.
+ *
+ * The palette is exposed as `--ukiyoe-*` custom properties and, through the
+ * `@theme` block in globals.css, as utilities (`bg-ukiyoe-beni`,
+ * `text-ukiyoe-indigo`, ...). Short aliases (`--paper`, `--sumi`, `--beni`,
+ * ...) are declared inside the look for markup lifted straight from the
+ * exploration; they only exist while the look is on.
+ *
+ * "Paper" and "ink" are roles, not colours: in the light scheme
+ * `--ukiyoe-paper` is the toned sheet and `--ukiyoe-sumi` the ink, and in
+ * the dark scheme the same print is pulled on indigo night paper, so paper
+ * becomes the deep blue and sumi the light ink. Beni, indigo, mizu, ochre
+ * and grey are pigments and never move.
+ *
+ * The selectors carry the scheme attribute so they outrank the posterize
+ * scheme rules whatever the import order. Light is the look's home.
+ */
+:root[data-look="ukiyoe"]:not([data-theme="dark"]) {
+  color-scheme: light;
+
+  --canvas: #ede2c6;
+  --foreground: #2a231d;
+  --muted: #6a6053;
+  --border: #2a231d;
+  --surface: #e4d7b5;
+  --surface-hover: #dccca4;
+  --inverse: #2a231d;
+  --inverse-hover: #1e3a5f;
+  --inverse-foreground: #ede2c6;
+  --focus: #c23b2a;
+  --selection: #1e3a5f;
+  --selection-foreground: #ede2c6;
+
+  --accent: #c23b2a;
+  --accent-bright: #d8503c;
+  --accent-cool: #1e3a5f;
+  --line: #2a231d;
+  --faint: rgba(42, 35, 29, 0.16);
+
+  /* The paper and the ink of the print, in their light-scheme roles. */
+  --ukiyoe-paper: #ede2c6;
+  --ukiyoe-paper2: #e4d7b5;
+  --ukiyoe-sumi: #2a231d;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="ukiyoe"]:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --canvas: #132238;
+    --foreground: #ede2c6;
+    --muted: #9db0c4;
+    --border: #ede2c6;
+    --surface: #1a2d47;
+    --surface-hover: #22395a;
+    --inverse: #ede2c6;
+    --inverse-hover: #f7efdb;
+    --inverse-foreground: #132238;
+    --focus: #d8503c;
+    --selection: #c23b2a;
+    --selection-foreground: #ede2c6;
+
+    --accent: #c23b2a;
+    --accent-bright: #d8503c;
+    --accent-cool: #9dbccb;
+    --line: #ede2c6;
+    --faint: rgba(237, 226, 198, 0.18);
+
+    /* Night paper: the same print, pulled on indigo. */
+    --ukiyoe-paper: #132238;
+    --ukiyoe-paper2: #1a2d47;
+    --ukiyoe-sumi: #ede2c6;
+  }
+}
+
+:root[data-look="ukiyoe"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas: #132238;
+  --foreground: #ede2c6;
+  --muted: #9db0c4;
+  --border: #ede2c6;
+  --surface: #1a2d47;
+  --surface-hover: #22395a;
+  --inverse: #ede2c6;
+  --inverse-hover: #f7efdb;
+  --inverse-foreground: #132238;
+  --focus: #d8503c;
+  --selection: #c23b2a;
+  --selection-foreground: #ede2c6;
+
+  --accent: #c23b2a;
+  --accent-bright: #d8503c;
+  --accent-cool: #9dbccb;
+  --line: #ede2c6;
+  --faint: rgba(237, 226, 198, 0.18);
+
+  --ukiyoe-paper: #132238;
+  --ukiyoe-paper2: #1a2d47;
+  --ukiyoe-sumi: #ede2c6;
+}
+
+:root[data-look="ukiyoe"] {
+  /*
+   * Faces. Shippori Mincho carries the Latin; the Japanese fallbacks carry
+   * the kanji on machines that already have a mincho.
+   */
+  --face-body: var(--font-shippori-mincho), "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --face-label: var(--font-shippori-mincho), "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --face-billing: var(--font-shippori-mincho), "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --face-display: var(--font-shippori-mincho-b1), var(--font-shippori-mincho), "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --face-code: var(--font-ibm-plex-mono), ui-monospace, monospace;
+
+  /* The pigments, constant in either scheme. */
+  --ukiyoe-indigo: #1e3a5f;
+  --ukiyoe-indigo2: #2d5787;
+  --ukiyoe-mizu: #9dbccb;
+  --ukiyoe-beni: #c23b2a;
+  --ukiyoe-ochre: #c9a45c;
+  --ukiyoe-grey: #6f8fa8;
+
+  /* Short aliases, for markup carried over from the exploration. */
+  --paper: var(--ukiyoe-paper);
+  --paper2: var(--ukiyoe-paper2);
+  --sumi: var(--ukiyoe-sumi);
+  --indigo: var(--ukiyoe-indigo);
+  --indigo2: var(--ukiyoe-indigo2);
+  --mizu: var(--ukiyoe-mizu);
+  --beni: var(--ukiyoe-beni);
+  --ochre: var(--ukiyoe-ochre);
+  --grey: var(--ukiyoe-grey);
+}
+
+/* Paper grain: the tooth of the sheet, multiplied over the whole print. */
+:root[data-look="ukiyoe"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .16 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="ukiyoe"]:not([data-theme="light"]) body::after {
+    mix-blend-mode: screen;
+    opacity: 0.2;
+  }
+}
+
+:root[data-look="ukiyoe"][data-theme="dark"] body::after {
+  mix-blend-mode: screen;
+  opacity: 0.2;
+}
+
+/*
+ * The hanko: a red seal, square or tall, carrying one or two kanji, with the
+ * inset double border a carved stone leaves and the −2° of a hand that was
+ * not quite square to the paper. GSAP's sealStamp tweens rotation to −2, so
+ * the resting angle here and the animated one agree.
+ */
+.ukiyoe-seal {
+  display: inline-grid;
+  place-items: center;
+  background: var(--ukiyoe-beni);
+  /* The carved paper is the toned sheet whatever the page is printed on. */
+  color: var(--ukiyoe-foam);
+  font-family: var(--face-display);
+  font-weight: 800;
+  line-height: 1;
+  box-shadow:
+    inset 0 0 0 2px var(--ukiyoe-foam),
+    inset 0 0 0 4px var(--ukiyoe-beni);
+  transform: rotate(-2deg);
+}
+
+/* Vertical setting, right to left, Latin left upright inside it. */
+.ukiyoe-vertical {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+/* The title cartouche: paper, a red keyline, and a paper-and-ink ring round it. */
+.ukiyoe-cartouche {
+  background: var(--ukiyoe-paper);
+  border: 2px solid var(--ukiyoe-beni);
+  box-shadow:
+    0 0 0 4px var(--ukiyoe-paper),
+    0 0 0 5px var(--ukiyoe-sumi);
+}
+
+/*
+ * Seigaiha: the band of overlapping blue waves that separates one section
+ * of a print from the next. Scrub `background-position` to the scroll and
+ * the whole sea slides sideways.
+ */
+.ukiyoe-band {
+  height: 64px;
+  background-color: var(--ukiyoe-paper);
+  background-image:
+    radial-gradient(
+      circle at 100% 150%,
+      var(--ukiyoe-paper) 24%,
+      var(--ukiyoe-mizu) 24%,
+      var(--ukiyoe-mizu) 28%,
+      var(--ukiyoe-paper) 28%,
+      var(--ukiyoe-paper) 36%,
+      var(--ukiyoe-mizu) 36%,
+      var(--ukiyoe-mizu) 40%,
+      transparent 40%,
+      transparent
+    ),
+    radial-gradient(
+      circle at 0 150%,
+      var(--ukiyoe-paper) 24%,
+      var(--ukiyoe-mizu) 24%,
+      var(--ukiyoe-mizu) 28%,
+      var(--ukiyoe-paper) 28%,
+      var(--ukiyoe-paper) 36%,
+      var(--ukiyoe-mizu) 36%,
+      var(--ukiyoe-mizu) 40%,
+      transparent 40%,
+      transparent
+    ),
+    radial-gradient(
+      circle at 50% 100%,
+      var(--ukiyoe-mizu) 10%,
+      var(--ukiyoe-paper) 10%,
+      var(--ukiyoe-paper) 23%,
+      var(--ukiyoe-mizu) 23%,
+      var(--ukiyoe-mizu) 30%,
+      var(--ukiyoe-paper) 30%,
+      var(--ukiyoe-paper) 43%,
+      var(--ukiyoe-mizu) 43%,
+      var(--ukiyoe-mizu) 50%,
+      var(--ukiyoe-paper) 50%,
+      var(--ukiyoe-paper) 63%,
+      var(--ukiyoe-mizu) 63%,
+      var(--ukiyoe-mizu) 71%,
+      transparent 71%,
+      transparent
+    ),
+    radial-gradient(
+      circle at 100% 50%,
+      var(--ukiyoe-mizu) 5%,
+      var(--ukiyoe-paper) 5%,
+      var(--ukiyoe-paper) 15%,
+      var(--ukiyoe-mizu) 15%,
+      var(--ukiyoe-mizu) 20%,
+      var(--ukiyoe-paper) 20%,
+      var(--ukiyoe-paper) 29%,
+      var(--ukiyoe-mizu) 29%,
+      var(--ukiyoe-mizu) 34%,
+      var(--ukiyoe-paper) 34%,
+      var(--ukiyoe-paper) 44%,
+      var(--ukiyoe-mizu) 44%,
+      var(--ukiyoe-mizu) 49%,
+      transparent 49%,
+      transparent
+    ),
+    radial-gradient(
+      circle at 0 50%,
+      var(--ukiyoe-mizu) 5%,
+      var(--ukiyoe-paper) 5%,
+      var(--ukiyoe-paper) 15%,
+      var(--ukiyoe-mizu) 15%,
+      var(--ukiyoe-mizu) 20%,
+      var(--ukiyoe-paper) 20%,
+      var(--ukiyoe-paper) 29%,
+      var(--ukiyoe-mizu) 29%,
+      var(--ukiyoe-mizu) 34%,
+      var(--ukiyoe-paper) 34%,
+      var(--ukiyoe-paper) 44%,
+      var(--ukiyoe-mizu) 44%,
+      var(--ukiyoe-mizu) 49%,
+      transparent 49%,
+      transparent
+    );
+  background-size: 64px 32px;
+  border-bottom: 1px solid var(--ukiyoe-sumi);
+}
+
+/* A hard offset shadow, as if the block were a hair out of register. */
+.ukiyoe-shadow {
+  box-shadow: 4px 4px 0 var(--ukiyoe-sumi);
+}
+
+/*
+ * A plate in its frame. The photograph is printed as a duotone: crushed to
+ * a black key, multiplied into the paper, and washed with indigo from the
+ * top so it belongs to the same sea as everything else. In the dark scheme
+ * the key screens onto the night paper instead of multiplying into it.
+ */
+.ukiyoe-print-frame {
+  position: relative;
+  margin: 0;
+  border: 1px solid var(--ukiyoe-sumi);
+  padding: 12px;
+  background: var(--ukiyoe-paper2);
+}
+
+.ukiyoe-print-frame .ukiyoe-print-plate {
+  position: relative;
+  /* The plate's default proportion; a utility can override it. */
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--ukiyoe-paper);
+}
+
+.ukiyoe-print-frame .ukiyoe-print-plate img,
+.ukiyoe-print-frame .ukiyoe-print-plate > svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(3) brightness(1.15);
+  mix-blend-mode: multiply;
+}
+
+/* The bokashi sky over the plate. */
+.ukiyoe-print-frame .ukiyoe-print-plate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.6;
+  background: linear-gradient(180deg, var(--ukiyoe-indigo) 0%, transparent 40%);
+}
+
+/* The indigo wash that ties the plate to the print. */
+.ukiyoe-print-frame .ukiyoe-print-plate::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0.45;
+  background: var(--ukiyoe-indigo2);
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="ukiyoe"]:not([data-theme="light"]) .ukiyoe-print-frame .ukiyoe-print-plate img,
+  :root[data-look="ukiyoe"]:not([data-theme="light"]) .ukiyoe-print-frame .ukiyoe-print-plate > svg {
+    filter: grayscale(1) contrast(2.2) brightness(0.85);
+    mix-blend-mode: screen;
+  }
+
+  :root[data-look="ukiyoe"]:not([data-theme="light"]) .ukiyoe-print-frame .ukiyoe-print-plate::after {
+    mix-blend-mode: screen;
+    opacity: 0.3;
+  }
+}
+
+:root[data-look="ukiyoe"][data-theme="dark"] .ukiyoe-print-frame .ukiyoe-print-plate img,
+:root[data-look="ukiyoe"][data-theme="dark"] .ukiyoe-print-frame .ukiyoe-print-plate > svg {
+  filter: grayscale(1) contrast(2.2) brightness(0.85);
+  mix-blend-mode: screen;
+}
+
+:root[data-look="ukiyoe"][data-theme="dark"] .ukiyoe-print-frame .ukiyoe-print-plate::after {
+  mix-blend-mode: screen;
+  opacity: 0.3;
+}
+
+/* ---- hero ---- */
+
+/*
+ * The print's own colours, the ones that do not change hands between the
+ * schemes. Foam is the cream of the raw sheet wherever it lies on the water,
+ * in either scheme, because the water is indigo in either scheme; the
+ * watermark is the pigment the big soaked kanji is printed in, and it has to
+ * move to mizu on night paper to stay a stain rather than a hole.
+ */
+:root[data-look="ukiyoe"] {
+  --ukiyoe-foam: #ede2c6;
+  --ukiyoe-watermark-ink: var(--ukiyoe-indigo);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="ukiyoe"]:not([data-theme="light"]) {
+    --ukiyoe-watermark-ink: var(--ukiyoe-mizu);
+  }
+}
+
+:root[data-look="ukiyoe"][data-theme="dark"] {
+  --ukiyoe-watermark-ink: var(--ukiyoe-mizu);
+}
+
+/* Bokashi: the sky graded off the block, indigo at the top edge to nothing. */
+.ukiyoe-bokashi {
+  background: linear-gradient(
+    180deg,
+    var(--ukiyoe-indigo) 0%,
+    var(--ukiyoe-indigo2) 30%,
+    rgb(157 188 203 / 0.5) 70%,
+    transparent 100%
+  );
+}
+
+/* The watermark kanji: one plate of thin ink soaked into the paper. */
+.ukiyoe-watermark {
+  color: var(--ukiyoe-watermark-ink);
+  opacity: 0.14;
+}
+
+/*
+ * A beni rule under a loud word, drawn as the element's own background so
+ * `underlineDraw` can grow it from the left and a line break can split it.
+ */
+.ukiyoe-underline {
+  font-style: normal;
+  color: var(--ukiyoe-beni);
+  padding-bottom: 2px;
+  background-image: linear-gradient(var(--ukiyoe-beni), var(--ukiyoe-beni));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 2px;
+}
+
+/* Type printed on the water, where the sheet is indigo whatever the scheme. */
+.ukiyoe-on-wave {
+  color: var(--ukiyoe-foam);
+}
+
+/* The seal cut the other way round: beni on paper, for use on a beni block. */
+.ukiyoe-seal-inverse {
+  background: var(--ukiyoe-foam);
+  color: var(--ukiyoe-beni);
+  box-shadow:
+    inset 0 0 0 2px var(--ukiyoe-beni),
+    inset 0 0 0 4px var(--ukiyoe-foam);
+}
+
+/* ---- article ---- */
+
+/*
+ * The Animaxxipedia plate.
+ *
+ * The article pulls its photographs the way the print is pulled: one block
+ * at a time. That needs real elements to press, so inside the article the
+ * frame's two washes are divs rather than pseudo-elements, and the frame's
+ * own pseudo-elements stand down.
+ */
+.ukiyoe-article .ukiyoe-print-frame .ukiyoe-print-plate::before,
+.ukiyoe-article .ukiyoe-print-frame .ukiyoe-print-plate::after {
+  content: none;
+}
+
+/* The bokashi sky over the plate: the first block on the paper. */
+.ukiyoe-plate-sky {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.42;
+  background: linear-gradient(180deg, var(--ukiyoe-indigo) 0%, transparent 40%);
+}
+
+/* The indigo wash that ties the plate to the sea: the second block. */
+.ukiyoe-plate-wash {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0.32;
+  background: var(--ukiyoe-indigo2);
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="ukiyoe"]:not([data-theme="light"]) .ukiyoe-plate-wash {
+    mix-blend-mode: screen;
+    opacity: 0.3;
+  }
+}
+
+:root[data-look="ukiyoe"][data-theme="dark"] .ukiyoe-plate-wash {
+  mix-blend-mode: screen;
+  opacity: 0.3;
+}
+
+/*
+ * The camouflage band is printed as a night scene: the same plate pulled on
+ * indigo, with the paper showing only as ink and as the moon. It carries its
+ * own ground in both schemes, so the band reads as night whether the page
+ * around it is paper or already dark.
+ */
+.ukiyoe-night {
+  --ukiyoe-night-ground: #1a3453;
+  --ukiyoe-night-ink: #ede2c6;
+  background: var(--ukiyoe-night-ground);
+  color: var(--ukiyoe-night-ink);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="ukiyoe"]:not([data-theme="light"]) .ukiyoe-night {
+    --ukiyoe-night-ground: #0a1524;
+  }
+}
+
+:root[data-look="ukiyoe"][data-theme="dark"] .ukiyoe-night {
+  --ukiyoe-night-ground: #0a1524;
+}
+
+.ukiyoe-night .ukiyoe-print-frame {
+  border-color: var(--ukiyoe-night-ink);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.ukiyoe-night .ukiyoe-print-frame .ukiyoe-print-plate {
+  background: var(--ukiyoe-night-ground);
+}
+
+.ukiyoe-night .ukiyoe-print-frame .ukiyoe-print-plate img {
+  filter: grayscale(1) contrast(2.2) brightness(0.9);
+  mix-blend-mode: screen;
+}
+
+.ukiyoe-night .ukiyoe-plate-wash {
+  mix-blend-mode: screen;
+  opacity: 0.28;
+}
+
+/* Rules, chips and muted type inside the night band are cut from the ink. */
+.ukiyoe-night [data-chip],
+.ukiyoe-night .ukiyoe-night-rule {
+  border-color: var(--ukiyoe-night-ink);
+  color: var(--ukiyoe-night-ink);
+}
+
+/*
+ * Prose is justified. SplitText gives every line a box of its own, and CSS
+ * never stretches a last line — so the article hands the justification back
+ * to each line but the paragraph's real last one, and the split reads
+ * exactly as the unsplit paragraph did.
+ */
+.ukiyoe-article [data-p] {
+  text-align: justify;
+  hyphens: auto;
+}
+
+/*
+ * The article's photographs are printed a little more open than the hero's:
+ * the key block is crushed hard enough to read as a woodblock, but not so
+ * hard that a dark Commons photograph goes to solid ink under the wash.
+ */
+.ukiyoe-article .ukiyoe-print-frame .ukiyoe-print-plate img {
+  filter: grayscale(1) contrast(1.5) brightness(1.65);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="ukiyoe"]:not([data-theme="light"]) .ukiyoe-article .ukiyoe-print-frame .ukiyoe-print-plate img {
+    filter: grayscale(1) contrast(1.5) brightness(0.95);
+  }
+}
+
+:root[data-look="ukiyoe"][data-theme="dark"] .ukiyoe-article .ukiyoe-print-frame .ukiyoe-print-plate img {
+  filter: grayscale(1) contrast(1.5) brightness(0.95);
+}
+
+.ukiyoe-article .ukiyoe-night .ukiyoe-print-frame .ukiyoe-print-plate img {
+  filter: grayscale(1) contrast(1.5) brightness(0.95);
+}
+
+/*
+ * The night band is printed to the edge of the sheet, but its columns still
+ * line up with the article's: the padding rebuilds the page's own gutter
+ * and the centring of the measure above it.
+ */
+.ukiyoe-night {
+  padding-inline: max(1.5rem, calc((100vw - 80rem) / 2));
+}
+
+@media (min-width: 40rem) {
+  .ukiyoe-night {
+    padding-inline: max(2.5rem, calc((100vw - 80rem) / 2));
+  }
+}
+
+/*
+ * Ink colours for type.
+ *
+ * Indigo and beni are pigments, and on paper they are read against a light
+ * ground. On night paper the same two inks would sink into it, so the type
+ * versions are mixed lighter — indigo toward mizu, beni toward its bright
+ * cut — while the pigments themselves (the sea, the seals, the washes) stay
+ * exactly where they were.
+ */
+.ukiyoe-blue {
+  color: var(--ukiyoe-indigo);
+}
+
+.ukiyoe-blue-bg {
+  background: var(--ukiyoe-indigo);
+}
+
+.ukiyoe-red {
+  color: var(--ukiyoe-beni);
+}
+
+.ukiyoe-red-bg {
+  background: var(--ukiyoe-beni);
+}
+
+.ukiyoe-red-hover:hover {
+  color: var(--ukiyoe-beni);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-look="ukiyoe"]:not([data-theme="light"]) .ukiyoe-blue {
+    color: var(--ukiyoe-mizu);
+  }
+
+  :root[data-look="ukiyoe"]:not([data-theme="light"]) .ukiyoe-blue-bg {
+    background: var(--ukiyoe-mizu);
+  }
+
+  :root[data-look="ukiyoe"]:not([data-theme="light"]) .ukiyoe-red,
+  :root[data-look="ukiyoe"]:not([data-theme="light"]) .ukiyoe-red-hover:hover {
+    color: #d8503c;
+  }
+
+  :root[data-look="ukiyoe"]:not([data-theme="light"]) .ukiyoe-red-bg {
+    background: #d8503c;
+  }
+}
+
+:root[data-look="ukiyoe"][data-theme="dark"] .ukiyoe-blue {
+  color: var(--ukiyoe-mizu);
+}
+
+:root[data-look="ukiyoe"][data-theme="dark"] .ukiyoe-blue-bg {
+  background: var(--ukiyoe-mizu);
+}
+
+:root[data-look="ukiyoe"][data-theme="dark"] .ukiyoe-red,
+:root[data-look="ukiyoe"][data-theme="dark"] .ukiyoe-red-hover:hover {
+  color: #d8503c;
+}
+
+:root[data-look="ukiyoe"][data-theme="dark"] .ukiyoe-red-bg {
+  background: #d8503c;
+}
+
+/*
+ * A seal is red ink with the paper of the print showing through what the
+ * knife took away — and that paper is the toned sheet whatever the page is
+ * printed on, so the article's seals keep their cream in the dark scheme
+ * rather than going navy on red.
+ */
+
+
+/* ---- chrome ---- */
+
+/*
+ * The Themes button is a paper button with the look's hard shadow, like
+ * the buttons on the front door, and turns beni under the pointer.
+ */
+:root[data-look="ukiyoe"] .switcher-button {
+  background: var(--ukiyoe-paper);
+  color: var(--ukiyoe-sumi);
+  border: 1px solid var(--ukiyoe-sumi);
+  border-radius: 0;
+  box-shadow: 3px 3px 0 var(--ukiyoe-sumi);
+  font-family: var(--face-label);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  transition:
+    background-color 0.25s,
+    color 0.25s,
+    box-shadow 0.25s,
+    transform 0.25s;
+}
+
+:root[data-look="ukiyoe"] .switcher-button:hover {
+  background: var(--ukiyoe-beni);
+  color: var(--ukiyoe-foam);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ukiyoe-sumi);
+}
+
+/*
+ * The showcase cards' titles are set in the wide mincho, so the longest of
+ * them ("Animaxxipedia") is given the display face at a size that fits the
+ * card, and title case rather than capitals, as a print's cartouche is.
+ */
+:root[data-look="ukiyoe"] [data-particle-card] h2 {
+  font-family: var(--face-display);
+  font-weight: 800;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: clamp(1.75rem, 2.4vw, 2.5rem);
+  line-height: 1.1;
+}
