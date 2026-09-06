@@ -13,8 +13,8 @@
  */
 export const LOOKS = [
   "posterize",
-  "cinematic",
   "bauhaus",
+  "cinematic",
   "constructivist",
   "pinned",
   "earlyweb",

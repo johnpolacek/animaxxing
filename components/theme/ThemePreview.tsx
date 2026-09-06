@@ -51,19 +51,23 @@ export function ThemePreview({ slug }: { slug: ExplorationSlug }) {
       );
     case "constructivist":
       return (
-        <div className="relative h-full w-full overflow-hidden bg-[#e8dfc9] text-[#141312]">
+        <div className="relative h-full w-full overflow-hidden bg-[#141312] text-[#e8dfc9]">
+          <div className="absolute right-[10%] top-[26%] h-[44%] w-[44%] rounded-full bg-[#e8dfc9]" />
+          <div className="absolute right-[6%] top-[22%] h-[52%] w-[52%] rounded-full border-2 border-[#e8dfc9]" />
+          {/* The red wedge, driven from the corner into the white circle. */}
           <div
-            className="absolute bottom-[-6%] left-[-10%] h-[70%] w-[120%] bg-[#c4271b]"
-            style={{ clipPath: "polygon(0 100%, 100% 6%, 100% 100%)" }}
+            className="absolute inset-0 bg-[#c4271b]"
+            style={{ clipPath: "polygon(0 58%, 0 100%, 12% 100%, 68% 48%)" }}
           />
-          <div className="absolute right-[6%] top-[6%] grid h-[44%] w-[44%] place-items-center rounded-full bg-[#141312] font-[family-name:var(--font-anton)] text-[1.4rem] leading-none text-[#e8dfc9] outline outline-2 outline-offset-[3px] outline-[#141312]">
-            <span>
-              ▶<span className="-ml-[0.32em] text-[#c4271b]">▶</span>
-            </span>
+          <div className="absolute left-[8%] top-[8%] font-[family-name:var(--font-anton)] text-[1.35rem] uppercase leading-[0.85]">
+            Motion
+            <br />
+            to the <span className="text-[#c4271b]">Max</span>
           </div>
-          <div className="absolute left-[-6%] top-[84%] h-[5%] w-[112%] origin-left rotate-[-18deg] bg-[#141312]" />
-          <div className="absolute bottom-[22%] left-[8%] origin-bottom-left rotate-[-18deg] whitespace-nowrap font-[family-name:var(--font-anton)] text-[1.5rem] uppercase leading-[0.85]">
-            Motion to <span className="text-[#c4271b]">the Max</span>
+          <div className="absolute bottom-[10%] right-[8%] flex flex-col items-end gap-[3px]">
+            <span className="h-[3px] w-[46px] bg-[#e8dfc9]" />
+            <span className="h-[3px] w-[28px] bg-[#e8dfc9]" />
+            <span className="h-[3px] w-[16px] bg-[#e8dfc9]" />
           </div>
         </div>
       );

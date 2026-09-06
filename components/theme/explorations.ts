@@ -18,8 +18,8 @@ export type Exploration = {
 
 export const EXPLORATIONS: readonly Exploration[] = [
   { slug: DEFAULT_LOOK, name: "Posterize" },
-  { slug: "cinematic", name: "Cinematic" },
   { slug: "bauhaus", name: "Bauhaus" },
+  { slug: "cinematic", name: "Cinematic" },
   { slug: "constructivist", name: "Constructivist" },
   { slug: "earlyweb", name: "Early Web" },
   { slug: "pinned", name: "Pinned" },
