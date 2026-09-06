@@ -1,0 +1,165 @@
+/*
+ * Pinned.
+ *
+ * A product keynote. Black stage, Inter Tight set extra bold and tight for
+ * anything that shouts, Inter for anything that explains, one blue accent,
+ * and a blue-purple-pink gradient reserved for the single word that matters.
+ * Rules are hairlines, the nav is frosted glass, and a soft radial glow sits
+ * behind the type and drifts through the gradient as the page is scrolled.
+ *
+ * The selectors carry the scheme attribute so they outrank the posterize
+ * scheme rules whatever the import order. Dark is the look's home; light is
+ * the same keynote printed on Apple's white product page.
+ */
+:root[data-look="pinned"]:not([data-theme="light"]) {
+  color-scheme: dark;
+
+  --canvas: #000000;
+  --foreground: #f5f5f7;
+  --muted: #86868b;
+  --border: rgba(255, 255, 255, 0.12);
+  --surface: #1c1c1e;
+  --surface-hover: #2c2c2e;
+  --inverse: #2997ff;
+  --inverse-hover: #47a8ff;
+  --inverse-foreground: #ffffff;
+  --focus: #2997ff;
+  --selection: #2997ff;
+  --selection-foreground: #ffffff;
+
+  --accent: #2997ff;
+  --accent-bright: #6fc0ff;
+  --accent-cool: #bf5af2;
+  --line: rgba(255, 255, 255, 0.12);
+  --faint: rgba(255, 255, 255, 0.06);
+
+  /* The gradient, and the two washes painted from it. */
+  --glow-blue: #2997ff;
+  --glow-purple: #bf5af2;
+  --glow-pink: #ff375f;
+  --glow-veil: rgba(41, 151, 255, 0.3);
+  --glow-shadow: rgba(41, 151, 255, 0.18);
+
+  /* The outlined chapter numeral, drawn in the ink's own colour at a whisper. */
+  --pinned-stroke: rgba(245, 245, 247, 0.3);
+
+  /*
+   * The other side. The camouflage stage turns the page over while it is
+   * held, so it needs the scheme it is not in, as concrete values GSAP can
+   * walk to and back. Read by `flipScheme` in lib/animation/effects/pinned.ts.
+   */
+  --flip-canvas: #f5f5f7;
+  --flip-foreground: #1d1d1f;
+  --flip-muted: #6e6e73;
+  --flip-accent: #0071e3;
+  --flip-line: rgba(0, 0, 0, 0.1);
+  --flip-surface: #ffffff;
+  --flip-stroke: rgba(29, 29, 31, 0.28);
+}
+
+:root[data-look="pinned"][data-theme="light"] {
+  color-scheme: light;
+
+  --canvas: #ffffff;
+  --foreground: #1d1d1f;
+  --muted: #6e6e73;
+  --border: rgba(0, 0, 0, 0.1);
+  --surface: #f5f5f7;
+  --surface-hover: #e8e8ed;
+  --inverse: #0071e3;
+  --inverse-hover: #0077ed;
+  --inverse-foreground: #ffffff;
+  --focus: #0071e3;
+  --selection: #0071e3;
+  --selection-foreground: #ffffff;
+
+  --accent: #0071e3;
+  --accent-bright: #0058b0;
+  --accent-cool: #8944ab;
+  --line: rgba(0, 0, 0, 0.1);
+  --faint: rgba(0, 0, 0, 0.05);
+
+  --glow-blue: #0071e3;
+  --glow-purple: #8944ab;
+  --glow-pink: #d1204a;
+  --glow-veil: rgba(0, 113, 227, 0.16);
+  --glow-shadow: rgba(0, 113, 227, 0.16);
+
+  --pinned-stroke: rgba(29, 29, 31, 0.28);
+
+  --flip-canvas: #000000;
+  --flip-foreground: #f5f5f7;
+  --flip-muted: #86868b;
+  --flip-accent: #2997ff;
+  --flip-line: rgba(255, 255, 255, 0.12);
+  --flip-surface: #1c1c1e;
+  --flip-stroke: rgba(245, 245, 247, 0.3);
+}
+
+:root[data-look="pinned"] {
+  --face-body: var(--font-inter);
+  --face-label: var(--font-inter);
+  --face-billing: var(--font-inter-tight);
+  --face-code: var(--font-jetbrains-mono);
+  --face-display: var(--font-inter-tight);
+}
+
+/* The one word that matters, set in the gradient. */
+.pinned-gradient {
+  background-image: linear-gradient(
+    90deg,
+    var(--glow-blue),
+    var(--glow-purple),
+    var(--glow-pink)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/*
+ * The wash behind a stage. One layer, one gradient: the drift through blue,
+ * purple and pink is a hue rotation on this element, which the compositor
+ * does on its own.
+ */
+.pinned-glow {
+  background-image: radial-gradient(circle at 50% 50%, var(--glow-veil), transparent 62%);
+}
+
+/* The browser frame the demo plays inside. */
+.pinned-frame {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background-image: linear-gradient(180deg, var(--surface), var(--canvas));
+  box-shadow: 0 40px 120px var(--glow-shadow);
+}
+
+/*
+ * The article's one object per stage: a card for a number, a plate for a
+ * photograph. Same chrome — a hairline, a 24px corner and a wash of blue
+ * under it — so the right-hand column reads as one series down the page.
+ */
+.pinned-card,
+.pinned-plate {
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: 0 40px 120px var(--glow-shadow);
+}
+.pinned-card {
+  background-image: linear-gradient(180deg, var(--surface), var(--canvas));
+}
+.pinned-plate {
+  /* A flat fill, not a gradient: the camouflage stage has to tween it. */
+  background-color: var(--surface);
+}
+
+/*
+ * The chapter's number, set in outline behind the stage. The fill is forced
+ * transparent and the stroke takes `currentColor`, so the whole numeral —
+ * and the camouflage stage's walk to the other scheme — is one `color`.
+ */
+.pinned-numeral {
+  color: var(--pinned-stroke);
+  -webkit-text-stroke: 1px currentColor;
+  -webkit-text-fill-color: transparent;
+}

@@ -5,6 +5,7 @@ import { BauhausHero } from "./BauhausHero";
 import { CinematicHero } from "./CinematicHero";
 import { ConstructivistHero } from "./ConstructivistHero";
 import { Hero } from "./Hero";
+import { PinnedHero } from "./PinnedHero";
 
 /** The front door composes differently under each look; pick the hero for the one in force. */
 export function HomeHero() {
@@ -16,6 +17,8 @@ export function HomeHero() {
       return <BauhausHero />;
     case "constructivist":
       return <ConstructivistHero />;
+    case "pinned":
+      return <PinnedHero />;
     default:
       return <Hero />;
   }

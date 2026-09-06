@@ -5,6 +5,7 @@ import {
   Cormorant_Garamond,
   Courier_Prime,
   Inter,
+  Inter_Tight,
   JetBrains_Mono,
   Jost,
   Oswald,
@@ -114,6 +115,17 @@ const robotoMono = Roboto_Mono({
   preload: false,
 });
 
+/*
+ * Pinned. Inter Tight is the keynote's display face, set extra bold and
+ * tight; Inter, already loaded for cinematic, sets everything it explains.
+ */
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+  preload: false,
+});
+
 export const metadata: Metadata = {
   title: "Animaxxing",
   description: "Motion to the Max.",
@@ -131,7 +143,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       // The theme script sets data-theme before hydration; the server cannot
       // know the stored choice, so that attribute is expected to differ.
       suppressHydrationWarning
-      className={`${rethinkSans.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${inter.variable} ${barlowCondensed.variable} ${courierPrime.variable} ${jost.variable} ${spaceMono.variable} ${anton.variable} ${oswald.variable} ${robotoCondensed.variable} ${robotoMono.variable} h-full scroll-smooth antialiased`}
+      className={`${rethinkSans.variable} ${jetbrainsMono.variable} ${cormorant.variable} ${inter.variable} ${barlowCondensed.variable} ${courierPrime.variable} ${jost.variable} ${spaceMono.variable} ${anton.variable} ${oswald.variable} ${robotoCondensed.variable} ${robotoMono.variable} ${interTight.variable} h-full scroll-smooth antialiased`}
     >
       <head>
         <ThemeScript />

@@ -2,7 +2,15 @@
  * What the install page hands out: the one command that installs the skills,
  * and things to say to an agent once they are in.
  */
+import lock from "@/skills-lock.json";
+
 export const SKILLS_REPO = "https://github.com/johnpolacek/animaxxing-skills";
+
+/**
+ * How many skills the install command brings in. Counted from the lockfile
+ * so the number on the page can never drift from the ones actually shipped.
+ */
+export const SKILL_COUNT = Object.keys(lock.skills).length;
 
 export const INSTALL =
   "npx skills add https://github.com/greensock/gsap-skills && npx skills add https://github.com/johnpolacek/animaxxing-skills";

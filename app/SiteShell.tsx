@@ -24,6 +24,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const bauhaus = look === "bauhaus";
   // The poster's chrome: wood type, a red arrowhead, and a heavy rule under the footer.
   const constructivist = look === "constructivist";
+  // The keynote's chrome: a 48px bar of frosted glass the stages run under.
+  const pinned = look === "pinned";
 
   useGSAP(
     () => {
@@ -95,8 +97,20 @@ export function SiteShell({ children }: { children: ReactNode }) {
     // so sticky headers keep working, and the overflow never reaches the
     // viewport, so mobile browsers do not widen the page to fit the bleed.
     <div ref={scope} className="flex min-h-screen flex-col overflow-x-clip">
-      <header className="px-gutter pt-5 sm:px-gutter-lg sm:pt-gutter-lg">
-        <div className="mx-auto flex min-h-9 w-full max-w-7xl items-center justify-between gap-4">
+      <header
+        className={[
+          "px-gutter sm:px-gutter-lg",
+          pinned
+            ? "sticky top-0 z-40 border-b border-line bg-canvas/60 backdrop-blur-xl backdrop-saturate-150"
+            : "pt-5 sm:pt-gutter-lg",
+        ].join(" ")}
+      >
+        <div
+          className={[
+            "mx-auto flex w-full max-w-7xl items-center justify-between gap-4",
+            pinned ? "h-12" : "min-h-9",
+          ].join(" ")}
+        >
           <div data-logo-intro>
             <Link
               href="/"
@@ -105,6 +119,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   ? "relative inline-block font-sans text-xl font-extrabold lowercase tracking-[-0.02em] text-foreground sm:text-[22px]"
                   : constructivist
                     ? "relative inline-block font-display text-xl uppercase tracking-[0.06em] text-foreground sm:text-[22px]"
+                  : pinned
+                    ? "relative inline-block font-sans text-[13px] font-semibold lowercase tracking-[-0.01em] text-foreground"
                     : "relative inline-block font-[family-name:var(--font-jetbrains-mono)] text-base uppercase tracking-[0.08em] text-muted sm:text-lg"
               }
             >
@@ -116,6 +132,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                     "-mr-[0.1em] inline-block leading-none origin-[0_calc(100%-0.3em)] [transform:translateY(calc(-0.05em_-_1px))_scale(0.8,1.225)]",
                     bauhaus ? "mr-[0.15em] text-shape-red" : "",
                     constructivist ? "mr-[0.2em] text-poster-red" : "",
+                    pinned ? "mr-[0.2em] text-accent" : "",
                   ].join(" ")}
                 >
                   <span className="inline-block">▶</span>
@@ -155,10 +172,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
           ) : (
             <p
               className={[
-                "flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-caption uppercase",
+                "flex flex-wrap items-center gap-x-4 gap-y-2",
+                pinned
+                  ? "font-sans text-[12px] text-muted"
+                  : "font-mono text-caption uppercase",
                 bauhaus ? "font-medium tracking-[0.06em] text-foreground" : "",
                 constructivist ? "font-medium tracking-[0.14em] text-foreground" : "",
-                !bauhaus && !constructivist ? "text-muted" : "",
+                !bauhaus && !pinned && !constructivist ? "text-muted" : "",
               ].join(" ")}
             >
               <span>

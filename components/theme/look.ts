@@ -11,7 +11,7 @@
  * the page in the right look from the first byte: a look changes the
  * structure of a page, which no pre-paint script could correct.
  */
-export const LOOKS = ["posterize", "cinematic", "bauhaus", "constructivist"] as const;
+export const LOOKS = ["posterize", "cinematic", "bauhaus", "constructivist", "pinned"] as const;
 
 export type Look = (typeof LOOKS)[number];
 

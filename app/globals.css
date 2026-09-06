@@ -2,6 +2,7 @@
 @import "./looks/cinematic.css";
 @import "./looks/bauhaus.css";
 @import "./looks/constructivist.css";
+@import "./looks/pinned.css";
 
 /*
  * Semantic design tokens.
@@ -69,6 +70,16 @@
   --poster-paper: #e8dfc9;
   --poster-ink: #141312;
   --poster-red: #c4271b;
+
+  /*
+   * The keynote's gradient, and the two washes painted from it. Posterize
+   * never paints them: the gradient reads as ink and the washes as nothing.
+   */
+  --glow-blue: var(--foreground);
+  --glow-purple: var(--muted);
+  --glow-pink: var(--foreground);
+  --glow-veil: transparent;
+  --glow-shadow: transparent;
 
   /* A screen: black, with its own ink, whatever the scheme around it. */
   --screen: #000000;
@@ -148,6 +159,11 @@
   --color-screen: var(--screen);
   --color-screen-ink: var(--screen-ink);
   --color-screen-gold: var(--screen-gold);
+  --color-glow-blue: var(--glow-blue);
+  --color-glow-purple: var(--glow-purple);
+  --color-glow-pink: var(--glow-pink);
+  --color-glow-veil: var(--glow-veil);
+  --color-glow-shadow: var(--glow-shadow);
   --color-poster-paper: var(--poster-paper);
   --color-poster-ink: var(--poster-ink);
   --color-poster-red: var(--poster-red);
@@ -281,6 +297,7 @@ body {
 [data-etymology],
 [data-arrive],
 [data-screen-intro],
+[data-pin-intro],
 [data-form-intro] {
   visibility: hidden;
 }
