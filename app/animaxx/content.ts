@@ -34,4 +34,8 @@ export const PROMPTS: Prompt[] = [
     label: "Prompt 06 · Animaxx everything",
     text: "We need to be way more creative with the animation for this website. We need to aniMAXX! Animate the shit out of it!",
   },
+  {
+    label: "Prompt 07 · Explore",
+    text: "Analyze this site, then make an animation exploration page for it. Create a directory outside the project with four HTML pages, each a different direction for animating the site, plus an index that links them, so I can compare the directions before picking one.",
+  },
 ];
