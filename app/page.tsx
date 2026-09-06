@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Hero } from "./Hero";
+import { HomeHero } from "./HomeHero";
 
 export const metadata: Metadata = {
   title: "Animaxxing",
@@ -12,7 +12,7 @@ export default function Home() {
     <main className="flex flex-1 flex-col">
       <section className="px-gutter pt-6 pb-10 sm:px-gutter-lg sm:pt-10 sm:pb-16">
         <div className="mx-auto w-full max-w-7xl">
-          <Hero />
+          <HomeHero />
         </div>
       </section>
     </main>

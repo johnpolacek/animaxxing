@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ShowcaseNav } from "../ShowcaseNav";
-import { Article } from "./Article";
+import { ArticleByLook } from "./ArticleByLook";
 
 export const metadata: Metadata = {
   title: "Octopus — Animaxxipedia",
@@ -14,7 +14,7 @@ export default function Animaxxipedia() {
       <section className="overflow-x-clip px-gutter pt-10 pb-16 sm:px-gutter-lg">
         <div className="mx-auto w-full max-w-7xl">
           <ShowcaseNav slug="animaxxipedia" />
-          <Article />
+          <ArticleByLook />
         </div>
       </section>
     </main>

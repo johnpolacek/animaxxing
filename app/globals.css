@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./looks/cinematic.css";
 
 /*
  * Semantic design tokens.
@@ -16,9 +17,33 @@
  *   2. `prefers-color-scheme` — the operating-system setting, used whenever
  *      no explicit choice exists.
  *   3. Light — the default when neither is available.
+ *
+ * On top of the scheme sits the look, `data-look` on <html>: a whole design
+ * direction. The default, posterize, is the system described here. Other
+ * looks (see app/looks/) override the colour tokens, the accent tokens, and
+ * the faces; components keep consuming the same utilities.
  */
 :root {
   color-scheme: light;
+
+  /* Faces. The utilities font-sans / font-mono / font-billing resolve here. */
+  --face-body: var(--font-rethink-sans);
+  --face-label: var(--font-jetbrains-mono);
+  --face-billing: var(--font-jetbrains-mono);
+
+  /*
+   * Accent tokens. Posterize has no accent colour: the accent is the ink,
+   * and the lines are the border. Looks with a highlight colour set these.
+   */
+  --accent: var(--foreground);
+  --accent-bright: var(--muted);
+  --line: var(--border);
+  --faint: var(--border);
+
+  /* A screen: black, with its own ink, whatever the scheme around it. */
+  --screen: #000000;
+  --screen-ink: #eae3d2;
+  --screen-gold: #b9985a;
 
   --canvas: #ffffff;
   --foreground: #171717;
@@ -85,9 +110,17 @@
   --color-focus: var(--focus);
   --color-selection: var(--selection);
   --color-selection-foreground: var(--selection-foreground);
+  --color-accent: var(--accent);
+  --color-accent-bright: var(--accent-bright);
+  --color-line: var(--line);
+  --color-faint: var(--faint);
+  --color-screen: var(--screen);
+  --color-screen-ink: var(--screen-ink);
+  --color-screen-gold: var(--screen-gold);
 
-  --font-sans: var(--font-rethink-sans);
-  --font-mono: var(--font-jetbrains-mono);
+  --font-sans: var(--face-body);
+  --font-mono: var(--face-label);
+  --font-billing: var(--face-billing);
 
   /* Spacing: semantic names for the recurring layout rhythm. */
   --spacing-gutter: 1.5rem;
@@ -205,7 +238,8 @@ body {
 [data-shell-intro],
 [data-reveal],
 [data-etymology],
-[data-arrive] {
+[data-arrive],
+[data-screen-intro] {
   visibility: hidden;
 }
 
@@ -229,6 +263,41 @@ body {
 @keyframes dots-march {
   to {
     background-position: 5px 100%;
+  }
+}
+
+/* Theme switcher: two arcs of light orbiting the button. */
+@property --switcher-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.switcher-ring {
+  padding: 1px;
+  background: conic-gradient(
+    from var(--switcher-angle),
+    var(--foreground) 0 18%,
+    transparent 18% 50%,
+    var(--foreground) 50% 68%,
+    transparent 68%
+  );
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: switcher-spin 2.2s linear infinite;
+}
+
+@keyframes switcher-spin {
+  to {
+    --switcher-angle: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switcher-ring {
+    animation: none;
   }
 }
 

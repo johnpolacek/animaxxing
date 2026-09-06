@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
+    "@hugeicons/core-free-icons": "^4.3.0",
+    "@hugeicons/react": "^1.1.10",
     "gsap": "^3.15.0",
     "next": "16.3.3",
     "react": "19.2.8",

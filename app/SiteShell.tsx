@@ -11,6 +11,8 @@ import {
   prefersReducedMotion,
   useGSAP,
 } from "@/components/motion";
+import { useLook } from "@/components/theme/LookProvider";
+import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { SKILLS_REPO } from "./animaxx/content";
 import { FooterLink } from "./FooterLink";
@@ -18,6 +20,7 @@ import { FooterLink } from "./FooterLink";
 /** Persistent chrome: it enters once, then remains untouched by route motion. */
 export function SiteShell({ children }: { children: ReactNode }) {
   const scope = useRef<HTMLDivElement>(null);
+  const look = useLook();
 
   useGSAP(
     () => {
@@ -41,7 +44,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
       }
 
       timeline.addLabel("shell", 0);
-      // The header has no secondary items yet; skip them rather than tween an empty list.
       if (items.length > 0) {
         timeline
           .set(items, { willChange: "transform, opacity" }, "shell")
@@ -95,15 +97,28 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <div data-logo-intro>
             <Link
               href="/"
-              className="relative inline-block font-mono text-base uppercase tracking-[0.08em] text-muted sm:text-lg"
+              className="relative inline-block font-[family-name:var(--font-jetbrains-mono)] text-base uppercase tracking-[0.08em] text-muted sm:text-lg"
             >
-              <span data-logo-text>animaxxing</span>
+              <span data-logo-text>
+                <span
+                  aria-hidden="true"
+                  data-logo-mark
+                  className="-mr-[0.1em] inline-block leading-none origin-[0_calc(100%-0.3em)] [transform:translateY(calc(-0.05em_-_1px))_scale(0.8,1.225)]"
+                >
+                  <span className="inline-block">▶</span>
+                  <span className="inline-block -ml-[0.2em]">▶</span>
+                </span>
+                animaxxing
+              </span>
               <span
                 aria-hidden="true"
                 data-logo-underline
                 className="absolute -bottom-1 left-0 h-px w-full bg-current"
               />
             </Link>
+          </div>
+          <div data-shell-intro>
+            <ThemeSwitcher />
           </div>
         </div>
       </header>
@@ -115,23 +130,31 @@ export function SiteShell({ children }: { children: ReactNode }) {
         className="mt-auto border-t border-border px-gutter py-10 sm:px-gutter-lg"
       >
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-6">
-          <p className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-caption uppercase text-muted">
-            <span>
-              created by <FooterLink href="https://johnpolacek.com">John Polacek</FooterLink>
-            </span>
-            <span aria-hidden="true">·</span>
-            <span>
-              powered by <FooterLink href="https://gsap.com">GSAP</FooterLink>
-            </span>
-            <span aria-hidden="true">·</span>
-            <span>
-              <FooterLink href={SKILLS_REPO}>grab the skills</FooterLink>
-            </span>
-            <span aria-hidden="true">·</span>
-            <span>
-              <FooterLink href="https://github.com/johnpolacek/animaxxing">view src on GitHub</FooterLink>
-            </span>
-          </p>
+          {look === "cinematic" ? (
+            // The credits have already rolled in the billing block; the
+            // footer only signs the picture off.
+            <p className="font-mono text-[11px] font-light uppercase tracking-[0.34em] text-muted">
+              Animaxxing · MMXXVI
+            </p>
+          ) : (
+            <p className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-caption uppercase text-muted">
+              <span>
+                created by <FooterLink href="https://johnpolacek.com">John Polacek</FooterLink>
+              </span>
+              <span aria-hidden="true">·</span>
+              <span>
+                powered by <FooterLink href="https://gsap.com">GSAP</FooterLink>
+              </span>
+              <span aria-hidden="true">·</span>
+              <span>
+                <FooterLink href={SKILLS_REPO}>grab the skills</FooterLink>
+              </span>
+              <span aria-hidden="true">·</span>
+              <span>
+                <FooterLink href="https://github.com/johnpolacek/animaxxing">view src on GitHub</FooterLink>
+              </span>
+            </p>
+          )}
           <ThemeToggle compact />
         </div>
       </footer>

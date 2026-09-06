@@ -12,12 +12,10 @@ export function isThemeChoice(value: unknown): value is ThemeChoice {
   return typeof value === "string" && (THEME_CHOICES as readonly string[]).includes(value);
 }
 
-export function applyTheme(choice: ThemeChoice): void {
+/** Blends colours for a moment, so the change about to be made reads as a crossfade rather than a cut. */
+export function blendThemeChange(): void {
   const root = document.documentElement;
-
   root.classList.add(THEME_TRANSITION_CLASS);
-  root.setAttribute("data-theme", choice);
-
   if (transitionCleanup !== undefined) {
     clearTimeout(transitionCleanup);
   }
@@ -25,6 +23,11 @@ export function applyTheme(choice: ThemeChoice): void {
     root.classList.remove(THEME_TRANSITION_CLASS);
     transitionCleanup = undefined;
   }, THEME_TRANSITION_CLEANUP_MS);
+}
+
+export function applyTheme(choice: ThemeChoice): void {
+  blendThemeChange();
+  document.documentElement.setAttribute("data-theme", choice);
 }
 
 export function readStoredTheme(): ThemeChoice {
