@@ -35,7 +35,13 @@ export default function GetAnimaxxed() {
           </Reveal>
           <div className="mt-10 grid auto-rows-fr gap-6 lg:grid-cols-2">
             {PROMPTS.map((prompt, i) => (
-              <Terminal key={prompt.label} label={prompt.label} text={prompt.text} delay={2.9 + i * 0.15} />
+              <Terminal
+                key={prompt.label}
+                label={prompt.label}
+                text={prompt.text}
+                delay={2.9 + i * 0.15}
+                className={i === 0 ? "lg:col-span-2" : ""}
+              />
             ))}
           </div>
 
