@@ -1,0 +1,5 @@
+Built-in image generation edit. Only the additional x was composited onto the existing 1200×630 image to preserve the rest of the design.
+Backup: opengraph-image-single-x.png
+
+Prompt:
+Make ONE small precise edit to this existing 1200x630 share image: the large second-line word 'Max' must become 'Maxx', with a second lowercase x immediately after the existing x. Copy the same bold white sans-serif x form, make ONLY the newly added second x about 15 percent larger and rotate it about 10 degrees clockwise. Keep it visually joined to the word with normal tight spacing; both x letters must remain distinct and legible. Preserve the original M, a, first x and all other content exactly: first line 'Motion to the', original positions, all small text, buttons, particles and shards, flat black background. No other modifications. Do not change the headline to uppercase MAXX; match original 'Max' letter case and add a matching x. Output 1200x630.
