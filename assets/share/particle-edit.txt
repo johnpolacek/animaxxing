@@ -1,0 +1,6 @@
+Created with the built-in image generation tool, then resized to 1200×630 and composited with the original center to preserve its pixels.
+Backup: opengraph-image-no-particles.png
+Active image: ../../app/opengraph-image.png
+
+Prompt:
+Edit this 1200x630 social share image: add delicate white particle effects ONLY in the outer black margins. Tiny crisp white and gray dots, a few short fine motion streaks, scattered asymmetrically around the left and right edges and corners, lighter dust along top and bottom. Subtle energetic motion, monochrome. Keep particles away from all text and buttons. Preserve the exact existing image content, all typography, exact text, layout, positions, sizes and flat near-black background. Do not redesign, retype, add borders, add glows, or change any existing content. Output 1200x630. Only addition is sparse white particles in outer edges.
