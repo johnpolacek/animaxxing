@@ -1,0 +1,6 @@
+Built-in image generation edit, resized to 1200×630 with the original center composited back to preserve all content pixels.
+Previous treatment: opengraph-image-subtle-particles.png
+Clean backup: opengraph-image-no-particles.png
+
+Prompt:
+Edit this existing social share image. Make its outer edge particle effects MUCH more expressive: about four times as many white particles, mixed with many short small sharp straight line shards, angular slivers, and tiny dashes. Energetic outward exploding directional motion, irregular clustered bursts at corners and along left and right edges, some short shards along top and bottom. White and neutral gray only on the existing flat near-black. Shards mostly 3-12 pixels long at 1200px width, some 16px, thin crisp strokes at varied diagonal angles; mixed tiny dots, no big stars, no long rays, no glows or fog. Keep ALL effects in the outer margins (leftmost 135px, rightmost 135px, top 35px and bottom 35px of a 1200x630 canvas). Keep the central original content completely unchanged, including exact typography, words, buttons and positioning. Do not redraw or retype any content. Output 1200x630. The result should visibly feel like a more energetic burst of small fragments than the subtle original.
