@@ -4,7 +4,7 @@ import { HomeHero } from "./HomeHero";
 export const metadata: Metadata = {
   title: "Animaxxing",
   description:
-    "Your static low rizz website is cooked. Get agents to animate the shit out of it",
+    "Your static low rizz website is cooked. Get agents to animate the shit out of it.",
 };
 
 export default function Home() {
