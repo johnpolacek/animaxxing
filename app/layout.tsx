@@ -201,6 +201,12 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://animaxxing.com"),
+  openGraph: {
+    type: "website",
+    siteName: "Animaxxing",
+  },
+  twitter: { card: "summary_large_image" },
   title: "Animaxxing",
   description: "Motion to the Max.",
 };
