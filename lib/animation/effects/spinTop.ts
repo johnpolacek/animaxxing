@@ -25,10 +25,10 @@ export function spinTop(heading: HTMLElement, onComplete?: () => void) {
   const timeline = gsap.timeline({ defaults: { overwrite: "auto" } });
   tops.forEach((top, index) => {
     const last = index === tops.length - 1;
-    const duration = last ? 10 : 7;
+    const duration = last ? 5 : 3;
     const direction = last ? 1 : -1;
     timeline.to(top, {
-      rotationY: direction * (last ? 18 : 12) * 360,
+      rotationY: direction * (last ? 9 : 5) * 360,
       duration,
       ease: "power2.out",
     }, 0);
