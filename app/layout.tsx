@@ -208,7 +208,7 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image" },
   title: "Animaxxing",
-  description: "Motion to the Max.",
+  description: "Get agents to animate the shit out of your website.",
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
