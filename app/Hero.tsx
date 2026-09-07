@@ -19,8 +19,8 @@ import { ParticleButton, type ParticleButtonHandle } from "./ParticleButton";
 
 /*
  * The front door: each headline letter makes its own entrance with the
- * route transition, then the subhead is spoken word by word while the last
- * letter keeps twirling like a top. Only then do the headline's letters
+ * route transition, then the subhead is spoken word by word while both x’s
+ * keep tumbling, with the final x settling last. Only then do the headline's letters
  * start doing the wave.
  *
  * Pressing either call to action blasts the whole hero apart, and the blast
@@ -94,6 +94,13 @@ export function Hero() {
       // Set once a blast has handed off to navigation: the route exit that
       // follows must not put the pieces back.
       let departing = false;
+      let topsDone = false;
+      let speechDone = false;
+      const beginWave = contextSafe(() => {
+        if (topsDone && speechDone && !departing && !stopWave) {
+          stopWave = startWave(heading, { period: WAVE_PERIOD });
+        }
+      });
 
       press.current = contextSafe((action: Action) => {
         const pressed = action === "showcase" ? showcase.current : animaxx.current;
@@ -153,9 +160,14 @@ export function Hero() {
 
       const unwatch = watchPageTransition(heading, {
         onIdle: contextSafe(() => {
-          // The last letter carries the entrance on well past it, spinning
-          // down on its own while everything below arrives on schedule.
-          stopTop = spinTop(heading);
+          // Both x's keep going while everything below arrives on schedule.
+          topsDone = false;
+          speechDone = false;
+          stopTop = spinTop(heading, contextSafe(() => {
+            topsDone = true;
+            stopTop = null;
+            beginWave();
+          }));
           speech = speakIn(subhead, { emphasis: EMPHASIS, delay: SPEAK_DELAY });
           // The buttons assemble from particles alongside the first spoken words.
           gsap.set(actions, { autoAlpha: 1 });
@@ -166,11 +178,8 @@ export function Hero() {
           speech.timeline.eventCallback(
             "onComplete",
             contextSafe(() => {
-              // The top has long since settled, but its split must go back
-              // before the wave lays down its own.
-              stopTop?.();
-              stopTop = null;
-              stopWave = startWave(heading, { period: WAVE_PERIOD });
+              speechDone = true;
+              beginWave();
             }),
           );
         }),
@@ -215,7 +224,7 @@ export function Hero() {
         data-page-transition-arrival="individual"
         className="max-w-[10ch] ![text-wrap:wrap] text-[calc(26vw_-_0.78rem)] leading-[0.9] tracking-[-0.04em] [font-kerning:none] [text-rendering:optimizeSpeed] sm:text-[clamp(4.5rem,16cqi,16rem)]"
       >
-        Motion to the Max
+        Motion to the Maxx
       </Statement>
       <p data-speak-intro className="mt-6 max-w-[64ch] text-[1.75rem] leading-[1.2] tracking-[-0.02em] text-muted sm:mt-10 sm:text-display sm:leading-[1.35]">
         Your static low rizz website is cooked. It has negative aura.
