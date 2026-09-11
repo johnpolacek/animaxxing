@@ -408,6 +408,20 @@
   --focus: var(--sb-yellow);
 }
 
+/*
+ * A card is white whatever the hour, so whatever sits on one reads in the
+ * day's ink and slate rather than the night scheme's cream: the terminals on
+ * Get Animaxxed and the showcase cards both paint their text from these. The
+ * colour is restated as well as the token, since text that never names its
+ * own colour inherits the body's, resolved before the card's override. The
+ * focus ring is left to the scheme, since it is drawn outside the card.
+ */
+:root[data-look="strongbad"] .bg-surface {
+  --foreground: var(--sb-ink);
+  --muted: #2f5a72;
+  color: var(--foreground);
+}
+
 /* Kept out of the first paint, the way every other look's intro items are. */
 :root[data-look="strongbad"] [data-sb-intro] {
   visibility: hidden;
