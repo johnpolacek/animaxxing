@@ -1,27 +1,26 @@
-.slot { margin-top: 2.5rem; perspective: 700px; }
-.link { display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; width: fit-content; max-width: 100%; padding: 1.2rem 1.5rem; border: 2px solid currentColor; background: var(--inverse); color: var(--inverse-foreground); text-decoration: none; }
+.slot { margin-top: 1.5rem; perspective: 700px; }
+.link { display: flex; align-items: center; justify-content: space-between; gap: .65rem; width: fit-content; max-width: 100%; min-height: 44px; padding: .55rem .75rem; border: 1px solid currentColor; background: var(--inverse); color: var(--inverse-foreground); text-decoration: none; }
 .link:focus-visible { outline: 3px solid var(--focus); outline-offset: 6px; }
 .copy { display: grid; gap: .45rem; }
-.caption { font-family: var(--font-mono), monospace; font-size: .65rem; line-height: 1.4; letter-spacing: .08em; text-transform: uppercase; }
-.title { font-family: var(--font-sans), sans-serif; font-size: clamp(1.2rem, 3.2vw, 2.5rem); font-weight: 900; line-height: 1; letter-spacing: -.035em; text-transform: uppercase; }
-.mark { display: grid; place-items: center; flex-shrink: 0; width: 1.2em; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1; transition: transform .2s ease; }
+.caption { display: none; font-family: var(--font-mono), monospace; font-size: .65rem; line-height: 1.4; letter-spacing: .08em; text-transform: uppercase; }
+.title { font-family: var(--font-sans), sans-serif; font-size: clamp(.875rem, 1.3vw, 1rem); font-weight: 700; line-height: 1; letter-spacing: -.035em; text-transform: uppercase; }
+.mark { display: grid; place-items: center; flex-shrink: 0; width: 1.2em; font-size: 1.25rem; line-height: 1; transition: transform .2s ease; }
 .link:hover .mark { transform: translate(3px, -3px) rotate(-8deg); }
-.posterize { box-shadow: 6px 6px 0 var(--canvas), 8px 8px 0 var(--foreground); }
-.bauhaus { border: 3px solid var(--foreground); background: var(--surface); color: var(--foreground); box-shadow: 8px 8px 0 var(--accent-cool); }
+.posterize { box-shadow: 2px 2px 0 var(--canvas), 3px 3px 0 var(--foreground); }
+.bauhaus { border: 2px solid var(--foreground); background: var(--surface); color: var(--foreground); box-shadow: 3px 3px 0 var(--accent-cool); }
 .bauhaus .mark { color: var(--accent); }
 .cinematic { border-width: 1px 0; padding-inline: 0; background: transparent; color: var(--foreground); }
 .cinematic .caption { letter-spacing: .25em; }
-.cinematic .mark { border: 1px solid currentColor; border-radius: 50%; width: 1.8em; height: 1.8em; font-size: 1.5rem; }
-.constructivist { border: 0; border-left: .65rem solid var(--foreground); background: #c4271b; color: #fff; }
-.pinned { border-width: 4px 0; background: transparent; color: var(--foreground); }
+.cinematic .mark { border: 1px solid currentColor; border-radius: 50%; width: 1.8em; height: 1.8em; font-size: .75rem; }
+.constructivist { border: 0; border-left: .3rem solid var(--foreground); background: #c4271b; color: #fff; }
+.pinned { border-width: 2px 0; background: transparent; color: var(--foreground); }
 .pinned .mark { border-left: 2px solid currentColor; padding-left: .35em; }
-.earlyweb { border: 4px outset #eee; background: #c0c0c0; color: #000080; box-shadow: 5px 5px 0 #000; }
+.earlyweb { border: 2px outset #eee; background: #c0c0c0; color: #000080; box-shadow: 2px 2px 0 #000; }
 .earlyweb .caption { background: #000080; color: #fff; padding: .25rem .5rem; letter-spacing: 0; text-transform: none; }
-.earlyweb .title { text-decoration: underline; font-size: clamp(1.2rem, 3vw, 2rem); }
-.strongbad { border: 3px solid var(--sb-ink); background: var(--sb-white); color: var(--sb-ink); box-shadow: 7px 7px 0 var(--accent); border-radius: 5% 2% 4% 1%; }
+.earlyweb .title { text-decoration: underline; }
+.strongbad { border: 2px solid var(--sb-ink); background: var(--sb-white); color: var(--sb-ink); box-shadow: 3px 3px 0 var(--accent); border-radius: 5% 2% 4% 1%; }
 .strongbad .mark { color: var(--accent); }
 .ukiyoe { background: var(--surface); color: var(--foreground); border-width: 1px; border-block: 3px double currentColor; }
 .ukiyoe .title { text-transform: none; font-weight: 600; }
-.ukiyoe .mark { background: var(--accent); color: var(--canvas); padding: .2em; width: auto; font-size: 2rem; }
+.ukiyoe .mark { background: var(--accent); color: var(--canvas); padding: .2em; width: auto; font-size: 1rem; }
 @media (prefers-reduced-motion: reduce) { .mark { transition: none; } .link:hover .mark { transform: none; } }
-@media (max-width: 480px) { .link { padding: 1rem; gap: .75rem; } .caption { font-size: .55rem; } }
