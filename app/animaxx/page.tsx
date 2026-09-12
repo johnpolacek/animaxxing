@@ -3,6 +3,7 @@ import { INSTALL, PROMPTS, SKILLS_REPO } from "./content";
 import { Headline } from "./Headline";
 import { Reveal } from "./Reveal";
 import { Terminal } from "./Terminal";
+import { ShowcaseLink } from "./ShowcaseLink";
 
 export const metadata: Metadata = {
   title: "Get Animaxxed — Animaxxing",
@@ -24,6 +25,7 @@ export default function GetAnimaxxed() {
       <section className="px-gutter pt-10 pb-24 sm:px-gutter-lg">
         <div className="mx-auto w-full max-w-7xl [container-type:inline-size]">
           <Headline>Get Animaxxed</Headline>
+          <ShowcaseLink />
 
           <Reveal as="h2" effect="scatter" delay={1.3} className={`${SHOUT} mt-20`}>
             Grab the skills&hellip;
